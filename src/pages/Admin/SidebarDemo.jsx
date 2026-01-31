@@ -10,7 +10,7 @@ const SidebarDemo = () => {
         <div className="flex min-h-screen bg-black text-gray-200 font-sans selection:bg-[#D4AF37] selection:text-black">
 
             {/* The Sidebar - Fixed, Full Height, Vertical Frame */}
-            <aside className="w-72 bg-[#080808] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5 shadow-[5px_0_30px_rgba(0,0,0,0.5)]">
+            <aside className="w-72 bg-[#080808] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
 
                 {/* 1. Logo Section (Fixed Top) */}
                 <div className="h-32 flex items-center px-8 shrink-0">
@@ -51,7 +51,7 @@ const SidebarDemo = () => {
                 </nav>
 
                 {/* 3. Footer Section (Fixed Bottom) */}
-                <div className="p-8 border-t border-white/5 shrink-0 bg-[#080808]">
+                <div className="p-8 border-t border-white/5 shrink-0">
                     <div className="flex items-center gap-4 mb-8 p-4 bg-white/[0.03] rounded-2xl border border-white/5">
                         <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] font-bold text-sm border border-[#D4AF37]/20">
                             A
