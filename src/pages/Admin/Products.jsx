@@ -1,358 +1,254 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { db, storage } from '../../firebase';
-import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { Plus, Edit2, Trash2, AlertTriangle, Package, Search, Image as ImageIcon, DollarSign } from 'lucide-react';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { Plus, X, Image as ImageIcon, Search, Edit2, Trash2 } from 'lucide-react';
 import './Admin.css';
-
-// Image Map for standard assets
-const IMAGE_MAP = {
-    'divine': '/Ambrosia/images/divine.png',
-    'kuveni': '/Ambrosia/images/kuveni.png',
-    'ravana': '/Ambrosia/images/ravana.png',
-    'garden': '/Ambrosia/images/garden.png'
-};
-
-const CATEGORIES = ['Powder', 'Sticks', 'Blends', 'Gift Sets', 'Limited Edition'];
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState(null);
+    const [currentProductId, setCurrentProductId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [uploading, setUploading] = useState(false);
 
-
+    // Form State
     const [formData, setFormData] = useState({
-        sku: '', name: '', category: 'Powder', price: '', cost: '',
-        stock: '', reorderPoint: 10, imageType: 'divine', imageUrl: ''
+        name: '',
+        price: '',
+        category: 'Skin Care',
+        description: '',
+        image: null,
+        stock: '0',
+        featured: false
     });
+
+    const currentProduct = products.find(p => p.id === currentProductId) || null;
 
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
-            const productsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const productsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
             setProducts(productsData);
-            setLoading(false);
-        }, (error) => {
-            console.error("Error fetching products:", error);
             setLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
-    // Metrics
-    const totalAssetCost = products.reduce((sum, i) => sum + ((Number(i.cost) || 0) * (Number(i.stock) || 0)), 0);
-    const totalRetailValue = products.reduce((sum, i) => sum + ((Number(i.price) || 0) * (Number(i.stock) || 0)), 0);
-    const lowStockCount = products.filter(i => (Number(i.stock) || 0) <= (Number(i.reorderPoint) || 0)).length;
-
-    const getStatusStyle = (item) => {
-        const stock = Number(item.stock) || 0;
-        const point = Number(item.reorderPoint) || 0;
-        if (stock === 0) return { label: "Depleted", color: "status-badge cancelled" };
-        if (stock <= 5) return { label: "Critical", color: "status-badge cancelled !text-red-500" };
-        if (stock <= point) return { label: "Low Level", color: "status-badge pending" };
-        return { label: "Optimized", color: "status-badge completed" };
-    };
-
-    const openModal = (product = null) => {
-        setCurrentProduct(product);
-        if (product) {
+    useEffect(() => {
+        if (currentProductId && currentProduct) {
             setFormData({
-                sku: product.sku || '', name: product.name || '', category: product.category || 'Powder',
-                price: product.price || '', cost: product.cost || '', stock: product.stock || '',
-                reorderPoint: product.reorderPoint || 10, imageType: product.imageType || 'divine',
-                imageUrl: product.imageUrl || ''
+                name: currentProduct.name,
+                price: currentProduct.price,
+                category: currentProduct.category,
+                description: currentProduct.description,
+                image: currentProduct.image,
+                stock: currentProduct.stock,
+                featured: currentProduct.featured || false
             });
-        } else {
+            setIsModalOpen(true);
+        } else if (!currentProductId) {
             setFormData({
-                sku: '', name: '', category: 'Powder', price: '', cost: '',
-                stock: '', reorderPoint: 10, imageType: 'divine', imageUrl: ''
+                name: '',
+                price: '',
+                category: 'Skin Care',
+                description: '',
+                image: null,
+                stock: '0',
+                featured: false
             });
         }
-        setIsModalOpen(true);
+    }, [currentProductId, currentProduct]);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUploading(true);
+            const storageRef = ref(storage, `products/${file.name}`);
+            await uploadBytes(storageRef, file);
+            const url = await getDownloadURL(storageRef);
+            setFormData(prev => ({ ...prev, image: url }));
+            setUploading(false);
+        }
     };
 
-    const handleSave = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const payload = {
-            ...formData,
-            price: Number(formData.price),
-            cost: Number(formData.cost),
-            stock: Number(formData.stock),
-            reorderPoint: Number(formData.reorderPoint)
-        };
-
         try {
-            if (currentProduct) {
-                await updateDoc(doc(db, "products", currentProduct.id), payload);
+            if (currentProductId) {
+                await updateDoc(doc(db, "products", currentProductId), formData);
             } else {
-                await addDoc(collection(db, "products"), payload);
+                await addDoc(collection(db, "products"), formData);
             }
             setIsModalOpen(false);
+            setCurrentProductId(null);
         } catch (error) {
-            alert("Failed to save product: " + error.message);
+            alert("Error saving product: " + error.message);
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Delete this product?")) {
+    const handleDelete = async (id, e) => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure you want to delete this product?")) {
             await deleteDoc(doc(db, "products", id));
         }
     };
 
-    const [filterCategory, setFilterCategory] = useState('All');
-
-    const filteredProducts = products.filter(p => {
-        const matchesCategory = filterCategory === 'All' || p.category === filterCategory;
-        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.sku?.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesCategory && matchesSearch;
-    });
-
-    if (loading) return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-            <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Loading Products...</p>
-        </div>
+    const filteredProducts = products.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const openCreateModal = () => {
+        setCurrentProductId(null);
+        setIsModalOpen(true);
+    };
+
     return (
-        <div className="space-y-12 pb-20 animate-fade-in">
-            <div className="admin-header flex-col gap-6">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-4">
-                    <div>
-                        <h1 className="admin-title">Products <span className="highlight">Inventory</span></h1>
-                        <p className="admin-subtitle opacity-70 mt-2">Manage inventory and pricing</p>
-                    </div>
-                    <button
-                        onClick={() => openModal()}
-                        className="btn-gold flex items-center justify-center gap-3 !px-8 !py-3"
-                    >
-                        <Plus size={16} strokeWidth={3} /> Add Product
-                    </button>
+        <div className="space-y-12 animate-fade-in pb-20 relative">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/5">
+                <div>
+                    <h1 className="text-6xl md:text-7xl font-heading text-white tracking-tighter mb-4">Gallery</h1>
+                    <p className="text-xs uppercase tracking-[0.4em] text-gray-400 font-bold">Curate Your Collection</p>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-6 items-center justify-between w-full">
-                    {/* Shop-like Filter Pills */}
-                    <div className="flex gap-4 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto scrollbar-hide order-2 lg:order-1">
-                        {['All', ...CATEGORIES].map((cat) => (
+                <div className="flex gap-6 items-center">
+                    <div className="relative group">
+                        <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={16} />
+                        <input
+                            type="text"
+                            placeholder="SEARCH COLLECTION..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-transparent border-b border-white/10 py-2 pl-6 pr-4 w-64 text-sm text-white focus:border-gold outline-none transition-all placeholder:text-gray-700 font-mono"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {/* Add New Card */}
+                <button
+                    onClick={openCreateModal}
+                    className="group min-h-[400px] border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center gap-6 hover:bg-white/[0.02] hover:border-gold/30 transition-all duration-500"
+                >
+                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-gold group-hover:text-black transition-all duration-500">
+                        <Plus size={32} />
+                    </div>
+                    <span className="text-xs uppercase tracking-[0.2em] text-gray-500 font-bold group-hover:text-gold">Add New Artifact</span>
+                </button>
+
+                {loading ? (
+                    [1, 2, 3].map(i => <div key={i} className="animate-pulse bg-white/5 h-[400px] rounded-2xl"></div>)
+                ) : (
+                    filteredProducts.map(product => (
+                        <div
+                            key={product.id}
+                            onClick={() => setCurrentProductId(product.id)}
+                            className="group relative h-[400px] rounded-2xl overflow-hidden cursor-pointer"
+                        >
+                            {/* Image Background */}
+                            <div className="absolute inset-0">
+                                <img src={product.image || 'https://via.placeholder.com/400'} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 transition-opacity duration-500"></div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                                <p className="text-[10px] text-gold uppercase tracking-widest font-bold mb-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">{product.category}</p>
+                                <h3 className="text-2xl font-heading text-white mb-2">{product.name}</h3>
+                                <div className="flex justify-between items-end border-t border-white/20 pt-4 mt-2">
+                                    <span className="text-xl font-mono text-white">${product.price}</span>
+                                    <span className={`text-[10px] uppercase tracking-wider font-bold ${Number(product.stock) > 5 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {Number(product.stock) > 0 ? `${product.stock} in Stock` : 'Out of Stock'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Float Actions */}
                             <button
-                                key={cat}
-                                onClick={() => setFilterCategory(cat)}
-                                className={`filter-btn whitespace-nowrap ${filterCategory === cat ? 'active' : ''}`}
+                                onClick={(e) => handleDelete(product.id, e)}
+                                className="absolute top-4 right-4 p-2 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-500 hover:text-white transition-all duration-300"
                             >
-                                {cat}
+                                <Trash2 size={16} />
                             </button>
-                        ))}
-                    </div>
+                        </div>
+                    ))
+                )}
+            </div>
 
-                    <div className="flex gap-4 w-full lg:w-auto order-1 lg:order-2">
-                        <div className="relative group w-full lg:w-auto">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
-                            <input
-                                type="text"
-                                placeholder="Search products..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="admin-input lg:w-72 pl-12"
-                            />
+            {/* Inline Modal Overlay */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
+                    <div className="relative w-full max-w-4xl bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-scale-in flex flex-col md:flex-row max-h-[90vh]">
+                        {/* Image Side */}
+                        <div className="w-full md:w-1/2 p-8 bg-white/[0.02] flex items-center justify-center relative border-r border-white/5">
+                            {formData.image ? (
+                                <img src={formData.image} alt="Preview" className="max-w-full max-h-[400px] object-contain shadow-2xl rounded-lg" />
+                            ) : (
+                                <div className="text-center opacity-30">
+                                    <ImageIcon size={64} className="mx-auto mb-4" strokeWidth={1} />
+                                    <p className="text-xs uppercase tracking-widest">No Image Details</p>
+                                </div>
+                            )}
+                            <label className="absolute bottom-8 left-1/2 -translate-x-1/2 cursor-pointer btn-gold shadow-lg">
+                                {uploading ? 'Processing...' : 'Upload Asset'}
+                                <input type="file" hidden onChange={handleImageUpload} />
+                            </label>
+                        </div>
+
+                        {/* Form Side */}
+                        <div className="w-full md:w-1/2 p-10 overflow-y-auto custom-scrollbar">
+                            <div className="flex justify-between items-center mb-10">
+                                <h2 className="text-3xl font-heading text-white">{currentProductId ? 'Edit Product' : 'New Product'}</h2>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors"><X size={24} /></button>
+                            </div>
+
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Product Name</label>
+                                    <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="admin-input" placeholder="E.g. Lunar Elixir" required />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Price ($)</label>
+                                        <input type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="admin-input font-mono" placeholder="0.00" required />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Stock</label>
+                                        <input type="number" value={formData.stock} onChange={(e) => setFormData({ ...formData, stock: e.target.value })} className="admin-input font-mono" placeholder="0" required />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Category</label>
+                                    <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="admin-input bg-black">
+                                        <option>Skin Care</option>
+                                        <option>Hair Care</option>
+                                        <option>Wellness</option>
+                                        <option>Sets</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase tracking-widest font-bold text-gray-500">Description</label>
+                                    <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="admin-input min-h-[120px] resize-none" placeholder="Product details..." required></textarea>
+                                </div>
+
+                                <button type="submit" className="w-full btn-gold !rounded-xl !py-4 mt-4">
+                                    {currentProductId ? 'Update Artifact' : 'Publish Artifact'}
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Metrics Snapshot */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
-                    <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Total Cost</p>
-                        <h3 className="text-3xl font-heading text-white tracking-tighter">${totalAssetCost.toLocaleString()}</h3>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500 shadow-xl"><DollarSign size={24} /></div>
-                </div>
-                <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
-                    <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Retail Value</p>
-                        <h3 className="text-3xl font-heading text-gold tracking-tighter">${totalRetailValue.toLocaleString()}</h3>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500 shadow-xl"><Package size={24} /></div>
-                </div>
-                <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
-                    <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Low Stock Alerts</p>
-                        <h3 className={`text-3xl font-heading tracking-tighter ${lowStockCount > 0 ? 'text-red-500' : 'text-green-500'}`}>{lowStockCount}</h3>
-                    </div>
-                    <div className={`p-4 rounded-2xl transition-all duration-500 shadow-xl ${lowStockCount > 0 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}`}><AlertTriangle size={24} /></div>
-                </div>
-            </div>
-
-            {/* Assets Table */}
-            <div className="admin-table-container">
-                <div className="overflow-x-auto custom-scrollbar">
-                    <table className="admin-table min-w-[1000px]">
-                        <thead>
-                            <tr>
-                                <th className="pl-12">Image</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th className="text-right">Price</th>
-                                <th className="text-center">Stock</th>
-                                <th>Status</th>
-                                <th className="pr-12 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredProducts.map(item => {
-                                const status = getStatusStyle(item);
-                                const isCritical = status.label === "Critical" || status.label === "Depleted";
-                                return (
-                                    <tr key={item.id} className={`group transition-all duration-500 ${isCritical ? 'bg-red-900/[0.05]' : ''}`}>
-                                        <td className="pl-12" style={{ width: '80px' }}>
-                                            <div className="bg-white/5 rounded-md overflow-hidden border border-white/10 flex-shrink-0 group-hover:scale-110 transition-transform duration-700 shadow-xl relative" style={{ width: '40px', height: '40px' }}>
-                                                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                                                {item.imageUrl || IMAGE_MAP[item.imageType] ? (
-                                                    <img
-                                                        src={item.imageUrl || IMAGE_MAP[item.imageType]}
-                                                        alt={item.name}
-                                                        className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-700"
-                                                        onError={(e) => {
-                                                            e.target.onerror = null;
-                                                            e.target.src = IMAGE_MAP['divine'];
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-gold/20">
-                                                        <ImageIcon size={12} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className={`text-sm font-bold tracking-tight mb-1 transition-colors ${isCritical ? 'text-red-400' : 'text-white group-hover:text-gold'}`}>{item.name}</div>
-                                            <div className="text-[10px] text-gray-600 font-mono tracking-widest uppercase opacity-60">REF-{item.sku || item.id.slice(0, 8).toUpperCase()}</div>
-                                        </td>
-                                        <td className="text-[10px] text-gold/40 uppercase tracking-[0.2em] font-black">{item.category}</td>
-                                        <td className="text-sm font-black text-white text-right italic">${Number(item.price).toFixed(2)}</td>
-                                        <td className={`text-sm font-black text-center ${isCritical ? 'text-red-500' : 'text-white'}`}>{item.stock}</td>
-                                        <td>
-                                            <span className={status.color}>
-                                                {status.label}
-                                            </span>
-                                        </td>
-                                        <td className="pr-12 text-right">
-                                            <div className="flex gap-4 justify-end opacity-20 group-hover:opacity-100 transition-all duration-500">
-                                                <button onClick={() => openModal(item)} className="btn-ghost !p-2 !rounded-lg hover:text-gold hover:bg-gold/10"><Edit2 size={14} /></button>
-                                                <button onClick={() => handleDelete(item.id)} className="btn-ghost !p-2 !rounded-lg hover:text-red-500 hover:bg-red-500/10"><Trash2 size={14} /></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            {/* Asset Modal - Redesigned */}
-            {/* Asset Modal - Redesigned & Portaled */}
-            {isModalOpen && createPortal(
-                <div className="fixed inset-0 z-[1001] flex items-center justify-center bg-black/90 backdrop-blur-md p-6 animate-fade-in">
-                    <div className="admin-card w-full max-w-3xl overflow-hidden animate-scale-in border-gold/30 shadow-[0_0_100px_rgba(212,175,55,0.1)] relative !p-0 max-h-[90vh] flex flex-col">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gold/5 shrink-0">
-                            <div>
-                                <h2 className="text-3xl font-heading text-white">
-                                    {currentProduct ? 'Edit' : 'Add'} <span className="text-gold">Product</span>
-                                </h2>
-                                <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] font-black mt-2 opacity-60">Inventory Management</p>
-                            </div>
-                            <button onClick={() => setIsModalOpen(false)} className="text-gray-600 hover:text-white transition-all text-2xl leading-none">&times;</button>
-                        </div>
-                        <form onSubmit={handleSave} className="p-8 md:p-12 grid grid-cols-2 gap-8 custom-scrollbar overflow-y-auto flex-1">
-                            <div className="col-span-1">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">SKU</label>
-                                <input type="text" required className="admin-input font-mono"
-                                    value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} />
-                            </div>
-                            <div className="col-span-1">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Category</label>
-                                <select className="admin-input cursor-pointer font-bold uppercase tracking-widest"
-                                    value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
-                                    {CATEGORIES.map(cat => (
-                                        <option key={cat} value={cat} className="bg-[#050505]">{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="col-span-2">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Product Name</label>
-                                <input type="text" required className="admin-input font-heading tracking-tight text-sm"
-                                    value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-                            </div>
-                            <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Price ($)</label>
-                                <input type="number" step="0.01" required className="admin-input font-mono"
-                                    value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
-                            </div>
-                            <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Cost ($)</label>
-                                <input type="number" step="0.01" required className="admin-input font-mono"
-                                    value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} />
-                            </div>
-                            <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Stock Quantity</label>
-                                <input type="number" required className="admin-input font-mono"
-                                    value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} />
-                            </div>
-                            <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Low Stock Alert at</label>
-                                <input type="number" required className="admin-input font-mono"
-                                    value={formData.reorderPoint} onChange={e => setFormData({ ...formData, reorderPoint: e.target.value })} />
-                            </div>
-                            <div className="col-span-2 bg-gold/[0.02] p-8 rounded-[2rem] border border-gold/10 relative overflow-hidden group/viz">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-6 flex items-center gap-3">
-                                    <ImageIcon size={14} />
-                                    Product Image
-                                </label>
-                                <div className="grid grid-cols-4 gap-4">
-                                    {Object.entries(IMAGE_MAP).map(([type, path]) => (
-                                        <button
-                                            key={type}
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, imageType: type, imageUrl: '' })}
-                                            className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-500 ${formData.imageType === type ? 'border-gold shadow-[0_0_20px_rgba(212,175,55,0.3)] scale-[1.02] ring-4 ring-gold/5' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'}`}
-                                        >
-                                            <img src={path} alt={type} className="w-full h-full object-cover" />
-                                            {formData.imageType === type && (
-                                                <div className="absolute inset-0 bg-gold/20 flex items-center justify-center backdrop-blur-[1px]">
-                                                    <div className="bg-white rounded-full p-1.5 text-black shadow-lg animate-scale-in">
-                                                        <Plus size={12} className="rotate-45" />
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
-                                <div className="mt-8 pt-8 border-t border-white/5">
-                                    <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/30 mb-4 ml-1">Image URL</label>
-                                    <input
-                                        type="url"
-                                        placeholder="https://..."
-                                        className="admin-input font-mono text-xs"
-                                        value={formData.imageUrl}
-                                        onChange={e => setFormData({ ...formData, imageUrl: e.target.value, imageType: '' })}
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-span-2 flex justify-end gap-6 mt-8">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 hover:text-white transition-all py-3">Cancel</button>
-                                <button type="submit" className="btn-gold !px-12 !py-4 !text-[10px] !tracking-[0.25em]">Save Product</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>,
-                document.body
             )}
         </div>
     );
