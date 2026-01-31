@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import './Recipes.css';
 import divineImg from '../assets/images/divine.png';
 import gardenImg from '../assets/images/garden.png';
@@ -127,20 +128,20 @@ const Recipes = () => {
                 </div>
             </section>
 
-            {/* Recipe Detail Modal */}
-            {selectedRecipe && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4" onClick={() => setSelectedRecipe(null)}>
-                    <div className="bg-[#111] border border-gray-800 rounded-3xl p-8 max-w-2xl w-full relative" onClick={e => e.stopPropagation()}>
-                        <button className="absolute top-4 right-6 text-gray-400 hover:text-white text-3xl" onClick={() => setSelectedRecipe(null)}>&times;</button>
+            {/* Recipe Detail Modal - Portaled to body for z-index safety */}
+            {selectedRecipe && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-fade-in" onClick={() => setSelectedRecipe(null)}>
+                    <div className="bg-[#111] border border-gray-800 rounded-3xl p-8 max-w-2xl w-full relative transform transition-all duration-300 scale-100 shadow-2xl shadow-gold/10" onClick={e => e.stopPropagation()}>
+                        <button className="absolute top-4 right-6 text-gray-400 hover:text-white text-3xl transition-colors" onClick={() => setSelectedRecipe(null)}>&times;</button>
 
                         <div className="flex flex-col md:flex-row gap-8">
                             <div className="w-full md:w-1/3">
-                                <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full rounded-2xl aspect-square object-cover" />
+                                <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full rounded-2xl aspect-square object-cover shadow-lg border border-white/5" />
                             </div>
                             <div className="w-full md:w-2/3">
                                 <span className="text-gold text-xs font-bold uppercase tracking-widest mb-2 block">{selectedRecipe.category}</span>
-                                <h2 className="text-3xl font-heading text-white mb-2">{selectedRecipe.title}</h2>
-                                <p className="text-gold text-sm mb-6 italic">{selectedRecipe.desc}</p>
+                                <h2 className="text-3xl font-heading text-white mb-2 leading-tight">{selectedRecipe.title}</h2>
+                                <p className="text-gold/80 text-sm mb-6 italic border-l-2 border-gold/30 pl-3">{selectedRecipe.desc}</p>
 
                                 <div className="recipe-details space-y-6 text-gray-300 text-sm leading-relaxed max-h-[40vh] overflow-y-auto pr-4 custom-scrollbar">
                                     <div>
@@ -164,13 +165,14 @@ const Recipes = () => {
                                         </ol>
                                     </div>
                                 </div>
-                                <div className="mt-8">
+                                <div className="mt-8 flex justify-end">
                                     <button className="bg-gold text-black px-8 py-3 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white transition-all duration-300 shadow-lg shadow-gold/20" onClick={() => setSelectedRecipe(null)}>Close Recipe</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
