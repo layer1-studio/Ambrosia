@@ -60,8 +60,8 @@ const Store = () => {
         <div className="store-page">
             <section className="store-header">
                 <div className="container">
-                    <h1 className="text-5xl font-heading text-gold mb-4">The Collections</h1>
-                    <p className="text-gray-400">Authentic Ceylon cinnamon for every occasion.</p>
+                    <h1 className="text-5xl font-heading text-gold mb-4">The Ambrosia Collection</h1>
+                    <p className="text-gray-400">Purveyors of the world's finest authentic Ceylon Cinnamon.</p>
                 </div>
             </section>
 

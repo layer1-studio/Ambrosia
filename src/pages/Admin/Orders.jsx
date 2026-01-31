@@ -77,8 +77,8 @@ const Orders = () => {
         <div className="flex flex-col pb-20 space-y-12 animate-fade-in">
             <div className="admin-header flex-row items-end justify-between">
                 <div>
-                    <h1 className="admin-title">Order <span className="highlight">Registry</span></h1>
-                    <p className="admin-subtitle opacity-70 mt-2">Secured Transaction Ledger & Distribution Flow</p>
+                    <h1 className="admin-title">Orders</h1>
+                    <p className="admin-subtitle opacity-70 mt-2">Manage and track customer orders</p>
                 </div>
                 <div className="flex flex-col lg:flex-row gap-6 mb-8 items-center justify-between w-full">
                     {/* Shop-like Filter Pills */}
@@ -99,7 +99,7 @@ const Orders = () => {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Search Ledger..."
+                                placeholder="Search Orders..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="input-premium-dark w-full lg:w-72 pl-12"
@@ -116,19 +116,19 @@ const Orders = () => {
                         <table className="admin-table min-w-[1000px]">
                             <thead>
                                 <tr>
-                                    <th className="pl-8">Registry ID</th>
-                                    <th>Identity</th>
-                                    <th>Timestamp</th>
-                                    <th>Valuation</th>
-                                    <th>Current Phase</th>
-                                    <th className="pr-8 text-right">Interaction</th>
+                                    <th className="pl-8">Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th className="pr-8 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan="6" className="p-24 text-center text-gold/30 text-[10px] uppercase tracking-[0.5em] animate-pulse">Syncing Distributed Ledger...</td></tr>
+                                    <tr><td colSpan="6" className="p-24 text-center text-gold/30 text-[10px] uppercase tracking-[0.5em] animate-pulse">Loading Orders...</td></tr>
                                 ) : filteredOrders.length === 0 ? (
-                                    <tr><td colSpan="6" className="p-24 text-center text-gray-600 text-[10px] uppercase tracking-[0.5em]">No matching transactions recorded</td></tr>
+                                    <tr><td colSpan="6" className="p-24 text-center text-gray-600 text-[10px] uppercase tracking-[0.5em]">No orders found</td></tr>
                                 ) : (
                                     filteredOrders.map(order => (
                                         <tr
@@ -154,7 +154,7 @@ const Orders = () => {
                                             </td>
                                             <td className="pr-8 text-right">
                                                 <button className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 group-hover:text-gold transition-all duration-300 py-2 border-b border-transparent group-hover:border-gold">
-                                                    Inspect
+                                                    View
                                                 </button>
                                             </td>
                                         </tr>

@@ -69,7 +69,7 @@ const AdminLayout = () => {
                         </div>
                         <div>
                             <h1 className="text-2xl font-heading text-white tracking-[0.15em] uppercase">Ambrosia</h1>
-                            <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1.5 ml-0.5">Admin Console</p>
+                            <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1.5 ml-0.5">Admin</p>
                         </div>
                     </Link>
                 </div>
@@ -97,7 +97,7 @@ const AdminLayout = () => {
                         className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Package size={18} />
-                        <span>Inventory</span>
+                        <span>Products</span>
                     </NavLink>
 
                     <NavLink
@@ -124,7 +124,7 @@ const AdminLayout = () => {
                         className="w-full flex items-center gap-3 px-4 py-4 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all font-bold text-[10px] uppercase tracking-widest group border border-transparent hover:border-red-500/20"
                     >
                         <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
-                        Sign Out System
+                        Sign Out
                     </button>
                 </div>
             </aside>
@@ -145,7 +145,7 @@ const AdminLayout = () => {
                         <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none" size={18} />
                         <input
                             type="text"
-                            placeholder="Search Administrative Database..."
+                            placeholder="Search..."
                             className="w-full bg-white/[0.03] border border-white/5 rounded-2xl pl-14 pr-5 py-4 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-gold/30 focus:bg-white/[0.05] transition-all font-medium uppercase tracking-wider"
                         />
                     </div>

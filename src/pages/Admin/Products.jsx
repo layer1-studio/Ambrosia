@@ -97,7 +97,7 @@ const Products = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm("Confirm deletion of this high-value asset?")) {
+        if (window.confirm("Delete this product?")) {
             await deleteDoc(doc(db, "products", id));
         }
     };
@@ -114,7 +114,7 @@ const Products = () => {
     if (loading) return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
             <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Syncing Portfolio...</p>
+            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Loading Products...</p>
         </div>
     );
 
@@ -123,14 +123,14 @@ const Products = () => {
             <div className="admin-header flex-col gap-6">
                 <div className="flex flex-col md:flex-row justify-between items-end gap-4">
                     <div>
-                        <h1 className="admin-title">Portfolio <span className="highlight">Catalogue</span></h1>
-                        <p className="admin-subtitle opacity-70 mt-2">Stock Monitoring & Intelligent Asset Management</p>
+                        <h1 className="admin-title">Products <span className="highlight">Inventory</span></h1>
+                        <p className="admin-subtitle opacity-70 mt-2">Manage inventory and pricing</p>
                     </div>
                     <button
                         onClick={() => openModal()}
                         className="btn-gold flex items-center justify-center gap-3 !px-8 !py-3"
                     >
-                        <Plus size={16} strokeWidth={3} /> Initialize Asset
+                        <Plus size={16} strokeWidth={3} /> Add Product
                     </button>
                 </div>
 
@@ -153,7 +153,7 @@ const Products = () => {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Seek Catalogue Item..."
+                                placeholder="Search products..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="input-premium-dark w-full lg:w-72 pl-12"
@@ -167,21 +167,21 @@ const Products = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
                     <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Portfolio Cost</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Total Cost</p>
                         <h3 className="text-3xl font-heading text-white tracking-tighter">${totalAssetCost.toLocaleString()}</h3>
                     </div>
                     <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500 shadow-xl"><DollarSign size={24} /></div>
                 </div>
                 <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
                     <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Market Valuation</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Retail Value</p>
                         <h3 className="text-3xl font-heading text-gold tracking-tighter">${totalRetailValue.toLocaleString()}</h3>
                     </div>
                     <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500 shadow-xl"><Package size={24} /></div>
                 </div>
                 <div className="admin-card p-6 md:p-8 flex items-center justify-between group">
                     <div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Supply Alerts</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-[0.4em] font-black mb-3">Low Stock Alerts</p>
                         <h3 className={`text-3xl font-heading tracking-tighter ${lowStockCount > 0 ? 'text-red-500' : 'text-green-500'}`}>{lowStockCount}</h3>
                     </div>
                     <div className={`p-4 rounded-2xl transition-all duration-500 shadow-xl ${lowStockCount > 0 ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}`}><AlertTriangle size={24} /></div>
@@ -194,13 +194,13 @@ const Products = () => {
                     <table className="admin-table min-w-[1000px]">
                         <thead>
                             <tr>
-                                <th className="pl-12">Visual ID</th>
-                                <th>Nomenclature</th>
-                                <th>Tier</th>
-                                <th className="text-right">Valuation</th>
-                                <th className="text-center">Reserves</th>
-                                <th>Condition</th>
-                                <th className="pr-12 text-right">Registry Actions</th>
+                                <th className="pl-12">Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th className="text-right">Price</th>
+                                <th className="text-center">Stock</th>
+                                <th>Status</th>
+                                <th className="pr-12 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -264,20 +264,20 @@ const Products = () => {
                         <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gold/5 shrink-0">
                             <div>
                                 <h2 className="text-3xl font-heading text-white">
-                                    {currentProduct ? 'Modify' : 'Initialize'} <span className="text-gold">Asset</span>
+                                    {currentProduct ? 'Edit' : 'Add'} <span className="text-gold">Product</span>
                                 </h2>
-                                <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] font-black mt-2 opacity-60">High-Fidelity Inventory Management</p>
+                                <p className="text-[9px] text-gray-500 uppercase tracking-[0.4em] font-black mt-2 opacity-60">Inventory Management</p>
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="text-gray-600 hover:text-white transition-all text-2xl leading-none">&times;</button>
                         </div>
                         <form onSubmit={handleSave} className="p-8 md:p-12 grid grid-cols-2 gap-8 custom-scrollbar overflow-y-auto flex-1">
                             <div className="col-span-1">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Reference SKU</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">SKU</label>
                                 <input type="text" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
                                     value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} />
                             </div>
                             <div className="col-span-1">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Asset Tier</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Category</label>
                                 <select className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all cursor-pointer font-bold uppercase tracking-widest"
                                     value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
                                     {CATEGORIES.map(cat => (
@@ -286,34 +286,34 @@ const Products = () => {
                                 </select>
                             </div>
                             <div className="col-span-2">
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Nomenclature</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Product Name</label>
                                 <input type="text" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-sm transition-all font-heading tracking-tight"
                                     value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Market Value ($)</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Price ($)</label>
                                 <input type="number" step="0.01" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
                                     value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Initial Cost ($)</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Cost ($)</label>
                                 <input type="number" step="0.01" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
                                     value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Reserve Quantity</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Stock Quantity</label>
                                 <input type="number" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
                                     value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Critical Point</label>
+                                <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Low Stock Alert at</label>
                                 <input type="number" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
                                     value={formData.reorderPoint} onChange={e => setFormData({ ...formData, reorderPoint: e.target.value })} />
                             </div>
                             <div className="col-span-2 bg-gold/[0.02] p-8 rounded-[2rem] border border-gold/10 relative overflow-hidden group/viz">
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-6 flex items-center gap-3">
                                     <ImageIcon size={14} />
-                                    Visual Representation Matrix
+                                    Product Image
                                 </label>
                                 <div className="grid grid-cols-4 gap-4">
                                     {Object.entries(IMAGE_MAP).map(([type, path]) => (
@@ -335,7 +335,7 @@ const Products = () => {
                                     ))}
                                 </div>
                                 <div className="mt-8 pt-8 border-t border-white/5">
-                                    <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/30 mb-4 ml-1">Custom External Origin (URL)</label>
+                                    <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/30 mb-4 ml-1">Image URL</label>
                                     <input
                                         type="url"
                                         placeholder="https://cloud-storage.ambrosia.com/assets/..."
@@ -346,8 +346,8 @@ const Products = () => {
                                 </div>
                             </div>
                             <div className="col-span-2 flex justify-end gap-6 mt-8">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 hover:text-white transition-all py-3">Abort Transaction</button>
-                                <button type="submit" className="btn-gold !px-12 !py-4 !text-[10px] !tracking-[0.25em]">Sync to Registry</button>
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-600 hover:text-white transition-all py-3">Cancel</button>
+                                <button type="submit" className="btn-gold !px-12 !py-4 !text-[10px] !tracking-[0.25em]">Save Product</button>
                             </div>
                         </form>
                     </div>

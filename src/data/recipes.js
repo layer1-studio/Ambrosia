@@ -9,11 +9,11 @@ export const recipes = [
         category: "Beverages",
         image: divineImg,
         time: "5 mins",
-        desc: "A warm, soul-soothing latte infused with Ambrosia Divine Essence.",
+        desc: "A warm, soul-soothing elixir infused with Ambrosia Divine Essence.",
         ingredients: [
             "1 tsp Ambrosia Divine Essence (Ground Cinnamon)",
             "1 cup Milk of choice (Oat or Dairy fits best)",
-            "1 tsp Honey or Maple Syrup",
+            "1 tsp Wild Honey or Maple Syrup",
             "A pinch of Turmeric (optional)"
         ],
         instructions: [
@@ -24,7 +24,7 @@ export const recipes = [
     },
     {
         id: 2,
-        title: "Authentic Sri Lankan Chai",
+        title: "Ceylon Heritage Chai",
         category: "Beverages",
         image: gardenImg,
         time: "15 mins",

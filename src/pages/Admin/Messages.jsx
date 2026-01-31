@@ -37,7 +37,7 @@ const Messages = () => {
 
     const handleDelete = async (id, e) => {
         if (e) e.stopPropagation();
-        if (window.confirm('Purge this intelligence record?')) {
+        if (window.confirm('Delete this conversation?')) {
             await deleteDoc(doc(db, 'messages', id));
             if (selectedMessage?.id === id) setSelectedMessage(null);
         }
@@ -67,7 +67,7 @@ const Messages = () => {
                 repliedAt: new Date()
             });
 
-            alert(`Encrypted response sent to ${selectedMessage.email}`);
+            alert(`Reply sent to ${selectedMessage.email}`);
             setReplyText('');
         } catch (error) {
             console.error("Failed to send reply:", error);
@@ -90,7 +90,7 @@ const Messages = () => {
     if (loading) return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
             <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Syncing Intel Feed...</p>
+            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Loading Messages...</p>
         </div>
     );
 
@@ -98,15 +98,15 @@ const Messages = () => {
         <div className="min-h-screen lg:h-[calc(100vh-10rem)] flex flex-col space-y-6 md:space-y-8 animate-fade-in pb-20">
             <div className="admin-header flex-row items-end justify-between">
                 <div>
-                    <h1 className="admin-title">Comms <span className="highlight">Intercept</span></h1>
-                    <p className="admin-subtitle opacity-70 mt-2">Secured Network & Client Intelligence Ledger</p>
+                    <h1 className="admin-title">Message <span className="highlight">Inbox</span></h1>
+                    <p className="admin-subtitle opacity-70 mt-2">Customer inquiries and support</p>
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <div className="relative group w-full md:w-auto">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
                         <input
                             type="text"
-                            placeholder="Seek Transmission..."
+                            placeholder="Search messages..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="input-premium-dark w-full md:w-72 pl-12"
@@ -123,13 +123,13 @@ const Messages = () => {
                             onClick={() => setFilter('all')}
                             className={`filter-btn flex-1 !text-center !px-0 ${filter === 'all' ? 'active' : ''}`}
                         >
-                            Log: All
+                            All
                         </button>
                         <button
                             onClick={() => setFilter('unread')}
                             className={`filter-btn flex-1 !text-center !px-0 ${filter === 'unread' ? 'active' : ''}`}
                         >
-                            Intercepts
+                            Unread
                         </button>
                     </div>
 
@@ -137,7 +137,7 @@ const Messages = () => {
                         {filteredMessages.length === 0 ? (
                             <div className="p-20 text-center opacity-20">
                                 <Mail className="w-12 h-12 text-gold mx-auto mb-6" strokeWidth={1} />
-                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.5em]">The Aether is Silent</p>
+                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.5em]">No messages found</p>
                             </div>
                         ) : (
                             filteredMessages.map(msg => (

@@ -51,7 +51,7 @@ const Dashboard = () => {
     if (loading) return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
             <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Initializing Dashboard...</p>
+            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Loading Dashboard...</p>
         </div>
     );
 
@@ -81,8 +81,8 @@ const Dashboard = () => {
             {/* Header Area */}
             <div className="admin-header flex-row items-end justify-between">
                 <div>
-                    <h1 className="admin-title">Performance <span className="highlight">Overview</span></h1>
-                    <p className="admin-subtitle opacity-70 mt-2">Real-time marketplace analytics and digital insights</p>
+                    <h1 className="admin-title">Dashboard <span className="highlight">Overview</span></h1>
+                    <p className="admin-subtitle opacity-70 mt-2">Store performance statistics and insights</p>
                 </div>
                 <div className="flex gap-4">
                     <button className="btn-ghost">Export Data</button>
@@ -103,8 +103,8 @@ const Dashboard = () => {
                 <div className="xl:col-span-2 admin-card min-h-[500px] flex flex-col">
                     <div className="flex justify-between items-center mb-10">
                         <div>
-                            <h3 className="text-2xl font-heading text-white">Revenue Trajectory</h3>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-2 opacity-60">Financial Performance Timeline</p>
+                            <h3 className="text-2xl font-heading text-white">Revenue Over Time</h3>
+                            <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-2 opacity-60">Sales Performance</p>
                         </div>
                         <div className="p-1 bg-white/5 rounded-xl border border-white/5 flex">
                             <button className="px-6 py-2 rounded-lg text-[10px] font-bold uppercase bg-gold text-black transition-all shadow-lg">Weekly</button>
@@ -147,7 +147,7 @@ const Dashboard = () => {
                         ) : (
                             <div className="h-full w-full flex flex-col items-center justify-center text-gray-700 opacity-50 gap-4">
                                 <Activity size={48} strokeWidth={1} />
-                                <p className="text-[10px] uppercase tracking-[0.4em] font-bold">Awaiting Transactional Feed...</p>
+                                <p className="text-[10px] uppercase tracking-[0.4em] font-bold">No Data Available...</p>
                             </div>
                         )}
                     </div>
@@ -157,8 +157,8 @@ const Dashboard = () => {
                 <div className="admin-card flex flex-col h-full bg-white/[0.02]">
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h3 className="text-xl font-heading text-white">Live Ledger</h3>
-                            <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1 opacity-60">Recent Activity</p>
+                            <h3 className="text-xl font-heading text-white">Recent Orders</h3>
+                            <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1 opacity-60">Latest Activity</p>
                         </div>
                         <Link to="/admin/orders" className="text-gold text-[9px] font-bold uppercase tracking-[0.2em] hover:text-white transition-all border-b border-gold/30 hover:border-white pb-0.5">View All</Link>
                     </div>

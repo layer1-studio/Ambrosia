@@ -8,8 +8,8 @@ const Recipes = () => {
         <div className="recipes-page">
             <section className="recipes-hero">
                 <div className="container">
-                    <h1 className="text-6xl font-heading text-gold mb-4">Recipes & Rituals</h1>
-                    <p className="text-xl text-gray-400">Discover the endless possibilities of true cinnamon.</p>
+                    <h1 className="text-6xl font-heading text-gold mb-4">Culinary Rituals</h1>
+                    <p className="text-xl text-gray-400">Elevate your craft with the finest spice known to man.</p>
                 </div>
             </section>
 
