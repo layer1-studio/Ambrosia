@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone, Menu } from 'lucide-react';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -51,7 +51,7 @@ const AdminLayout = () => {
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     className="p-2 text-gold hover:bg-gold/10 rounded-xl transition-colors"
                 >
-                    <LayoutDashboard size={24} />
+                    <Menu size={24} />
                 </button>
             </header>
 
