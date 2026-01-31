@@ -103,13 +103,13 @@ const Messages = () => {
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <div className="relative group w-full md:w-auto">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-gold transition-colors" size={16} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
                         <input
                             type="text"
                             placeholder="Seek Transmission..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-xl pl-12 pr-6 py-4 text-xs text-white focus:outline-none focus:border-gold w-full md:w-72 transition-all font-medium"
+                            className="input-premium-dark w-full md:w-72 pl-12"
                         />
                     </div>
                 </div>
@@ -121,13 +121,13 @@ const Messages = () => {
                     <div className="p-6 md:p-8 border-b border-white/5 flex gap-4 bg-white/[0.02]">
                         <button
                             onClick={() => setFilter('all')}
-                            className={`flex-1 py-3 md:py-4 text-[9px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border ${filter === 'all' ? 'bg-white text-black border-white shadow-xl' : 'text-gray-500 border-white/5 hover:bg-white/5'}`}
+                            className={`filter-btn flex-1 !text-center !px-0 ${filter === 'all' ? 'active' : ''}`}
                         >
                             Log: All
                         </button>
                         <button
                             onClick={() => setFilter('unread')}
-                            className={`flex-1 py-3 md:py-4 text-[9px] font-black uppercase tracking-[0.3em] rounded-2xl transition-all border ${filter === 'unread' ? 'bg-gold text-black border-gold shadow-[0_10px_30px_rgba(212,175,55,0.3)]' : 'text-gray-500 border-white/5 hover:bg-white/5'}`}
+                            className={`filter-btn flex-1 !text-center !px-0 ${filter === 'unread' ? 'active' : ''}`}
                         >
                             Intercepts
                         </button>

@@ -272,3 +272,31 @@
         font-size: 2rem;
     }
 }
+
+/* Shop-like Filter Buttons */
+.filter-btn {
+    padding: 0.8rem 2rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #888;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.filter-btn:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+.filter-btn.active {
+    background: var(--color-gold);
+    color: #000;
+    border-color: var(--color-gold);
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}

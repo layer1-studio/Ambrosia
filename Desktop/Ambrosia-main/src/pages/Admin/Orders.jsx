@@ -80,26 +80,32 @@ const Orders = () => {
                     <h1 className="admin-title">Order <span className="highlight">Registry</span></h1>
                     <p className="admin-subtitle opacity-70 mt-2">Secured Transaction Ledger & Distribution Flow</p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-gold transition-colors" size={16} />
-                        <input
-                            type="text"
-                            placeholder="Search Ledger..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-xl pl-12 pr-6 py-3 text-xs text-white focus:outline-none focus:border-gold w-full sm:w-64 transition-all font-medium"
-                        />
-                    </div>
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-xl px-6 py-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 focus:outline-none focus:border-gold cursor-pointer transition-all"
-                    >
-                        {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(f => (
-                            <option key={f} value={f} className="bg-[#050505]">{f === 'All' ? 'Status: All' : f}</option>
+                <div className="flex flex-col lg:flex-row gap-6 mb-8 items-center justify-between w-full">
+                    {/* Shop-like Filter Pills */}
+                    <div className="flex gap-4 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto scrollbar-hide order-2 lg:order-1">
+                        {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => setFilter(status)}
+                                className={`filter-btn whitespace-nowrap ${filter === status ? 'active' : ''}`}
+                            >
+                                {status}
+                            </button>
                         ))}
-                    </select>
+                    </div>
+
+                    <div className="flex gap-4 w-full lg:w-auto order-1 lg:order-2">
+                        <div className="relative group w-full lg:w-auto">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search Ledger..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="input-premium-dark w-full lg:w-72 pl-12"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 

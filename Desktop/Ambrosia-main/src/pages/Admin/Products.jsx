@@ -101,10 +101,14 @@ const Products = () => {
         }
     };
 
-    const filteredProducts = products.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.sku?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const [filterCategory, setFilterCategory] = useState('All');
+
+    const filteredProducts = products.filter(p => {
+        const matchesCategory = filterCategory === 'All' || p.category === filterCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.sku?.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
 
     if (loading) return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
@@ -115,21 +119,11 @@ const Products = () => {
 
     return (
         <div className="space-y-12 pb-20 animate-fade-in">
-            <div className="admin-header flex-row items-end justify-between">
-                <div>
-                    <h1 className="admin-title">Portfolio <span className="highlight">Catalogue</span></h1>
-                    <p className="admin-subtitle opacity-70 mt-2">Stock Monitoring & Intelligent Asset Management</p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-5 w-full md:w-auto">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-gold transition-colors" size={16} />
-                        <input
-                            type="text"
-                            placeholder="Seek Catalogue Item..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-xl pl-12 pr-6 py-3 text-xs text-white focus:outline-none focus:border-gold w-full sm:w-64 transition-all font-medium"
-                        />
+            <div className="admin-header flex-col gap-6">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div>
+                        <h1 className="admin-title">Portfolio <span className="highlight">Catalogue</span></h1>
+                        <p className="admin-subtitle opacity-70 mt-2">Stock Monitoring & Intelligent Asset Management</p>
                     </div>
                     <button
                         onClick={() => openModal()}
@@ -137,6 +131,34 @@ const Products = () => {
                     >
                         <Plus size={16} strokeWidth={3} /> Initialize Asset
                     </button>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-6 items-center justify-between w-full">
+                    {/* Shop-like Filter Pills */}
+                    <div className="flex gap-4 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto scrollbar-hide order-2 lg:order-1">
+                        {['All', ...CATEGORIES].map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setFilterCategory(cat)}
+                                className={`filter-btn whitespace-nowrap ${filterCategory === cat ? 'active' : ''}`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex gap-4 w-full lg:w-auto order-1 lg:order-2">
+                        <div className="relative group w-full lg:w-auto">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Seek Catalogue Item..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="input-premium-dark w-full lg:w-72 pl-12"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
