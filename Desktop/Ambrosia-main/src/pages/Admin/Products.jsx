@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { db, storage } from '../../firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -255,11 +256,12 @@ const Products = () => {
             </div>
 
             {/* Asset Modal - Redesigned */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 bg-black/80 backdrop-blur-md p-6 animate-fade-in overflow-y-auto">
-                    <div className="admin-card w-full max-w-3xl overflow-hidden animate-scale-in border-gold/30 shadow-[0_0_100px_rgba(212,175,55,0.1)] relative !p-0">
+            {/* Asset Modal - Redesigned & Portaled */}
+            {isModalOpen && createPortal(
+                <div className="fixed inset-0 z-[1001] flex items-center justify-center bg-black/90 backdrop-blur-md p-6 animate-fade-in">
+                    <div className="admin-card w-full max-w-3xl overflow-hidden animate-scale-in border-gold/30 shadow-[0_0_100px_rgba(212,175,55,0.1)] relative !p-0 max-h-[90vh] flex flex-col">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gold/5">
+                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gold/5 shrink-0">
                             <div>
                                 <h2 className="text-3xl font-heading text-white">
                                     {currentProduct ? 'Modify' : 'Initialize'} <span className="text-gold">Asset</span>
@@ -268,7 +270,7 @@ const Products = () => {
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="text-gray-600 hover:text-white transition-all text-2xl leading-none">&times;</button>
                         </div>
-                        <form onSubmit={handleSave} className="p-8 md:p-12 grid grid-cols-2 gap-8 custom-scrollbar max-h-[70vh] overflow-y-auto">
+                        <form onSubmit={handleSave} className="p-8 md:p-12 grid grid-cols-2 gap-8 custom-scrollbar overflow-y-auto flex-1">
                             <div className="col-span-1">
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Reference SKU</label>
                                 <input type="text" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
@@ -349,7 +351,8 @@ const Products = () => {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
