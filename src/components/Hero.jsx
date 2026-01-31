@@ -11,17 +11,17 @@ const Hero = () => {
             </div>
 
             <div className="hero-content">
-                <span className="hero-eyebrow">Ambrosia – Pure, Premium 100% Sri Lankan Cinnamon</span>
+                <span className="hero-eyebrow">Ambrosia — The Sovereign Spice of Ceylon</span>
                 <h1 className="hero-title">
                     Divine Essence
                 </h1>
                 <p className="hero-desc">
-                    Experience the gold standard of spices. 100% authentic,
-                    hand-harvested Ceylon cinnamon from the heart of Sri Lanka.
+                    Experience the gold standard of spices. Authentic,
+                    hand-harvested Ceylon Cinnamon, cultivated in the heart of Sri Lanka.
                 </p>
                 <div className="hero-actions">
-                    <a href="#products" className="btn">Shop Now</a>
-                    <a href="#heritage" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Learn More</a>
+                    <a href="#products" className="btn">View Collection</a>
+                    <a href="#heritage" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Our Heritage</a>
                 </div>
             </div>
         </section>
