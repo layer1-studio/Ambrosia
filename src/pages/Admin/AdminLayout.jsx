@@ -84,11 +84,7 @@ const AdminLayout = () => {
                         <span>Dashboard</span>
                     </NavLink>
 
-                    {/* Placeholder - Statistics */}
-                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
-                        <BarChart2 size={18} />
-                        <span>Statistics</span>
-                    </div>
+
 
                     <NavLink
                         to="/admin/orders"
@@ -106,11 +102,7 @@ const AdminLayout = () => {
                         <span>Inventory</span>
                     </NavLink>
 
-                    {/* Placeholder - Customers */}
-                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
-                        <Users size={18} />
-                        <span>Customers</span>
-                    </div>
+
 
                     <NavLink
                         to="/admin/messages"
@@ -120,17 +112,9 @@ const AdminLayout = () => {
                         <span>Messages</span>
                     </NavLink>
 
-                    {/* Placeholder - Delivery */}
-                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
-                        <Truck size={18} />
-                        <span>Delivery</span>
-                    </div>
 
-                    {/* Placeholder - Settings */}
-                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all mt-auto">
-                        <Settings size={18} />
-                        <span>Settings</span>
-                    </div>
+
+
                 </nav>
 
                 <div className="p-8 border-t border-white/5">
