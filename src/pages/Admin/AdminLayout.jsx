@@ -74,7 +74,7 @@ const AdminLayout = () => {
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto custom-scrollbar flex flex-col">
+                <nav className="flex-1 px-6 py-6 space-y-8 overflow-y-auto custom-scrollbar flex flex-col">
                     <NavLink
                         to="/admin"
                         end
