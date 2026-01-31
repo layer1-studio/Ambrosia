@@ -75,10 +75,6 @@ const AdminLayout = () => {
                 </div>
 
                 <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto custom-scrollbar flex flex-col">
-                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-4 font-bold flex items-center gap-2">
-                        <span className="w-1 h-1 rounded-full bg-gold/50"></span>
-                        Main Menu
-                    </p>
                     <NavLink
                         to="/admin"
                         end
@@ -168,7 +164,7 @@ const AdminLayout = () => {
             {/* Main Content Area */}
             <main className="flex-1 transition-all duration-300 relative bg-[#0a0a0a] min-w-0 flex flex-col min-h-screen lg:pl-72">
                 {/* Top Header Bar */}
-                <header className="hidden lg:flex items-center justify-between gap-6 px-10 py-6 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl shrink-0 sticky top-0 z-40">
+                <header className="hidden lg:flex items-center justify-between gap-6 px-8 py-6 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl shrink-0 sticky top-0 z-40">
                     <div className="relative flex-1 max-w-lg">
                         <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none" size={18} />
                         <input
@@ -192,7 +188,7 @@ const AdminLayout = () => {
                         </Link>
                     </div>
                 </header>
-                <div className="w-full p-6 md:p-12 flex-1 min-h-0">
+                <div className="w-full p-8 flex-1 min-h-0">
                     <Outlet />
                 </div>
             </main>
