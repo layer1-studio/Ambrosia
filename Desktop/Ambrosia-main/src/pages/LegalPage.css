@@ -1,0 +1,97 @@
+/* Shared legal page styles – Privacy Policy & Terms wireframe */
+.legal-page {
+  min-height: 100vh;
+  background: #0a0a0a;
+  padding: 10rem 1.5rem 5rem;
+}
+
+.legal-page .legal-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 3rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Gold divider with flourish */
+.legal-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 3rem 0;
+}
+
+.legal-divider::before,
+.legal-divider::after {
+  content: '';
+  flex: 1;
+  max-width: 200px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.4), transparent);
+}
+
+.legal-divider .flourish {
+  width: 8px;
+  height: 8px;
+  background: var(--color-primary);
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+/* Simple Summary highlight box */
+.legal-summary-box {
+  background: rgba(28, 28, 28, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 1rem;
+  padding: 1.75rem 2rem;
+  margin: 2rem 0 3rem;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.08);
+}
+
+.legal-summary-box strong {
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}
+
+.legal-summary-box p {
+  color: #e5e5e5;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-top: 0.5rem;
+}
+
+/* Section headings */
+.legal-section-title {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.legal-section-body {
+  color: #a1a1a1;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+/* Two-column layout */
+.legal-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .legal-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .legal-page {
+    padding: 8rem 1rem 4rem;
+  }
+}
