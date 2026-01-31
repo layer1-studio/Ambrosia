@@ -30,10 +30,11 @@
 }
 
 .filter-btn.active {
-    background: var(--color-primary);
-    color: #000;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--color-primary);
     border-color: var(--color-primary);
     font-weight: 600;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .store-grid {

@@ -9,9 +9,10 @@
     --color-gold: #D4AF37;
     --color-gold-hover: #e5c04a;
     --color-gold-muted: rgba(212, 175, 55, 0.6);
-    --font-heading: 'Cinzel', serif;
+    --color-gold-muted: rgba(212, 175, 55, 0.6);
+    --font-heading: 'Playfair Display', serif;
     /* Ensuring consistent heading font */
-    --font-body: 'Inter', sans-serif;
+    --font-body: 'Outfit', sans-serif;
 
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -294,9 +295,9 @@
 }
 
 .filter-btn.active {
-    background: var(--color-gold);
-    color: #000;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--color-gold);
     border-color: var(--color-gold);
     font-weight: 700;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
 }
