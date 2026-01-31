@@ -1,0 +1,10 @@
+.faq-page {
+    padding-top: 8rem;
+}
+
+.faq-item {
+    background: #111;
+    padding: 2.5rem;
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-primary);
+}

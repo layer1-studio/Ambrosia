@@ -1,0 +1,107 @@
+.edu-hero {
+    padding: 18rem 0 12rem;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(5, 5, 5, 1)), url('../assets/images/garden.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.history-box {
+    position: relative;
+    z-index: 1;
+}
+
+.history-box::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.video-container {
+    background: #000;
+}
+
+.benefit-card,
+.use-card {
+    transition: all 0.3s ease;
+}
+
+.use-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-5px);
+}
+
+.fun-facts {
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.02);
+}
+
+.fact-slider {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes factFade {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: factFade 0.8s ease-out forwards;
+}
+
+.history-content {
+    text-align: left;
+}
+
+.types-section {
+    padding: 10rem 0;
+}
+
+@media (max-width: 992px) {
+
+    .history-grid,
+    .types-section {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+
+    .history-visual {
+        order: 2;
+    }
+
+    .history-content {
+        order: 1;
+    }
+
+    .use-card.transform.scale-110 {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .fun-facts .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .uses-section .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .text-7xl {
+        font-size: 3.5rem;
+    }
+}
