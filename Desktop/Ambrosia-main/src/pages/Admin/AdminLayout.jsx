@@ -55,11 +55,11 @@ const AdminLayout = () => {
                 </button>
             </header>
 
-            {/* Sidebar - Overlay on mobile, static on desktop */}
+            {/* Sidebar - Overlay on mobile, Fixed on desktop */}
             <aside className={`
                 w-72 bg-[#050505] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5
-                transition-transform duration-500 ease-out
-                lg:translate-x-0 lg:static lg:h-screen lg:sticky lg:top-0
+                transition-transform duration-500 ease-out shadow-2xl
+                lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <div className="h-28 hidden lg:flex items-center px-8 border-b border-white/5">
@@ -134,7 +134,7 @@ const AdminLayout = () => {
             )}
 
             {/* Main Content Area */}
-            <main className="flex-1 transition-all duration-300 relative bg-[#0a0a0a] min-w-0 flex flex-col min-h-screen">
+            <main className="flex-1 transition-all duration-300 relative bg-[#0a0a0a] min-w-0 flex flex-col min-h-screen lg:pl-72">
                 {/* Top Header Bar */}
                 <header className="hidden lg:flex items-center justify-between gap-6 px-10 py-6 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur-xl shrink-0 sticky top-0 z-40">
                     <div className="relative flex-1 max-w-lg">
