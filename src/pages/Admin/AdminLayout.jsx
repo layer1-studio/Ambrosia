@@ -57,48 +57,50 @@ const AdminLayout = () => {
 
             {/* Sidebar - Overlay on mobile, Fixed on desktop */}
             <aside className={`
-                w-72 bg-[#050505] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5
-                transition-transform duration-500 ease-out shadow-2xl
+                w-72 bg-[#080808] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5
+                transition-transform duration-500 ease-out 
                 lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
-                <div className="h-28 hidden lg:flex items-center px-8 border-b border-white/5">
+                <div className="h-28 hidden lg:flex items-center px-8">
                     <Link to="/" className="flex items-center gap-4 group">
-                        <div className="w-10 h-10 bg-gold rounded-xl flex items-center justify-center text-black font-bold text-xl shadow-[0_0_20px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform duration-500">A</div>
+                        <div className="text-3xl text-gold animate-pulse-slow">
+                            <span className="font-heading italic">A</span>
+                        </div>
                         <div>
-                            <h1 className="text-xl font-heading text-white tracking-[0.2em] uppercase">Ambrosia</h1>
-                            <p className="text-[9px] text-gold/60 uppercase tracking-widest font-bold">Admin Portal</p>
+                            <h1 className="text-2xl font-heading text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#d4af37] tracking-widest uppercase">Ambrosia</h1>
+                            <p className="text-[8px] text-gray-500 uppercase tracking-[0.4em] font-bold mt-1">Admin Console</p>
                         </div>
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-6 py-10 space-y-3 overflow-y-auto custom-scrollbar">
-                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-500 mb-6 font-bold">Navigation</p>
+                <nav className="flex-1 px-6 py-6 space-y-2 overflow-y-auto custom-scrollbar">
+                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-6 font-bold">Main Menu</p>
                     <NavLink
                         to="/admin"
                         end
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gold/10 text-gold border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'text-gray-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <LayoutDashboard size={18} />
                         <span>Dashboard</span>
                     </NavLink>
                     <NavLink
                         to="/admin/orders"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gold/10 text-gold border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'text-gray-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <ShoppingBag size={18} />
                         <span>Orders</span>
                     </NavLink>
                     <NavLink
                         to="/admin/products"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gold/10 text-gold border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'text-gray-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Package size={18} />
                         <span>Inventory</span>
                     </NavLink>
                     <NavLink
                         to="/admin/messages"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gold/10 text-gold border border-gold/20 shadow-[0_0_15px_rgba(212,175,55,0.1)]' : 'text-gray-500 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Mail size={18} />
                         <span>Messages</span>
