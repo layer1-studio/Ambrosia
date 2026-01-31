@@ -44,13 +44,13 @@ const Checkout = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailRegex.test(formData.email)) {
-            alert("Please enter a valid email address.");
+            alert("Kindly provide a valid email address.");
             setIsLoading(false);
             return;
         }
 
         if (!formData.firstName || !formData.lastName || !formData.address || !formData.city || !formData.country) {
-            alert("Please fill in all required fields.");
+            alert("Please complete all required fields for delivery.");
             setIsLoading(false);
             return;
         }
@@ -110,7 +110,7 @@ const Checkout = () => {
                     order_items_html: orderItemsHtml, // Injected HTML table rows
                     shipping_cost: shippingCost.toFixed(2),
                     total_cost: finalTotal.toFixed(2),
-                    message: `Thank you for choosing Ambrosia. We are preparing your divine essence.`
+                    message: `We are preparing your divine essence for dispatch.`
                 };
 
                 await emailjs.send(serviceID, templateID, templateParams, publicKey);
@@ -149,7 +149,7 @@ const Checkout = () => {
                     <div className="checkout-form">
                         {/* Shipping Info */}
                         <section className="checkout-section mb-12">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Shipping Information</h2>
+                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Delivery Details</h2>
                             <div className="grid grid-cols-2 gap-6 mb-6">
                                 <input
                                     type="text" name="firstName" placeholder="First Name"
@@ -243,7 +243,7 @@ const Checkout = () => {
                             {paymentMethod === 'card' ? (
                                 <div className="card-details space-y-6">
                                     <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 text-sm rounded">
-                                        Note: This is a secure checkout demonstration. No real charge will be made yet.
+                                        Note: This is a secure demonstration. No charges will be applied.
                                     </div>
                                     <input type="text" placeholder="Card Number" className="form-input" />
                                     <div className="grid grid-cols-2 gap-6">
@@ -253,7 +253,7 @@ const Checkout = () => {
                                 </div>
                             ) : (
                                 <div className="paypal-notice p-8 bg-blue-600/5 border border-blue-600/20 rounded text-center">
-                                    <p className="text-gray-300">Proceed to complete your purchase securely with PayPal.</p>
+                                    <p className="text-gray-300">Complete your acquisition securely with PayPal.</p>
                                 </div>
                             )}
                         </section>
@@ -263,7 +263,7 @@ const Checkout = () => {
                             disabled={isLoading}
                             className={`btn w-full py-5 text-lg uppercase tracking-widest mt-8 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            {isLoading ? 'Processing...' : 'Place Order'}
+                            {isLoading ? 'Processing...' : 'Confirm Order'}
                         </button>
                     </div>
 

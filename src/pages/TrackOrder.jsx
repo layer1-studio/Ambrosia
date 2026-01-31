@@ -28,7 +28,7 @@ const TrackOrder = () => {
                     setError("Order found, but email does not match records.");
                 }
             } else {
-                setError("Order not found. Please check your Order ID.");
+                setError("Record not found. Please verify your credentials.");
             }
         } catch (err) {
             console.error("Tracking Error:", err);
@@ -41,7 +41,7 @@ const TrackOrder = () => {
         <div className="track-order-page py-32 min-h-[60vh]">
             <div className="container max-w-2xl mx-auto">
                 <h1 className="text-4xl font-heading text-gold text-center mb-8">Track Your Order</h1>
-                <p className="text-gray-400 text-center mb-12">Enter your Order ID and Email Address to see current status.</p>
+                <p className="text-gray-400 text-center mb-12">Enter your Order ID and Email Address to retrieve status.</p>
 
                 <form onSubmit={handleTrack} className="bg-[#111] p-8 rounded-xl border border-white/10 mb-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -88,8 +88,8 @@ const TrackOrder = () => {
                             </div>
                             <div className="text-right">
                                 <span className={`inline-block px-4 py-2 rounded border text-xs uppercase font-bold tracking-widest ${order.status === 'Delivered' ? 'text-green-500 border-green-500/30 bg-green-500/10' :
-                                        order.status === 'Shipped' ? 'text-purple-500 border-purple-500/30 bg-purple-500/10' :
-                                            'text-yellow-500 border-yellow-500/30 bg-yellow-500/10'
+                                    order.status === 'Shipped' ? 'text-purple-500 border-purple-500/30 bg-purple-500/10' :
+                                        'text-yellow-500 border-yellow-500/30 bg-yellow-500/10'
                                     }`}>
                                     {order.status}
                                 </span>
@@ -98,13 +98,13 @@ const TrackOrder = () => {
 
                         <div className="grid grid-cols-2 gap-8 border-t border-white/10 pt-8">
                             <div>
-                                <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Shipping To</h3>
+                                <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Destination</h3>
                                 <p className="text-white">{order.firstName} {order.lastName}</p>
                                 <p className="text-gray-400 text-sm">{order.address}</p>
                                 <p className="text-gray-400 text-sm">{order.city}, {order.country}</p>
                             </div>
                             <div>
-                                <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Items ({order.items})</h3>
+                                <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Selection ({order.items})</h3>
                                 <ul className="space-y-2">
                                     {order.cart?.map((item, idx) => (
                                         <li key={idx} className="text-sm text-gray-300 flex justify-between">

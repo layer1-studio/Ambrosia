@@ -25,7 +25,7 @@ const PrivacyPolicy = () => {
                 <section className="mb-12">
                     <h2 className="legal-section-title text-gold">1. Introduction</h2>
                     <p className="legal-section-body">
-                        Ambrosia is committed to transparency and the protection of your digital presence. This Privacy Policy explains how we collect, use, store, and protect your information when you use our platform. We provide an overview of the data we gather and how we use it to improve your experience. We are committed to being accountable and updating this policy as needed.
+                        Ambrosia is committed to the absolute sanctity of your digital presence. This Privacy Policy details our protocols for collecting, creating, and preserving your information. We operate with minimal data retention to ensure a seamless yet private experience.
                     </p>
                 </section>
 
@@ -66,8 +66,8 @@ const PrivacyPolicy = () => {
                 <Divider />
 
                 <footer className="pt-8 text-center">
-                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em] mb-2">Registry Safeguard: Active</p>
-                    <p className="text-[9px] text-gray-700 italic uppercase tracking-[0.2em]">Last Revision: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em] mb-2">Privacy Protocol: Secured</p>
+                    <p className="text-[9px] text-gray-700 italic uppercase tracking-[0.2em]">Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
                 </footer>
             </div>
         </div>

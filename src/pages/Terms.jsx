@@ -25,7 +25,7 @@ const Terms = () => {
                 <section className="mb-12">
                     <h2 className="legal-section-title text-gold">1. Introduction</h2>
                     <p className="legal-section-body">
-                        By accessing the Ambrosia digital environment, you acknowledge and agree to abide by these established protocols governing acquisition, interaction, and digital conduct. These terms form the foundational principles and legal framework for your use of our platform and curated offerings.
+                        By accessing the Ambrosia digital environment, you acknowledge and agree to abide by these established protocols governing acquisition, interaction, and digital conduct. These terms serve as the foundational covenant for your engagement with our curated offerings.
                     </p>
                 </section>
 
@@ -66,8 +66,8 @@ const Terms = () => {
                 <Divider />
 
                 <footer className="pt-8 text-center">
-                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em] mb-2">Statutory Compliance: Active</p>
-                    <p className="text-[9px] text-gray-700 italic uppercase tracking-[0.2em]">Last Revision: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                    <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.2em] mb-2">Protocol Status: Active</p>
+                    <p className="text-[9px] text-gray-700 italic uppercase tracking-[0.2em]">Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
                 </footer>
             </div>
         </div>

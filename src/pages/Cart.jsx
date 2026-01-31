@@ -10,9 +10,9 @@ const Cart = () => {
         return (
             <div className="cart-page py-32">
                 <div className="container text-center">
-                    <h1 className="text-4xl font-heading text-gold mb-8">Your Cart is Empty</h1>
-                    <p className="text-gray-400 mb-12">Looks like you haven't added the essence of Ceylon to your collection yet.</p>
-                    <Link to="/shop" className="btn">Browse Shop</Link>
+                    <h1 className="text-4xl font-heading text-gold mb-8">Your Collection is Empty</h1>
+                    <p className="text-gray-400 mb-12">The essence of Ceylon awaits. Begin your curation.</p>
+                    <Link to="/shop" className="btn">View Collection</Link>
                 </div>
             </div>
         );

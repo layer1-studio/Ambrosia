@@ -11,13 +11,12 @@ const OrderConfirmation = () => {
                 <div className="success-icon text-gold text-7xl mb-8">✓</div>
                 <h1 className="text-6xl font-heading text-gold mb-6">Order Confirmed</h1>
                 <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed mb-12">
-                    Thank you for choosing Ambrosia. We've received your order and are currently preparing
-                    your selection of prime cinnamon for its journey to your doorstep.
+                    Thank you for choosing Ambrosia. We have received your request and are meticulously preparing
+                    your selection for its journey to you.
                 </p>
                 <div className="order-details-summary bg-[#111] p-10 rounded max-w-lg mx-auto border border-white/5 mb-16">
                     <p className="text-gray-500 text-sm mb-4">Order #{orderId}</p>
-                    <p className="text-white">A confirmation email has been sent. You can track your 100% Sri Lankan
-                        delivery once the quills are dispatched.</p>
+                    <p className="text-white">A confirmation communiqué has been dispatched. You may track your delivery once the parcel is en route.</p>
                 </div>
                 <div className="flex justify-center gap-8">
                     <Link to="/shop" className="btn btn-outline">Continue Shopping</Link>
