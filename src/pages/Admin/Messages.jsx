@@ -186,8 +186,8 @@ const Messages = () => {
                                     <textarea
                                         value={replyText}
                                         onChange={(e) => setReplyText(e.target.value)}
-                                        placeholder="Compose response..."
-                                        className="w-full bg-[#050505] border border-white/10 rounded-xl p-6 text-sm text-white focus:border-gold/50 outline-none h-32 resize-none placeholder:text-gray-700 font-light"
+                                        placeholder="Compose your reply..."
+                                        className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-6 text-sm text-white focus:bg-white/[0.05] focus:border-gold/50 focus:shadow-[0_0_30px_rgba(212,175,55,0.1)] outline-none min-h-[160px] resize-none transition-all placeholder:text-gray-600 font-light leading-relaxed"
                                     ></textarea>
                                     <div className="flex justify-end">
                                         <button

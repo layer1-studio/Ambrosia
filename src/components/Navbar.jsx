@@ -34,7 +34,7 @@ const Navbar = () => {
                     <NavLink to="/shop" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Digital Boutique</NavLink>
                     <NavLink to="/about-cinnamon" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
                     <NavLink to="/recipes" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Gastronomy & Rites</NavLink>
-                    <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Inquiries</NavLink>
+                    <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Liaison</NavLink>
                 </div>
 
                 <div className="nav-actions flex items-center gap-6">
@@ -67,8 +67,8 @@ const Navbar = () => {
                         <NavLink to="/shop" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Digital Boutique</NavLink>
                         <NavLink to="/about-cinnamon" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
                         <NavLink to="/recipes" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Gastronomy & Rites</NavLink>
-                        <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Inquiries</NavLink>
-                        <Link to="/shop" onClick={toggleMenu} className="btn-primary mt-8 inline-block text-center">Enter Boutique</Link>
+                        <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Liaison</NavLink>
+                        <Link to="/shop" onClick={toggleMenu} className="btn-primary mt-8 inline-block text-center">Inquire Now</Link>
                     </div>
                 </div>
             </div>

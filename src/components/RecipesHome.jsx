@@ -101,7 +101,7 @@ const RecipesHome = () => {
                                 <span className="recipe-home-time">{recipe.time}</span>
                                 <h3 className="recipe-home-title group-hover:text-gold transition-colors">{recipe.title}</h3>
                                 <p className="recipe-home-desc">{recipe.desc}</p>
-                                <span className="recipe-home-link bg-transparent border-0 cursor-pointer p-0 inline-block text-gold/80 italic text-xs mt-2 group-hover:text-gold group-hover:translate-x-1 transition-all">Read More →</span>
+                                <Link to="/recipes" className="recipe-home-link bg-transparent border-0 cursor-pointer p-0 inline-block text-gold/80 italic text-xs mt-2 group-hover:text-gold group-hover:translate-x-1 transition-all">Read More →</Link>
                             </div>
                         </Link>
                     ))}
