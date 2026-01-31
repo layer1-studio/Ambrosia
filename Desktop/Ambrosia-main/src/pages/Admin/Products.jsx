@@ -209,7 +209,7 @@ const Products = () => {
                                 return (
                                     <tr key={item.id} className={`group transition-all duration-500 ${isCritical ? 'bg-red-900/[0.05]' : ''}`}>
                                         <td className="pl-12">
-                                            <div className="w-8 h-8 bg-white/5 rounded-lg overflow-hidden border border-white/10 flex-shrink-0 group-hover:scale-110 transition-transform duration-700 shadow-xl relative">
+                                            <div className="w-5 h-5 bg-white/5 rounded-md overflow-hidden border border-white/10 flex-shrink-0 group-hover:scale-110 transition-transform duration-700 shadow-xl relative">
                                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
                                                 {item.imageUrl || IMAGE_MAP[item.imageType] ? (
                                                     <img
