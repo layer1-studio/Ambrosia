@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone, Menu, Command } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone, Menu, Command, BarChart2, Users, Truck, Settings } from 'lucide-react';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -74,8 +74,8 @@ const AdminLayout = () => {
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-6 py-4 space-y-2 overflow-y-auto custom-scrollbar">
-                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-6 font-bold flex items-center gap-2">
+                <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto custom-scrollbar flex flex-col">
+                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-4 font-bold flex items-center gap-2">
                         <span className="w-1 h-1 rounded-full bg-gold/50"></span>
                         Main Menu
                     </p>
@@ -87,6 +87,13 @@ const AdminLayout = () => {
                         <LayoutDashboard size={18} />
                         <span>Dashboard</span>
                     </NavLink>
+
+                    {/* Placeholder - Statistics */}
+                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
+                        <BarChart2 size={18} />
+                        <span>Statistics</span>
+                    </div>
+
                     <NavLink
                         to="/admin/orders"
                         className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
@@ -94,6 +101,7 @@ const AdminLayout = () => {
                         <ShoppingBag size={18} />
                         <span>Orders</span>
                     </NavLink>
+
                     <NavLink
                         to="/admin/products"
                         className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
@@ -101,6 +109,13 @@ const AdminLayout = () => {
                         <Package size={18} />
                         <span>Inventory</span>
                     </NavLink>
+
+                    {/* Placeholder - Customers */}
+                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
+                        <Users size={18} />
+                        <span>Customers</span>
+                    </div>
+
                     <NavLink
                         to="/admin/messages"
                         className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
@@ -108,6 +123,18 @@ const AdminLayout = () => {
                         <Mail size={18} />
                         <span>Messages</span>
                     </NavLink>
+
+                    {/* Placeholder - Delivery */}
+                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all">
+                        <Truck size={18} />
+                        <span>Delivery</span>
+                    </div>
+
+                    {/* Placeholder - Settings */}
+                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:text-gray-400 cursor-not-allowed border border-transparent hover:border-white/5 transition-all mt-auto">
+                        <Settings size={18} />
+                        <span>Settings</span>
+                    </div>
                 </nav>
 
                 <div className="p-8 border-t border-white/5">
