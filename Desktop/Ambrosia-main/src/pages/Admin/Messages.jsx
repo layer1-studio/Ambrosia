@@ -172,88 +172,73 @@ const Messages = () => {
                         <div className="flex-1 flex flex-col animate-slide-in-right h-full overflow-hidden">
                             <button
                                 onClick={() => setSelectedMessage(null)}
-                                className="lg:hidden absolute top-6 left-6 z-20 p-3 bg-white/5 rounded-xl text-gray-400 hover:text-white border border-white/5 transition-all active:scale-95"
+                                className="lg:hidden absolute top-6 left-6 z-20 p-2 bg-white/5 rounded-full text-gray-400 hover:text-white border border-white/5 transition-all active:scale-95"
                             >
                                 <AlertCircle size={18} className="rotate-180" />
                             </button>
 
-                            {/* Signal Headers */}
-                            <div className="p-8 md:p-12 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start gap-8 bg-gold/[0.02] backdrop-blur-3xl shrink-0">
-                                <div className="flex items-start gap-6 md:gap-8">
-                                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] bg-gradient-to-br from-gold/30 via-gold/10 to-transparent border border-gold/20 flex items-center justify-center text-white font-heading text-3xl md:text-4xl shadow-2xl transition-transform duration-700 hover:rotate-6 shrink-0">
-                                        {selectedMessage.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <h2 className="text-2xl md:text-4xl font-heading text-white mb-3 md:mb-4 tracking-tight truncate">{selectedMessage.subject}</h2>
-                                        <div className="flex flex-col gap-2 md:gap-3">
-                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                                                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-gold/40">Point of Origin:</span>
-                                                <span className="text-xs text-white font-bold tracking-tight">{selectedMessage.name}</span>
-                                                <span className="text-[10px] font-mono text-gold/60 border-l border-white/10 pl-4 truncate">{selectedMessage.email}</span>
-                                            </div>
-                                            <div className="flex items-center gap-3 text-[9px] text-gray-600 uppercase tracking-[0.3em] font-black italic">
-                                                <Clock size={12} className="text-gold/40" />
-                                                Time-Stamped: {selectedMessage.createdAt.toLocaleString()}
+                            {/* Clean Header */}
+                            <div className="p-8 border-b border-white/5 bg-white/[0.01]">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center text-xl font-heading text-gold border border-gold/10">
+                                            {selectedMessage.name.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <h2 className="text-xl font-heading text-white tracking-tight">{selectedMessage.subject}</h2>
+                                            <div className="flex items-center gap-3 text-[10px] text-gray-500 font-mono mt-1">
+                                                <span className="text-white font-bold">{selectedMessage.name}</span>
+                                                <span>•</span>
+                                                <span className="opacity-70">{selectedMessage.email}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="text-right flex flex-col items-end gap-2">
+                                        <button
+                                            onClick={(e) => handleDelete(selectedMessage.id, e)}
+                                            className="p-2 text-gray-600 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                        <span className="text-[9px] text-gray-600 font-mono">{selectedMessage.createdAt.toLocaleString()}</span>
+                                    </div>
                                 </div>
-                                <button
-                                    onClick={(e) => handleDelete(selectedMessage.id, e)}
-                                    className="btn-ghost !p-4 md:!p-5 !rounded-2xl hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/30 shadow-xl group self-end sm:self-auto"
-                                >
-                                    <Trash2 size={20} className="group-hover:scale-110 transition-transform" />
-                                </button>
                             </div>
 
-                            {/* Decrypted Payload */}
-                            <div className="flex-1 p-8 md:p-12 overflow-y-auto custom-scrollbar">
-                                <div className="max-w-4xl relative">
-                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-gold/20 via-gold/5 to-transparent rounded-full"></div>
-                                    <p className="text-white/80 leading-loose whitespace-pre-wrap text-base md:text-xl font-medium pl-8 md:pl-12 py-4 italic font-serif">
+                            {/* Clean content */}
+                            <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
+                                <div className="max-w-3xl">
+                                    <p className="text-gray-300 leading-relaxed text-sm whitespace-pre-wrap font-light">
                                         {selectedMessage.message}
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Encrypted Relay Protocol */}
-                            <div className="p-12 bg-black/60 border-t border-white/5 relative overflow-hidden group/reply">
-                                <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover/reply:bg-gold/10 transition-all duration-1000"></div>
-                                <div className="max-w-5xl mx-auto space-y-8">
-                                    <div className="flex items-center gap-4">
-                                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent"></div>
-                                        <h3 className="text-[9px] font-black uppercase tracking-[0.5em] text-gold/40">Secured Response Gateway</h3>
-                                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent"></div>
+                            {/* Simplified Reply Area */}
+                            <div className="p-6 border-t border-white/5 bg-white/[0.01]">
+                                <div className="flex flex-col gap-4">
+                                    <textarea
+                                        value={replyText}
+                                        onChange={(e) => setReplyText(e.target.value)}
+                                        placeholder="Write your reply..."
+                                        className="w-full bg-black/40 border border-white/10 rounded-2xl p-6 text-sm text-white focus:border-gold/30 outline-none min-h-[120px] resize-none transition-all placeholder:text-gray-700 font-light"
+                                    />
+                                    <div className="flex justify-end">
+                                        <button
+                                            onClick={handleReply}
+                                            disabled={!replyText.trim() || sending}
+                                            className="bg-gold text-black px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-gold/20"
+                                        >
+                                            {sending ? 'Sending...' : <><Send size={14} /> Send Reply</>}
+                                        </button>
                                     </div>
-                                    <div className="relative">
-                                        <textarea
-                                            value={replyText}
-                                            onChange={(e) => setReplyText(e.target.value)}
-                                            placeholder="Synthesize encrypted relay..."
-                                            className="w-full bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-10 text-base text-white focus:border-gold/50 outline-none min-h-[180px] resize-none transition-all placeholder:text-gray-800 font-medium custom-scrollbar shadow-inner"
-                                        />
-                                        <div className="absolute right-8 bottom-8">
-                                            <button
-                                                onClick={handleReply}
-                                                disabled={!replyText.trim() || sending}
-                                                className="btn-gold !px-12 !py-5 !text-[11px] flex items-center gap-4 disabled:opacity-20 disabled:grayscale transition-all hover:scale-105 active:scale-95"
-                                            >
-                                                {sending ? 'Encrypting...' : <><Send size={16} strokeWidth={3} /> Commit Transmission</>}
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <p className="text-[9px] text-gray-700 italic text-center uppercase tracking-[0.5em] font-black opacity-40">End-to-End Encrypted Relay Protocol Active</p>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center p-20 text-center">
-                            <div className="w-48 h-48 rounded-[3rem] border border-white/5 flex items-center justify-center mb-10 relative group">
-                                <div className="absolute inset-0 rounded-[3rem] border border-gold/10 animate-ping opacity-20 group-hover:opacity-40 transition-opacity"></div>
-                                <Mail size={64} className="text-gold/10 group-hover:text-gold/20 transition-colors" strokeWidth={1} />
-                            </div>
-                            <h3 className="text-[11px] font-black uppercase tracking-[0.8em] text-gray-700 mb-4 ml-2">Waiting for Signal</h3>
-                            <p className="text-[10px] text-gray-800 italic uppercase tracking-widest font-black opacity-40">Select intelligence packet to decrypt</p>
+                        <div className="flex-1 flex flex-col items-center justify-center p-20 text-center opacity-40">
+                            <Mail size={48} className="text-gray-600 mb-4" strokeWidth={1} />
+                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Select a message</p>
                         </div>
                     )}
                 </div>
