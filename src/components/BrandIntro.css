@@ -1,0 +1,72 @@
+.brand-intro-section {
+    padding: 10rem 0;
+    background-color: #0d0d0d;
+}
+
+.intro-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+.gold-label {
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.intro-p {
+    color: #999;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.links-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.quick-link-item {
+    display: flex;
+    gap: 1.5rem;
+    background: #151515;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.quick-link-item:hover {
+    border-color: var(--color-primary);
+    transform: translateX(10px);
+}
+
+.link-icon {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.link-content h4 {
+    color: #fff;
+    margin-bottom: 0.3rem;
+    font-size: 1.1rem;
+}
+
+.link-content p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 992px) {
+    .intro-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Data Validation Helpers
+    function isValidOrder() {
+       return request.resource.data.keys().hasAll(['total', 'items', 'status', 'user']) &&
+              request.resource.data.total is number &&
+              request.resource.data.items is number &&
+              request.resource.data.status == 'New' &&
+              request.resource.data.user is string;
+    }
+
+    function isValidMessage() {
+       return request.resource.data.keys().hasAll(['message', 'email']) &&
+              request.resource.data.message is string &&
+              request.resource.data.message.size() < 2000 &&
+              request.resource.data.email is string;
+    }
+
+    // Products: Public read, Admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders: Public create (Guest Checkout) but with Validation. Admin read/write.
+    match /orders/{orderId} {
+      // Allow creation if valid schema, regardless of auth (Guest Checkout)
+      allow create: if isValidOrder();
+      
+      // Reading: Admins or the user who created it (if using Auth UID, for now we match email in client)
+      // Note: For strict security, guest users can't "list" orders, only create them.
+      allow read: if isAdmin(); 
+      
+      allow update: if isAdmin(); 
+    }
+
+    // Users: Owner can read/write own profile, Admin can read all
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    // Messages (Contact Form): Public create with Validation, Admin read/write
+    match /messages/{messageId} {
+      allow create: if isValidMessage();
+      allow read, write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.contact-hero {
+    padding: 12rem 0 6rem;
+    background: #080808;
+}
+
+.contact-form {
+    background: #111;
+    padding: 3rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.form-input {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.5rem;
+    color: #fff;
+    border-radius: 4px;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: #222;
+}
+
+select.form-input {
+    appearance: none;
+}
+
+@media (max-width: 992px) {
+    .contact-content .grid {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+}
