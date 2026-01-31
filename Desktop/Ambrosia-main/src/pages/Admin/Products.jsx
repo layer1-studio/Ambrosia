@@ -256,7 +256,7 @@ const Products = () => {
 
             {/* Asset Modal - Redesigned */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-6 animate-fade-in">
+                <div className="fixed inset-0 z-[100] flex items-start justify-center pt-24 bg-black/80 backdrop-blur-md p-6 animate-fade-in overflow-y-auto">
                     <div className="admin-card w-full max-w-3xl overflow-hidden animate-scale-in border-gold/30 shadow-[0_0_100px_rgba(212,175,55,0.1)] relative !p-0">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
                         <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gold/5">

@@ -9,6 +9,7 @@ import AboutUs from './pages/AboutUs';
 import AboutCinnamon from './pages/AboutCinnamon';
 import Store from './pages/Store';
 import Recipes from './pages/Recipes';
+import RecipeDetail from './pages/RecipeDetail';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Cart from './pages/Cart';
@@ -59,6 +60,7 @@ function App() {
                                 <Route path="about-cinnamon" element={<AboutCinnamon />} />
                                 <Route path="shop" element={<Store />} />
                                 <Route path="recipes" element={<Recipes />} />
+                                <Route path="recipes/:id" element={<RecipeDetail />} />
                                 <Route path="contact" element={<Contact />} />
                                 <Route path="cart" element={<Cart />} />
                                 <Route path="checkout" element={<Checkout />} />
