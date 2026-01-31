@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone, Menu } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Package, LogOut, Mail, Search, Bell, Megaphone, Menu, Command } from 'lucide-react';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -62,45 +62,48 @@ const AdminLayout = () => {
                 lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
-                <div className="h-28 hidden lg:flex items-center px-8">
+                <div className="h-32 hidden lg:flex items-center px-8">
                     <Link to="/" className="flex items-center gap-4 group">
-                        <div className="text-3xl text-gold animate-pulse-slow">
-                            <span className="font-heading italic">A</span>
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8a6e1f] flex items-center justify-center text-black shadow-lg shadow-gold/20 group-hover:scale-105 transition-transform duration-500">
+                            <Command size={24} strokeWidth={2.5} />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-heading text-transparent bg-clip-text bg-gradient-to-r from-[#d4af37] via-[#f3e5ab] to-[#d4af37] tracking-widest uppercase">Ambrosia</h1>
-                            <p className="text-[8px] text-gray-500 uppercase tracking-[0.4em] font-bold mt-1">Admin Console</p>
+                            <h1 className="text-2xl font-heading text-white tracking-[0.15em] uppercase">Ambrosia</h1>
+                            <p className="text-[9px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1.5 ml-0.5">Admin Console</p>
                         </div>
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-6 py-6 space-y-2 overflow-y-auto custom-scrollbar">
-                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-6 font-bold">Main Menu</p>
+                <nav className="flex-1 px-6 py-4 space-y-2 overflow-y-auto custom-scrollbar">
+                    <p className="px-4 text-[9px] uppercase tracking-[0.3em] text-gray-600 mb-6 font-bold flex items-center gap-2">
+                        <span className="w-1 h-1 rounded-full bg-gold/50"></span>
+                        Main Menu
+                    </p>
                     <NavLink
                         to="/admin"
                         end
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <LayoutDashboard size={18} />
                         <span>Dashboard</span>
                     </NavLink>
                     <NavLink
                         to="/admin/orders"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <ShoppingBag size={18} />
                         <span>Orders</span>
                     </NavLink>
                     <NavLink
                         to="/admin/products"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Package size={18} />
                         <span>Inventory</span>
                     </NavLink>
                     <NavLink
                         to="/admin/messages"
-                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#d4af37] to-[#b49020] text-black shadow-[0_0_25px_rgba(212,175,55,0.3)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                        className={({ isActive }) => `flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 ${isActive ? 'bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
                     >
                         <Mail size={18} />
                         <span>Messages</span>
@@ -108,12 +111,12 @@ const AdminLayout = () => {
                 </nav>
 
                 <div className="p-8 border-t border-white/5">
-                    <div className="flex items-center gap-4 mb-8 p-4 bg-white/[0.03] rounded-2xl border border-white/5 hover:border-gold/20 transition-colors cursor-default">
-                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold font-bold text-sm border border-gold/20">
+                    <div className="flex items-center gap-4 mb-8 p-4 bg-white/[0.03] rounded-2xl border border-white/5 hover:border-gold/20 transition-colors cursor-default group">
+                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold font-bold text-sm border border-gold/20 group-hover:bg-gold group-hover:text-black transition-colors">
                             {currentUser?.email?.charAt(0).toUpperCase()}
                         </div>
                         <div className="overflow-hidden">
-                            <p className="text-xs text-white font-bold truncate uppercase tracking-wider">Administrator</p>
+                            <p className="text-xs text-white font-bold truncate uppercase tracking-wider group-hover:text-gold transition-colors">Administrator</p>
                             <p className="text-[10px] text-gray-500 truncate">{currentUser?.email}</p>
                         </div>
                     </div>
