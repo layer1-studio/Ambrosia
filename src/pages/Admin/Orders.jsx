@@ -59,7 +59,7 @@ const Orders = () => {
         switch (status) {
             case 'Pending': return 'status-badge pending';
             case 'Processing': return 'status-badge processing';
-            case 'Shipped': return 'status-badge processing';
+            case 'Shipped': return 'status-badge shipped';
             case 'Delivered': return 'status-badge completed';
             case 'Cancelled': return 'status-badge cancelled';
             default: return 'status-badge';
@@ -102,7 +102,7 @@ const Orders = () => {
                                 placeholder="Search Orders..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="input-premium-dark w-full lg:w-72 pl-12"
+                                className="admin-input lg:w-72 pl-12"
                             />
                         </div>
                     </div>
@@ -254,7 +254,7 @@ const Orders = () => {
                                         value={trackingInput}
                                         onChange={(e) => setTrackingInput(e.target.value)}
                                         placeholder="Tracking Number..."
-                                        className="flex-1 text-[10px] bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-gold/50 outline-none"
+                                        className="admin-input flex-1 !py-3 font-mono text-xs"
                                     />
                                     <button onClick={handleSaveTracking} className="px-4 py-2 bg-white/5 rounded-xl text-[10px] font-bold uppercase hover:bg-gold hover:text-black transition-all">
                                         Save

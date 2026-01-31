@@ -136,7 +136,7 @@ const Dashboard = () => {
                                         tickFormatter={v => `$${v}`}
                                     />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '12px', padding: '16px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}
+                                        contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.9)', backdropFilter: 'blur(10px)', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '12px', padding: '16px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}
                                         itemStyle={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '12px' }}
                                         labelStyle={{ color: '#9ca3af', fontSize: '10px', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}
                                         formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}

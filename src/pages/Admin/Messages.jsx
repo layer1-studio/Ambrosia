@@ -109,7 +109,7 @@ const Messages = () => {
                             placeholder="Search messages..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="input-premium-dark w-full md:w-72 pl-12"
+                            className="admin-input w-full md:w-72 pl-12"
                         />
                     </div>
                 </div>

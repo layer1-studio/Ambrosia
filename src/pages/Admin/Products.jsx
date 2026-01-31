@@ -156,7 +156,7 @@ const Products = () => {
                                 placeholder="Search products..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="input-premium-dark w-full lg:w-72 pl-12"
+                                className="admin-input lg:w-72 pl-12"
                             />
                         </div>
                     </div>
@@ -273,12 +273,12 @@ const Products = () => {
                         <form onSubmit={handleSave} className="p-8 md:p-12 grid grid-cols-2 gap-8 custom-scrollbar overflow-y-auto flex-1">
                             <div className="col-span-1">
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">SKU</label>
-                                <input type="text" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
+                                <input type="text" required className="admin-input font-mono"
                                     value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} />
                             </div>
                             <div className="col-span-1">
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Category</label>
-                                <select className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all cursor-pointer font-bold uppercase tracking-widest"
+                                <select className="admin-input cursor-pointer font-bold uppercase tracking-widest"
                                     value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
                                     {CATEGORIES.map(cat => (
                                         <option key={cat} value={cat} className="bg-[#050505]">{cat}</option>
@@ -287,27 +287,27 @@ const Products = () => {
                             </div>
                             <div className="col-span-2">
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Product Name</label>
-                                <input type="text" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-sm transition-all font-heading tracking-tight"
+                                <input type="text" required className="admin-input font-heading tracking-tight text-sm"
                                     value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                             </div>
                             <div>
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Price ($)</label>
-                                <input type="number" step="0.01" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
+                                <input type="number" step="0.01" required className="admin-input font-mono"
                                     value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
                             </div>
                             <div>
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Cost ($)</label>
-                                <input type="number" step="0.01" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
+                                <input type="number" step="0.01" required className="admin-input font-mono"
                                     value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} />
                             </div>
                             <div>
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Stock Quantity</label>
-                                <input type="number" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
+                                <input type="number" required className="admin-input font-mono"
                                     value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })} />
                             </div>
                             <div>
                                 <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/40 mb-3 ml-1">Low Stock Alert at</label>
-                                <input type="number" required className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono"
+                                <input type="number" required className="admin-input font-mono"
                                     value={formData.reorderPoint} onChange={e => setFormData({ ...formData, reorderPoint: e.target.value })} />
                             </div>
                             <div className="col-span-2 bg-gold/[0.02] p-8 rounded-[2rem] border border-gold/10 relative overflow-hidden group/viz">
@@ -338,8 +338,8 @@ const Products = () => {
                                     <label className="block text-[9px] font-black uppercase tracking-[0.4em] text-gold/30 mb-4 ml-1">Image URL</label>
                                     <input
                                         type="url"
-                                        placeholder="https://cloud-storage.ambrosia.com/assets/..."
-                                        className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none text-xs transition-all font-mono shadow-inner"
+                                        placeholder="https://..."
+                                        className="admin-input font-mono text-xs"
                                         value={formData.imageUrl}
                                         onChange={e => setFormData({ ...formData, imageUrl: e.target.value, imageType: '' })}
                                     />
