@@ -29,6 +29,7 @@
 
 html {
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 body {
@@ -38,6 +39,11 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
 }
 
 h1,

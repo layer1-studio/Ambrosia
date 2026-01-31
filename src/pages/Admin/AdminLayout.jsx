@@ -58,7 +58,7 @@ const AdminLayout = () => {
             {/* Sidebar - Overlay on mobile, Fixed on desktop */}
             <aside className={`
                 w-72 bg-[#080808] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5
-                transition-transform duration-500 ease-out 
+                transition-transform duration-500 ease-out h-screen
                 lg:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
