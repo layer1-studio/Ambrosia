@@ -24,6 +24,7 @@ import Dashboard from './pages/Admin/Dashboard';
 import Orders from './pages/Admin/Orders';
 import Products from './pages/Admin/Products';
 import Messages from './pages/Admin/Messages';
+import SidebarDemo from './pages/Admin/SidebarDemo';
 import './App.css';
 
 const PublicLayout = () => (
@@ -45,6 +46,7 @@ function App() {
                     <div className="app">
                         <Routes>
                             {/* Admin Routes - No Public Navbar/Footer */}
+                            <Route path="/admin/demo" element={<SidebarDemo />} />
                             <Route path="/admin/login" element={<AdminLogin />} />
                             <Route path="/admin" element={<AdminLayout />}>
                                 <Route index element={<Dashboard />} />
