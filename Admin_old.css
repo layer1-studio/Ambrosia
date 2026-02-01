@@ -116,34 +116,30 @@
 }
 
 .admin-input::placeholder {
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.3);
     text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
 }
 
 /* Admin table */
 .admin-table-container {
     border: 1px solid var(--color-border);
     border-radius: 1.25rem;
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: hidden;
     background: rgba(5, 5, 5, 0.5);
     backdrop-filter: blur(10px);
 }
 
 .admin-table {
     width: 100%;
-    min-width: 700px;
     border-collapse: collapse;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
 }
 
 .admin-table th {
     text-align: left;
-    padding: 1rem 1.25rem;
-    white-space: nowrap;
+    padding: 1.75rem 2rem;
     font-family: var(--font-heading);
     font-weight: 500;
     text-transform: uppercase;
@@ -155,9 +151,9 @@
 }
 
 .admin-table td {
-    padding: 1rem 1.25rem;
-    vertical-align: middle;
+    padding: 1.75rem 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    vertical-align: middle;
     color: #e5e5e5;
     transition: color 0.3s ease;
 }
@@ -174,24 +170,6 @@
 
 .admin-table tbody tr:hover td {
     color: #fff;
-}
-
-/* Row action buttons */
-.admin-table .action-btn {
-    padding: 0.5rem;
-    border-radius: 0.75rem;
-    color: var(--color-text-muted);
-    transition: all 0.3s ease;
-}
-
-.admin-table .action-btn:hover {
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--color-gold);
-}
-
-.admin-table .action-btn.delete:hover {
-    background: rgba(248, 113, 113, 0.1);
-    color: #f87171;
 }
 
 .admin-table tbody tr:last-child td {
@@ -261,8 +239,8 @@
 .btn-gold:hover {
     background: var(--color-gold);
     color: #000;
-    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
 }
 
 .btn-ghost {

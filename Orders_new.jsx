@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
-import { Search, Package, CheckCircle, Clock, Truck, Mail, Trash2 } from 'lucide-react';
+import { Search, Package, CheckCircle, Clock } from 'lucide-react';
 import './Admin.css';
 
 const Orders = () => {
@@ -12,7 +12,6 @@ const Orders = () => {
     const [selectedOrderId, setSelectedOrderId] = useState(null);
     const selectedOrder = orders.find(o => o.id === selectedOrderId) || null;
     const [trackingInput, setTrackingInput] = useState('');
-    const [deleteConfirm, setDeleteConfirm] = useState({ show: false, id: null });
 
     useEffect(() => {
         const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
@@ -23,7 +22,6 @@ const Orders = () => {
                     ...data,
                     date: data.created_at?.toDate().toLocaleDateString() || new Date().toLocaleDateString(),
                     fulfillmentStatus: data.status || 'Pending',
-                    paymentStatus: data.paymentStatus || 'Paid',
                     trackingNumber: data.trackingNumber || ''
                 };
             });
@@ -57,19 +55,6 @@ const Orders = () => {
         }
     };
 
-    const handleDeleteOrder = (orderId, e) => {
-        if (e) e.stopPropagation();
-        setDeleteConfirm({ show: true, id: orderId });
-    };
-
-    const confirmDelete = async () => {
-        if (deleteConfirm.id) {
-            // await deleteDoc(doc(db, "orders", deleteConfirm.id)); // If deleting is actually desired
-            alert("Order delete action simulated.");
-            setDeleteConfirm({ show: false, id: null });
-        }
-    };
-
     // New Minimal Status Component
     const StatusIndicator = ({ status }) => {
         const getStatusColor = (s) => {
@@ -92,18 +77,9 @@ const Orders = () => {
 
     const filteredOrders = orders.filter(o => {
         const matchesFilter = filter === 'All' || o.fulfillmentStatus === filter;
-        if (!matchesFilter) return false;
-        if (!searchTerm.trim()) return true;
-        const term = searchTerm.toLowerCase().trim();
-        const searchable = [
-            o.id || '',
-            (o.firstName || '') + ' ' + (o.lastName || ''),
-            o.firstName || '',
-            o.lastName || '',
-            o.user || o.email || '',
-            o.phone || ''
-        ].join(' ').toLowerCase();
-        return searchable.includes(term);
+        const matchesSearch = o.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (o.user || '').toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesFilter && matchesSearch;
     });
 
     return (
@@ -115,28 +91,31 @@ const Orders = () => {
                     <p className="text-xs uppercase tracking-[0.4em] text-gray-400 font-bold">Transaction History</p>
                 </div>
 
-                <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex gap-6 items-center">
                     <div className="relative group">
                         <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={16} />
                         <input
                             type="text"
-                            placeholder="Search by order #, name, or phone..."
+                            placeholder="SEARCH ID..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg py-2.5 pl-9 pr-4 w-72 text-sm text-white focus:border-gold focus:outline-none transition-all placeholder:text-gray-500"
+                            className="bg-transparent border-b border-white/10 py-2 pl-6 pr-4 w-64 text-sm text-white focus:border-gold outline-none transition-all placeholder:text-gray-700 font-mono"
                         />
                     </div>
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-gold focus:outline-none cursor-pointer min-w-[160px]"
-                    >
-                        <option value="All" className="bg-[#0a0a0a]">All Status</option>
-                        {['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
-                            <option key={status} value={status} className="bg-[#0a0a0a]">{status}</option>
-                        ))}
-                    </select>
                 </div>
+            </div>
+
+            {/* Filter Tabs - Minimal */}
+            <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide border-b border-white/5">
+                {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
+                    <button
+                        key={status}
+                        onClick={() => setFilter(status)}
+                        className={`text-[10px] uppercase tracking-[0.2em] font-bold pb-4 border-b-2 transition-all whitespace-nowrap ${filter === status ? 'border-gold text-white' : 'border-transparent text-gray-600 hover:text-gray-400'}`}
+                    >
+                        {status}
+                    </button>
+                ))}
             </div>
 
             <div className="flex gap-12 items-start relative">
@@ -148,16 +127,15 @@ const Orders = () => {
                                 <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Ref ID</th>
                                 <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Client</th>
                                 <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Date</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-right">Payment</th>
                                 <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-right">Amount</th>
                                 <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={6} className="py-24 text-center text-gold/30 text-[10px] uppercase tracking-[0.5em] animate-pulse">Syncing...</td></tr>
+                                <tr><td colSpan="5" className="py-24 text-center text-gold/30 text-[10px] uppercase tracking-[0.5em] animate-pulse">Syncing...</td></tr>
                             ) : filteredOrders.length === 0 ? (
-                                <tr><td colSpan={6} className="py-24 text-center text-gray-700 text-[10px] uppercase tracking-[0.5em]">No Records</td></tr>
+                                <tr><td colSpan="5" className="py-24 text-center text-gray-700 text-[10px] uppercase tracking-[0.5em]">No Records</td></tr>
                             ) : (
                                 filteredOrders.map(order => (
                                     <tr
@@ -173,11 +151,6 @@ const Orders = () => {
                                             <p className="text-[10px] text-gray-600 uppercase tracking-wider">{order.user}</p>
                                         </td>
                                         <td className="py-6 px-4 text-xs text-gray-500 font-mono">{order.date}</td>
-                                        <td className="py-6 px-4 text-[10px] text-right">
-                                            <span className={`px-2 py-1 rounded-full ${order.paymentStatus === 'Paid' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                                                {order.paymentStatus}
-                                            </span>
-                                        </td>
                                         <td className="py-6 px-4 text-sm font-bold text-white text-right">${Number(order.total).toFixed(2)}</td>
                                         <td className="py-6 px-4 flex justify-center">
                                             <StatusIndicator status={order.fulfillmentStatus} />
@@ -208,13 +181,8 @@ const Orders = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-xl text-white font-heading">{selectedOrder.firstName} {selectedOrder.lastName}</h3>
-                                    <div className="flex items-center gap-3 mt-1">
-                                        <Mail size={12} className="text-gray-600" />
-                                        <p className="text-xs text-gray-500 font-mono">{selectedOrder.email}</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <p className="text-xs text-gray-500 font-mono">{selectedOrder.phone}</p>
-                                    </div>
+                                    <p className="text-xs text-gray-500 font-mono mt-1">{selectedOrder.email}</p>
+                                    <p className="text-xs text-gray-500 font-mono">{selectedOrder.phone}</p>
                                 </div>
                             </div>
 
@@ -242,64 +210,46 @@ const Orders = () => {
                             {/* Logistics */}
                             <div className="space-y-4">
                                 <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold border-b border-white/5 pb-2">Logistics</h4>
-                                <Truck size={12} className="text-gold mt-1" />
                                 <p className="text-sm text-gray-300 font-light leading-relaxed">
                                     {selectedOrder.address}<br />
                                     {selectedOrder.city}, {selectedOrder.country}
                                 </p>
                             </div>
-                        </div>
 
-                        {/* Actions */}
-                        <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5 space-y-6">
-                            <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold">Update Status</h4>
-                            <div className="grid grid-cols-2 gap-3">
-                                {['Pending', 'Processing', 'Shipped', 'Delivered'].map(status => (
+                            {/* Actions */}
+                            <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5 space-y-6">
+                                <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold">Update Status</h4>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {['Pending', 'Processing', 'Shipped', 'Delivered'].map(status => (
+                                        <button
+                                            key={status}
+                                            onClick={() => handleStatusChange(selectedOrder.id, status)}
+                                            className={`py-3 px-4 rounded-lg text-[10px] uppercase tracking-widest font-bold transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
+                                        >
+                                            {status}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={trackingInput}
+                                        onChange={(e) => setTrackingInput(e.target.value)}
+                                        placeholder="ADD TRACKING #"
+                                        className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-xs font-mono text-white focus:border-gold outline-none"
+                                    />
                                     <button
-                                        key={status}
-                                        onClick={() => handleStatusChange(selectedOrder.id, status)}
-                                        className={`py-3 px-4 rounded-lg text-[10px] uppercase tracking-widest font-bold transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
+                                        onClick={handleSaveTracking}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold uppercase text-gold hover:text-white transition-colors"
                                     >
-                                        {status}
+                                        Save
                                     </button>
-                                ))}
-                            </div>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    value={trackingInput}
-                                    onChange={(e) => setTrackingInput(e.target.value)}
-                                    placeholder="ADD TRACKING #"
-                                    className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-xs font-mono text-white focus:border-gold outline-none"
-                                />
-                                <button
-                                    onClick={handleSaveTracking}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold uppercase text-gold hover:text-white transition-colors"
-                                >
-                                    Save
-                                </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 )}
             </div>
-            {/* Custom Delete Confirmation Modal */}
-            {deleteConfirm.show && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 animate-fade-in">
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setDeleteConfirm({ show: false, id: null })}></div>
-                    <div className="relative w-full max-w-sm bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 shadow-2xl animate-scale-in text-center">
-                        <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
-                            <Trash2 size={32} />
-                        </div>
-                        <h3 className="text-xl font-heading text-white mb-2">Delete Record?</h3>
-                        <p className="text-sm text-gray-500 mb-8 leading-relaxed">This action is permanent for the ledger. Are you sure?</p>
-                        <div className="flex gap-4">
-                            <button onClick={() => setDeleteConfirm({ show: false, id: null })} className="flex-1 py-3 rounded-xl border border-white/10 text-[10px] uppercase tracking-widest font-bold hover:bg-white/5 transition-colors">Cancel</button>
-                            <button onClick={confirmDelete} className="flex-1 py-3 rounded-xl bg-red-600 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20">Confirm</button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

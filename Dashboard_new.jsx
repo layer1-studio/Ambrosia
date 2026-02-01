@@ -5,7 +5,7 @@ import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, DollarSign, ShoppingBag, Users, Activity } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, TrendingUp } from 'lucide-react';
 import './Admin.css';
 
 const Dashboard = () => {
@@ -31,7 +31,6 @@ const Dashboard = () => {
 
     const analytics = useMemo(() => {
         const totalRevenue = orders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
-        const totalOrders = orders.length;
         const uniqueCustomers = new Set(orders.map(o => o.user)).size;
         const averageOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
 
@@ -47,7 +46,7 @@ const Dashboard = () => {
             sales
         }));
 
-        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData };
+        return { totalRevenue, uniqueCustomers, averageOrderValue, salesData };
     }, [orders]);
 
     if (loading) return (
@@ -57,15 +56,12 @@ const Dashboard = () => {
         </div>
     );
 
-    const MetricCard = ({ label, value, subtext, trend, icon: Icon }) => (
+    const MetricCard = ({ label, value, subtext, trend }) => (
         <div className="group relative p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 overflow-hidden">
             <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity">
-                {Icon ? <Icon size={100} /> : <TrendingUp size={100} />}
+                <TrendingUp size={100} />
             </div>
-            <div className="flex justify-between items-start mb-4">
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-500">{label}</p>
-                {Icon && <Icon size={18} className="text-gold" />}
-            </div>
+            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-500 mb-4">{label}</p>
             <h3 className="text-5xl font-heading text-white mb-2 tracking-tight group-hover:scale-105 transition-transform origin-left duration-500">
                 {value}
             </h3>
@@ -100,34 +96,24 @@ const Dashboard = () => {
             </div>
 
             {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <MetricCard
                     label="Total Revenue"
                     value={`$${analytics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
                     subtext="Gross Income"
                     trend="12.5%"
-                    icon={DollarSign}
-                />
-                <MetricCard
-                    label="Total Orders"
-                    value={analytics.totalOrders}
-                    subtext="Transactions"
-                    trend="8.1%"
-                    icon={ShoppingBag}
                 />
                 <MetricCard
                     label="Active Clients"
                     value={analytics.uniqueCustomers}
                     subtext="Unique Wallets"
                     trend="4.2%"
-                    icon={Users}
                 />
                 <MetricCard
                     label="Avg. Order Value"
                     value={`$${analytics.averageOrderValue.toFixed(0)}`}
                     subtext="Per Transaction"
                     trend="1.8%"
-                    icon={Activity}
                 />
             </div>
 
