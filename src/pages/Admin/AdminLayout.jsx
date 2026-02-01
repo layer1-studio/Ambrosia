@@ -48,10 +48,10 @@ const AdminLayout = () => {
         { path: '/admin', label: 'Overview', icon: Home, end: true },
         { path: '/admin/products', label: 'Products', icon: Package },
         { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+        { path: '/admin/customers', label: 'Customers', icon: Users },
         { path: '/admin/messages', label: 'Messages', icon: Mail },
     ];
     const footerNav = [
-        { path: '/admin/customers', label: 'Customers', icon: Users },
         { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
         { path: '/admin/settings', label: 'Settings', icon: Settings },
     ];
@@ -131,6 +131,23 @@ const AdminLayout = () => {
                         <Menu size={24} />
                     </button>
 
+                    {/* Desktop Horizontal Nav */}
+                    <nav className="hidden lg:flex items-center gap-1">
+                        {navItems.map(({ path, label, icon: Icon, end }) => (
+                            <NavLink
+                                key={path}
+                                to={path}
+                                end={!!end}
+                                className={({ isActive }) =>
+                                    `flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${isActive ? 'text-gold' : 'text-gray-500 hover:text-white'}`
+                                }
+                            >
+                                <Icon size={16} />
+                                {label}
+                            </NavLink>
+                        ))}
+                    </nav>
+
                     <div className="flex-1 flex justify-center md:justify-start max-w-xl">
                         <div className="admin-search-wrap relative w-full max-w-md">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={18} />
@@ -164,6 +181,7 @@ const AdminLayout = () => {
                     <NavLink to="/admin" end className={({ isActive }) => `admin-mobile-tab ${isActive ? 'active text-gold' : ''}`}><Home size={20} /><span>Overview</span></NavLink>
                     <NavLink to="/admin/products" className={({ isActive }) => `admin-mobile-tab ${isActive ? 'active text-gold' : ''}`}><Package size={20} /><span>Products</span></NavLink>
                     <NavLink to="/admin/orders" className={({ isActive }) => `admin-mobile-tab ${isActive ? 'active text-gold' : ''}`}><ShoppingBag size={20} /><span>Orders</span></NavLink>
+                    <NavLink to="/admin/customers" className={({ isActive }) => `admin-mobile-tab ${isActive ? 'active text-gold' : ''}`}><Users size={20} /><span>Customers</span></NavLink>
                     <NavLink to="/admin/messages" className={({ isActive }) => `admin-mobile-tab ${isActive ? 'active text-gold' : ''}`}><Mail size={20} /><span>Messages</span></NavLink>
                 </nav>
 
