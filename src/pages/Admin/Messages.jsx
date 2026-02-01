@@ -131,7 +131,7 @@ const Messages = () => {
         <div className="h-[calc(100vh-140px)] flex flex-col animate-reveal min-h-0">
             <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
                 {/* Column 1: FILTERS */}
-                <aside className="w-[200px] shrink-0 flex flex-col border-r border-white/5 pr-4">
+                <aside className="w-[200px] shrink-0 h-full flex flex-col border-r border-white/10 pr-4">
                     <h2 className="admin-section-title text-gold font-heading mb-4">FILTERS</h2>
                     <div className="space-y-1">
                         {[
@@ -155,7 +155,7 @@ const Messages = () => {
                 </aside>
 
                 {/* Column 2: INBOX */}
-                <div className="w-[320px] lg:w-[380px] shrink-0 flex flex-col border-r border-white/5 overflow-hidden">
+                <div className="w-[320px] lg:w-[380px] shrink-0 h-full flex flex-col border-r border-white/10 overflow-hidden">
                     <div className="flex items-center justify-between mb-4 shrink-0">
                         <h2 className="admin-section-title text-gold font-heading mb-0">INBOX</h2>
                         <button type="button" className="btn-premium btn-premium-gold !py-2 !px-4 text-xs font-bold rounded-xl">
