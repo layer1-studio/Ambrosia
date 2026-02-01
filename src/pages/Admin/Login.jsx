@@ -23,7 +23,7 @@ const AdminLogin = () => {
 
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists() && userDoc.data()?.role === 'admin') {
-                navigate('/admin');
+                navigate('/secured-web-ambrosia/admin');
             } else {
                 await signOut(auth);
                 throw new Error("Access Denied: You do not have administrator privileges.");

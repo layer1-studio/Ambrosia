@@ -41,7 +41,7 @@ const PublicLayout = () => (
 );
 
 function App() {
-    console.log("VERSION CHECK: HASH ROUTER FIX V3 - MESSAGES DEBUG");
+    console.log("VERSION CHECK: HASH ROUTER FIX V4 - PATH OBFUSCATION");
     return (
         <AuthProvider>
             <CartProvider>
@@ -49,9 +49,9 @@ function App() {
                     <div className="app">
                         <Routes>
                             {/* Admin Routes - No Public Navbar/Footer */}
-                            <Route path="/admin/demo" element={<SidebarDemo />} />
-                            <Route path="/admin/login" element={<AdminLogin />} />
-                            <Route path="/admin" element={<AdminLayout />}>
+                            <Route path="/secured-web-ambrosia/demo" element={<SidebarDemo />} />
+                            <Route path="/secured-web-ambrosia/login" element={<AdminLogin />} />
+                            <Route path="/secured-web-ambrosia/admin" element={<AdminLayout />}>
                                 <Route index element={<Dashboard />} />
                                 <Route path="orders" element={<Orders />} />
                                 <Route path="products" element={<Products />} />

@@ -174,7 +174,7 @@ const Dashboard = () => {
             <div className="glass-panel p-8 rounded-2xl border border-white/5 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="admin-section-title text-xl font-heading text-gold mb-0">Recent Orders</h3>
-                    <Link to="/admin/orders" className="text-xs font-bold text-gold hover:text-white transition-colors">VIEW ALL</Link>
+                    <Link to="/secured-web-ambrosia/admin/orders" className="text-xs font-bold text-gold hover:text-white transition-colors">VIEW ALL</Link>
                 </div>
                 <div className="admin-table-wrapper rounded-xl overflow-hidden flex-1 min-h-0">
                     <table className="admin-table">

@@ -20,7 +20,7 @@ const AdminLayout = () => {
 
     React.useEffect(() => {
         if (!loading && (!currentUser || !isAdmin)) {
-            navigate('/admin/login');
+            navigate('/secured-web-ambrosia/login');
         }
     }, [currentUser, isAdmin, loading, navigate]);
 
@@ -38,21 +38,21 @@ const AdminLayout = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            navigate('/admin/login');
+            navigate('/secured-web-ambrosia/login');
         } catch (error) {
             console.error("Logout failed:", error);
         }
     };
 
     const navItems = [
-        { path: '/admin', label: 'Dashboard', icon: Home, end: true },
-        { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
-        { path: '/admin/products', label: 'Products', icon: Package },
-        { path: '/admin/messages', label: 'Messages', icon: Mail },
-        { path: '/admin/customers', label: 'Customers', icon: Users },
+        { path: '/secured-web-ambrosia/admin', label: 'Dashboard', icon: Home, end: true },
+        { path: '/secured-web-ambrosia/admin/orders', label: 'Orders', icon: ShoppingBag },
+        { path: '/secured-web-ambrosia/admin/products', label: 'Products', icon: Package },
+        { path: '/secured-web-ambrosia/admin/messages', label: 'Messages', icon: Mail },
+        { path: '/secured-web-ambrosia/admin/customers', label: 'Customers', icon: Users },
     ];
     const footerNav = [
-        { path: '/admin/settings', label: 'Settings', icon: Settings },
+        { path: '/secured-web-ambrosia/admin/settings', label: 'Settings', icon: Settings },
     ];
 
     const displayName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin';
@@ -116,7 +116,7 @@ const AdminLayout = () => {
                     {/* Tools */}
                     <div className="flex items-center gap-2">
                         <NavLink
-                            to="/admin/settings"
+                            to="/secured-web-ambrosia/admin/settings"
                             className={({ isActive }) =>
                                 `p-2 rounded-lg transition-all ${isActive ? 'text-gold bg-gold/5' : 'text-gray-400 hover:text-white'
                                 }`
