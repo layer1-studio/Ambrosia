@@ -31,10 +31,10 @@ const Navbar = () => {
                 {/* Desktop Links */}
                 <div className="nav-links">
                     <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>Home</NavLink>
-                    <NavLink to="/shop" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Digital Boutique</NavLink>
+                    <NavLink to="/shop" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Shop the Boutique</NavLink>
                     <NavLink to="/about-cinnamon" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
-                    <NavLink to="/recipes" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Gastronomy & Rites</NavLink>
-                    <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Liaison</NavLink>
+                    <NavLink to="/recipes" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Recipes & Rites</NavLink>
+                    <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Contact Us</NavLink>
                 </div>
 
                 <div className="nav-actions flex items-center gap-6">
@@ -64,10 +64,10 @@ const Navbar = () => {
                 <div className={`mobile-menu ${isOpen ? 'active' : ''}`}>
                     <div className="mobile-nav-links">
                         <NavLink to="/" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`} end>Home</NavLink>
-                        <NavLink to="/shop" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Digital Boutique</NavLink>
+                        <NavLink to="/shop" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Shop the Boutique</NavLink>
                         <NavLink to="/about-cinnamon" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
-                        <NavLink to="/recipes" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Gastronomy & Rites</NavLink>
-                        <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Liaison</NavLink>
+                        <NavLink to="/recipes" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Recipes & Rites</NavLink>
+                        <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Contact Us</NavLink>
                         <Link to="/shop" onClick={toggleMenu} className="btn-primary mt-8 inline-block text-center">Inquire Now</Link>
                     </div>
                 </div>

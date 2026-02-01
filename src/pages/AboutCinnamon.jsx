@@ -30,7 +30,7 @@ const AboutCinnamon = () => {
             <div className="container mx-auto px-6">
                 <section className="about-content-section">
                     <header className="mb-16">
-                        <h1 className="about-title">The Essence of Luxury.</h1>
+                        <h1 className="about-title">The Alchemist's Guide.</h1>
                         <p className="about-text-content">
                             Beyond the spice rack lies a legacy of kings and explorers. Ceylon Cinnamon (Cinnamomum Verum) is the only "true" cinnamon—known for its delicate complexity, floral sweetness, and profound health benefits.
                         </p>

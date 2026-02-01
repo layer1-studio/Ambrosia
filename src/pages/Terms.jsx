@@ -18,7 +18,7 @@ const Terms = () => {
             <div className="container max-w-4xl mx-auto">
                 <header className="text-center mb-16 animate-fade-in">
                     <h1 className="legal-title text-gold">
-                        Terms of Service.
+                        Terms and Conditions.
                     </h1>
                 </header>
 

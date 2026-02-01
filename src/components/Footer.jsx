@@ -40,18 +40,18 @@ const Footer = () => {
                     <div className="footer-column">
                         <h4 className="font-heading text-white mb-8 tracking-widest text-[10px] uppercase">Navigation</h4>
                         <ul className="space-y-4">
-                            <li><Link to="/shop" className="text-gray-500 hover:text-gold text-xs transition-colors">Digital Boutique</Link></li>
+                            <li><Link to="/shop" className="text-gray-500 hover:text-gold text-xs transition-colors">Shop the Boutique</Link></li>
                             <li><Link to="/about-cinnamon" className="text-gray-500 hover:text-gold text-xs transition-colors">The Alchemist's Guide</Link></li>
-                            <li><Link to="/recipes" className="text-gray-500 hover:text-gold text-xs transition-colors">Gastronomy & Rites</Link></li>
+                            <li><Link to="/recipes" className="text-gray-500 hover:text-gold text-xs transition-colors">Recipes & Rites</Link></li>
                             <li><Link to="/faq" className="text-gray-500 hover:text-gold text-xs transition-colors">Inquiries</Link></li>
                         </ul>
                     </div>
                     <div className="footer-column">
-                        <h4 className="font-heading text-white mb-8 tracking-widest text-[10px] uppercase">Statutes</h4>
+                        <h4 className="font-heading text-white mb-8 tracking-widest text-[10px] uppercase">Information</h4>
                         <ul className="space-y-4">
-                            <li><Link to="/contact" className="text-gray-500 hover:text-gold text-xs transition-colors">Liaison</Link></li>
+                            <li><Link to="/contact" className="text-gray-500 hover:text-gold text-xs transition-colors">Contact Us</Link></li>
                             <li><Link to="/privacy" className="text-gray-500 hover:text-gold text-xs transition-colors">Data Protocol</Link></li>
-                            <li><Link to="/terms" className="text-gray-500 hover:text-gold text-xs transition-colors">Terms of Service</Link></li>
+                            <li><Link to="/terms" className="text-gray-500 hover:text-gold text-xs transition-colors">Terms and Conditions</Link></li>
                         </ul>
                     </div>
                     <div className="footer-column">

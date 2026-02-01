@@ -38,7 +38,7 @@ const Contact = () => {
         <div className="contact-page">
             <section className="contact-hero">
                 <div className="container text-center">
-                    <h1 className="text-6xl font-heading text-gold mb-4">Connect with Ambrosia</h1>
+                    <h1 className="text-6xl font-heading text-gold mb-4">Contact Us</h1>
                     <p className="text-xl text-gray-400">Questions about our cinnamon? We're here to help.</p>
                 </div>
             </section>
