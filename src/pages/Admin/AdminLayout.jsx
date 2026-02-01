@@ -84,8 +84,12 @@ const AdminLayout = () => {
                                     `flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all group ${isActive ? 'text-gold' : 'text-gray-500 hover:text-white'}`
                                 }
                             >
-                                <Icon size={18} className={({ isActive }) => isActive ? 'text-gold' : 'group-hover:scale-110 transition-transform'} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+                                {({ isActive }) => (
+                                    <>
+                                        <Icon size={18} className={isActive ? 'text-gold' : 'group-hover:scale-110 transition-transform'} />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+                                    </>
+                                )}
                             </NavLink>
                         ))}
                     </nav>
