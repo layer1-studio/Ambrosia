@@ -63,7 +63,10 @@ const Orders = () => {
         if (s === 'delivered' || s === 'completed') return 'success';
         if (s === 'pending' || s === 'processing') return 'warning';
         if (s === 'shipped') return 'info';
-        return 'danger';
+        if (s === 'new') return 'new-status'; // Custom class for new
+        if (s === 'reviews') return 'reviews-status';
+        if (s === 'cancelled' || s === 'refunded') return 'danger';
+        return 'default';
     };
 
     const filteredOrders = orders.filter(o => {
@@ -82,12 +85,17 @@ const Orders = () => {
 
     const filterPills = [
         { value: 'All', label: 'All' },
+        { value: 'New', label: 'New' },
         { value: 'Pending', label: 'Pending' },
+        { value: 'Processing', label: 'Processing' },
         { value: 'Shipped', label: 'Shipped' },
+        { value: 'Delivered', label: 'Delivered' },
+        { value: 'Reviews', label: 'Reviews' },
+        { value: 'Cancelled', label: 'Cancelled' },
     ];
 
-    const steps = ['Ordered', 'Processing', 'Shipped', 'Delivered'];
-    const statusToStep = { Pending: 0, Processing: 1, Shipped: 2, Delivered: 3 };
+    const steps = ['New', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Reviews'];
+    const statusToStep = { New: 0, Pending: 1, Processing: 2, Shipped: 3, Delivered: 4, Reviews: 5 };
     const stepIndex = selectedOrder ? (statusToStep[selectedOrder.fulfillmentStatus] ?? 1) : 0;
 
     return (
@@ -171,7 +179,12 @@ const Orders = () => {
                                         <td className="text-right text-gold font-medium">${Number(order.total).toFixed(2)}</td>
                                         <td>
                                             <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
-                                                <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Shipped' ? 'bg-green-500' : 'bg-amber-500'}`} />
+                                                <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
+                                                        order.fulfillmentStatus === 'Shipped' ? 'bg-blue-500' :
+                                                            order.fulfillmentStatus === 'New' ? 'bg-gold animate-pulse' :
+                                                                order.fulfillmentStatus === 'Reviews' ? 'bg-purple-500' :
+                                                                    'bg-amber-500'
+                                                    }`} />
                                                 {order.fulfillmentStatus}
                                             </span>
                                         </td>
@@ -188,13 +201,13 @@ const Orders = () => {
                         <div className="p-6 md:p-8 space-y-8">
                             {/* Progress bar - Ordered → Processing → Shipped → Delivered */}
                             <div className="admin-order-steps">
-                                {['Ordered', 'Processing', 'Shipped', 'Delivered'].map((step, i) => (
+                                {steps.map((step, i) => (
                                     <React.Fragment key={step}>
                                         <div className={`admin-order-step ${i <= stepIndex ? (i < stepIndex ? 'done' : 'active') : ''}`}>
                                             <div className="admin-order-step-dot" />
                                             <span>{step}</span>
                                         </div>
-                                        {i < 3 && <div className={`admin-order-step-line ${i < stepIndex ? 'done' : ''}`} />}
+                                        {i < steps.length - 1 && <div className={`admin-order-step-line ${i < stepIndex ? 'done' : ''}`} />}
                                     </React.Fragment>
                                 ))}
                             </div>
@@ -290,11 +303,11 @@ const Orders = () => {
 
                             {/* Fulfillment quick actions */}
                             <div className="flex flex-wrap gap-3">
-                                {['Pending', 'Processing', 'Shipped', 'Delivered'].map(status => (
+                                {['New', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Reviews', 'Cancelled', 'Refunded'].map(status => (
                                     <button
                                         key={status}
                                         onClick={() => handleStatusChange(selectedOrder.id, status)}
-                                        className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                                        className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black shadow-[0_0_15px_rgba(197,168,114,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
                                     >
                                         {status}
                                     </button>

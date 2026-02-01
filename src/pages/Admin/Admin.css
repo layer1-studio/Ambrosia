@@ -182,6 +182,21 @@
   color: #ef4444;
 }
 
+.status-pill.new-status {
+  background: rgba(212, 175, 55, 0.15);
+  color: #D4AF37;
+}
+
+.status-pill.reviews-status {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+.status-pill.default {
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+}
+
 /* Premium Buttons */
 .btn-premium {
   padding: 0.875rem 1.75rem;
@@ -448,7 +463,7 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.admin-order-step.done + .admin-order-step-line,
+.admin-order-step.done+.admin-order-step-line,
 .admin-order-step-line.done {
   background: var(--color-gold);
   opacity: 0.5;
