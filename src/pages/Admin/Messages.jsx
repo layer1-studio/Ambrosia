@@ -215,25 +215,26 @@ const Messages = () => {
                                 <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{selectedMessage.message}</p>
                             </div>
                             <div className="p-6 border-t border-white/5 bg-white/[0.01] shrink-0">
-                                {!selectedMessage.reply ? (
+                                <div className="space-y-6">
+                                    {selectedMessage.reply && (
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-2 text-green-400 text-[10px] font-bold uppercase tracking-widest">
+                                                <Check size={14} strokeWidth={3} />
+                                                LATEST DISPATCHED REPLY
+                                            </div>
+                                            <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/10 text-gray-400 text-sm italic leading-relaxed">
+                                                "{selectedMessage.reply}"
+                                            </div>
+                                        </div>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={openReplyModal}
                                         className="btn-premium btn-premium-gold font-bold rounded-xl px-8 py-3"
                                     >
-                                        REPLY TO MESSAGE
+                                        {selectedMessage.reply ? 'REPLY AGAIN' : 'REPLY TO MESSAGE'}
                                     </button>
-                                ) : (
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2 text-green-400 text-sm font-bold uppercase tracking-wider">
-                                            <Check size={18} strokeWidth={3} />
-                                            DISPATCHED REPLY
-                                        </div>
-                                        <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/10 text-gray-400 text-sm italic leading-relaxed">
-                                            "{selectedMessage.reply}"
-                                        </div>
-                                    </div>
-                                )}
+                                </div>
                             </div>
                         </>
                     ) : (
