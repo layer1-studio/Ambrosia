@@ -45,14 +45,14 @@ const AdminLayout = () => {
     };
 
     const navItems = [
-        { path: '/admin', label: 'Overview', icon: Home, end: true },
-        { path: '/admin/products', label: 'Products', icon: Package },
+        { path: '/admin', label: 'Dashboard', icon: Home, end: true },
         { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
-        { path: '/admin/customers', label: 'Customers', icon: Users },
+        { path: '/admin/products', label: 'Products', icon: Package },
         { path: '/admin/messages', label: 'Messages', icon: Mail },
+        { path: '/admin/customers', label: 'Customers', icon: Users },
+        { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
     ];
     const footerNav = [
-        { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
         { path: '/admin/settings', label: 'Settings', icon: Settings },
     ];
 
@@ -64,17 +64,17 @@ const AdminLayout = () => {
             {/* Main top horizontal navbar */}
             <header className="h-20 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50 px-6 flex items-center justify-between">
                 <div className="flex items-center gap-8">
-                    {/* Brand Label */}
+                    {/* Brand Label - Far Left */}
                     <div className="flex items-center gap-3">
                         <LaurelLogo />
                         <span className="text-sm font-bold tracking-[0.3em] uppercase text-gold whitespace-nowrap">Ambrosia Admin</span>
                     </div>
 
                     {/* Navigation Divider */}
-                    <div className="h-8 w-px bg-white/10 hidden lg:block" />
+                    <div className="h-8 w-px bg-white/10 hidden xl:block" />
 
-                    {/* Main Nav Links */}
-                    <nav className="hidden lg:flex items-center gap-2">
+                    {/* Main Nav Links - Center Group */}
+                    <nav className="hidden lg:flex items-center gap-1">
                         {navItems.map(({ path, label, icon: Icon, end }) => (
                             <NavLink
                                 key={path}
@@ -95,55 +95,35 @@ const AdminLayout = () => {
                     </nav>
                 </div>
 
-                {/* Mobile Menu Indicator (Optional/Compact) */}
-                <div className="lg:hidden flex items-center gap-4">
-                    <nav className="flex items-center gap-2">
-                        {navItems.slice(0, 3).map(({ path, icon: Icon }) => (
-                            <NavLink key={path} to={path} className={({ isActive }) => `p-2 rounded-lg ${isActive ? 'text-gold' : 'text-gray-500'}`}>
-                                <Icon size={20} />
-                            </NavLink>
-                        ))}
-                    </nav>
-                </div>
-
-                {/* Right Side Tools */}
-                <div className="flex items-center gap-3">
-                    {/* Analytics Quick Link */}
-                    <NavLink
-                        to="/admin/analytics"
-                        className={({ isActive }) => `p-2.5 rounded-xl border border-white/5 hover:border-gold/30 transition-all ${isActive ? 'bg-gold/10 text-gold border-gold/20' : 'text-gray-400'}`}
-                        title="Analytics"
-                    >
-                        <BarChart3 size={20} />
-                    </NavLink>
-
-                    {/* Settings Quick Link */}
-                    <NavLink
-                        to="/admin/settings"
-                        className={({ isActive }) => `p-2.5 rounded-xl border border-white/5 hover:border-gold/30 transition-all ${isActive ? 'bg-gold/10 text-gold border-gold/20' : 'text-gray-400'}`}
-                        title="Settings"
-                    >
-                        <Settings size={20} />
-                    </NavLink>
-
-                    <div className="w-px h-6 bg-white/10 mx-1" />
-
-                    {/* User Profile / Logout */}
-                    <div className="flex items-center gap-3 pl-2">
+                {/* Right Side Controls */}
+                <div className="flex items-center gap-4">
+                    {/* Account Name - Initial in Circle */}
+                    <div className="flex items-center gap-3">
                         <div className="hidden sm:block text-right">
                             <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-none">{displayName}</p>
-                            <p className="text-[9px] text-gold/60 font-medium uppercase mt-1">Administrator</p>
                         </div>
+                        <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold font-bold text-sm">
+                            {displayName.charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+
+                    {/* Dashboard Tools */}
+                    <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+                        <NavLink
+                            to="/admin/settings"
+                            className={({ isActive }) => `p-2 rounded-lg transition-all ${isActive ? 'text-gold' : 'text-gray-500 hover:text-white'}`}
+                            title="Settings"
+                        >
+                            <Settings size={20} />
+                        </NavLink>
+
                         <button
                             onClick={handleLogout}
-                            title="Sign Out"
-                            className="w-10 h-10 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center text-gold font-bold text-sm hover:bg-gold/20 transition-all relative group"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                            title="Logout"
                         >
-                            {displayName.charAt(0).toUpperCase()}
-                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-[#0a0a0a] rounded-full" />
-
-                            {/* Logout tooltip on hover */}
-                            <LogOut size={12} className="absolute inset-0 m-auto opacity-0 group-hover:opacity-100 transition-opacity bg-gold rounded text-black p-0.5" />
+                            <span className="text-xs font-bold uppercase tracking-widest">Sign Out</span>
+                            <LogOut size={16} />
                         </button>
                     </div>
                 </div>
