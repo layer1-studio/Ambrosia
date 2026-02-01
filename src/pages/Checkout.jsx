@@ -89,15 +89,29 @@ const Checkout = () => {
 
                 // construct HTML rows for the email
                 const orderItemsHtml = cartItems.map(item => {
-                    // Ensure image URL is absolute for email clients
-                    const imageUrl = item.image.startsWith('http')
-                        ? item.image
-                        : `${window.location.origin}${item.image.startsWith('/') ? '' : '/'}${item.image}`;
+                    // Robust absolute URL generation for email clients
+                    let imageUrl = item.image;
+
+                    if (imageUrl && !imageUrl.startsWith('http')) {
+                        const origin = window.location.origin;
+                        const base = '/Ambrosia/';
+
+                        // Strip base if it already exists to avoid duplication
+                        let cleanPath = imageUrl;
+                        if (cleanPath.startsWith(base)) {
+                            cleanPath = cleanPath.substring(base.length);
+                        }
+
+                        // Construct final absolute URL
+                        imageUrl = `${origin}${base}${cleanPath.startsWith('/') ? cleanPath.substring(1) : cleanPath}`;
+                    }
+
+                    console.log(`[Email Debug] Item: ${item.name}, Generated Image URL: ${imageUrl}`);
 
                     return `
                     <tr style="vertical-align: top">
                         <td style="padding: 24px 8px 0 4px; width: 64px;">
-                            <img style="height: 64px; width: 64px; object-fit: cover; border-radius: 4px;" src="${imageUrl}" alt="${item.name}" />
+                            <img width="64" height="64" style="height: 64px; width: 64px; object-fit: cover; border-radius: 4px;" src="${imageUrl}" alt="${item.name}" />
                         </td>
                         <td style="padding: 24px 8px 0 8px;">
                             <div style="font-family: 'Playfair Display', serif; font-size: 16px; color: #1a1a1a;">${item.name}</div>
