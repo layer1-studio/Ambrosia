@@ -122,12 +122,9 @@ const Orders = () => {
                             className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
                         >
                             {filterPills.map(({ value, label }) => (
-                                <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label} Status</option>
+                                <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label}</option>
                             ))}
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -180,10 +177,10 @@ const Orders = () => {
                                         <td>
                                             <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
                                                 <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
-                                                        order.fulfillmentStatus === 'Shipped' ? 'bg-blue-500' :
-                                                            order.fulfillmentStatus === 'New' ? 'bg-gold animate-pulse' :
-                                                                order.fulfillmentStatus === 'Reviews' ? 'bg-purple-500' :
-                                                                    'bg-amber-500'
+                                                    order.fulfillmentStatus === 'Shipped' ? 'bg-blue-500' :
+                                                        order.fulfillmentStatus === 'New' ? 'bg-gold animate-pulse' :
+                                                            order.fulfillmentStatus === 'Reviews' ? 'bg-purple-500' :
+                                                                'bg-amber-500'
                                                     }`} />
                                                 {order.fulfillmentStatus}
                                             </span>
