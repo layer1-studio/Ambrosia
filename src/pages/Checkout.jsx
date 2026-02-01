@@ -88,10 +88,16 @@ const Checkout = () => {
                 const publicKey = 'BsB9Xsr8nr5Yo-WuD'; // Shared Public Key
 
                 // construct HTML rows for the email
-                const orderItemsHtml = cartItems.map(item => `
+                const orderItemsHtml = cartItems.map(item => {
+                    // Ensure image URL is absolute for email clients
+                    const imageUrl = item.image.startsWith('http')
+                        ? item.image
+                        : `${window.location.origin}${item.image.startsWith('/') ? '' : '/'}${item.image}`;
+
+                    return `
                     <tr style="vertical-align: top">
                         <td style="padding: 24px 8px 0 4px; width: 64px;">
-                            <img style="height: 64px; width: 64px; object-fit: cover; border-radius: 4px;" src="${item.image}" alt="${item.name}" />
+                            <img style="height: 64px; width: 64px; object-fit: cover; border-radius: 4px;" src="${imageUrl}" alt="${item.name}" />
                         </td>
                         <td style="padding: 24px 8px 0 8px;">
                             <div style="font-family: 'Playfair Display', serif; font-size: 16px; color: #1a1a1a;">${item.name}</div>
@@ -101,7 +107,8 @@ const Checkout = () => {
                             <strong style="color: #D4AF37;">$${(item.price * item.quantity).toFixed(2)}</strong>
                         </td>
                     </tr>
-                `).join('');
+                `;
+                }).join('');
 
                 const templateParams = {
                     to_name: formData.firstName,
