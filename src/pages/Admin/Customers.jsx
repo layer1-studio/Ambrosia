@@ -150,12 +150,9 @@ const Customers = () => {
                             className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50 text-sm"
                         >
                             {['All', 'Customer', 'Subscriber', 'Both'].map(t => (
-                                <option key={t} value={t} className="bg-[#0a0a0a] text-white">Filter: {t}</option>
+                                <option key={t} value={t} className="bg-[#0a0a0a] text-white">{t}</option>
                             ))}
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                        </div>
                     </div>
                 </div>
             </div>
