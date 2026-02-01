@@ -35,7 +35,7 @@
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid var(--color-border);
   box-shadow: var(--shadow-premium);
-  padding: 2.25rem;
+  margin-bottom: 2rem;
 }
 
 .glass-panel:hover {
@@ -44,7 +44,7 @@
 
 /* Dashboard Cards */
 .admin-stat-card {
-  padding: 2.25rem;
+  padding: 1.75rem;
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
@@ -98,7 +98,7 @@
   background: rgba(255, 255, 255, 0.03);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   color: #fff;
   font-size: 0.95rem;
   transition: all 0.2s ease;
@@ -116,6 +116,7 @@
   overflow: hidden;
   border: 2px solid var(--color-border);
   background: rgba(10, 10, 10, 0.4);
+  margin: 2rem 0;
 }
 
 .admin-table {
@@ -126,7 +127,7 @@
 
 .admin-table th {
   background: rgba(255, 255, 255, 0.02);
-  padding: 1.5rem;
+  padding: 1.25rem;
   text-align: left;
   font-size: 0.75rem;
   font-weight: 600;
@@ -137,7 +138,7 @@
 }
 
 .admin-table td {
-  padding: 1.5rem;
+  padding: 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
   color: #d1d1d1;
 }
@@ -239,7 +240,7 @@
 /* Layout Utilities */
 .admin-grid {
   display: grid;
-  gap: 2.5rem;
+  gap: 3rem;
 }
 
 .admin-card-header {
@@ -332,6 +333,7 @@
   margin-left: auto;
   margin-right: auto;
   width: 100%;
+  padding-bottom: 5rem;
 }
 
 .admin-sidebar {
