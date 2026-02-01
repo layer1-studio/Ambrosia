@@ -94,7 +94,13 @@ const Messages = () => {
             await emailjs.send(
                 EMAILJS_CONFIG.SERVICE_ID,
                 EMAILJS_CONFIG.TEMPLATE_ID,
-                { to_name: selectedMessage.name, to_email: selectedMessage.email, message: replyText, subject: `Re: ${selectedMessage.subject}` },
+                {
+                    to_name: selectedMessage.name,
+                    to_email: selectedMessage.email,
+                    reply_message: replyText,
+                    original_message: selectedMessage.message,
+                    subject: `Re: ${selectedMessage.subject}`
+                },
                 EMAILJS_CONFIG.PUBLIC_KEY
             );
             await updateDoc(doc(db, "messages", selectedMessage.id), { status: 'replied', reply: replyText, repliedAt: Timestamp.now() });
