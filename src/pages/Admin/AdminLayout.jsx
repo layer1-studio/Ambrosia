@@ -106,7 +106,7 @@ const AdminLayout = () => {
                 <div className="flex items-center gap-3 min-w-max">
                     {/* User Profile */}
                     <div className="flex items-center gap-3 pr-2">
-                        <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center text-gold font-bold text-sm">
+                        <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center text-gold font-bold text-sm shrink-0">
                             {displayName.charAt(0).toUpperCase()}
                         </div>
                     </div>
