@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { Search, Mail, User, Phone, Filter, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Search, Mail, User, Users, Phone, Filter, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import './Admin.css';
 
 const Customers = () => {
