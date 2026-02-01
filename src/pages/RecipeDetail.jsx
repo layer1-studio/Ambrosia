@@ -13,6 +13,29 @@ const RecipeDetail = () => {
         window.scrollTo(0, 0);
     }, []);
 
+    const handlePrint = () => {
+        window.print();
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: `Ambrosia Ritual: ${recipe.title}`,
+            text: `Discover the ritual of ${recipe.title} from Ambrosia.`,
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Connection copied to clipboard! Share the ritual.');
+            }
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    };
+
     if (!recipe) {
         return (
             <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center text-white">
@@ -97,10 +120,10 @@ const RecipeDetail = () => {
                     </div>
 
                     <div className="recipe-actions">
-                        <button className="action-btn">
+                        <button className="action-btn" onClick={handleShare}>
                             <Share2 size={14} /> Share
                         </button>
-                        <button className="action-btn">
+                        <button className="action-btn" onClick={handlePrint}>
                             <Printer size={14} /> Print
                         </button>
                     </div>

@@ -243,6 +243,65 @@
     color: var(--color-primary);
 }
 
+@media print {
+
+    nav,
+    footer,
+    .back-link-top,
+    .recipe-actions,
+    .recipe-hero-overlay {
+        display: none !important;
+    }
+
+    .recipe-detail-page {
+        background: white !important;
+        color: black !important;
+        padding: 0 !important;
+    }
+
+    .recipe-hero {
+        height: 250px !important;
+    }
+
+    .recipe-content-wrapper {
+        margin-top: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .recipe-card-glass {
+        background: white !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 1rem !important;
+        color: black !important;
+    }
+
+    .recipe-main-title,
+    .section-title,
+    .recipe-quote {
+        color: black !important;
+    }
+
+    .recipe-quote {
+        border-bottom-color: #eee !important;
+    }
+
+    .step-number {
+        border-color: #000 !important;
+        color: black !important;
+    }
+
+    .step-text,
+    .ingredient-item {
+        color: black !important;
+    }
+
+    .section-line {
+        background: #000 !important;
+    }
+}
+
 @media (max-width: 900px) {
     .recipe-grid {
         grid-template-columns: 1fr;
