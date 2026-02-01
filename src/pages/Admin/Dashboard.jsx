@@ -54,10 +54,28 @@ const Dashboard = () => {
                 return d.getMonth() === i;
             });
             const current = monthOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
-            const prev = Math.round(current * 0.85);
-            return { month: m, currentYear: current, previousYear: prev };
+            return { month: m, currentYear: current, x: i };
         });
-        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth };
+
+        // Calculate Linear Trendline (y = mx + b)
+        const n = revenueByMonth.length;
+        let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+        revenueByMonth.forEach(d => {
+            sumX += d.x;
+            sumY += d.currentYear;
+            sumXY += d.x * d.currentYear;
+            sumX2 += d.x * d.x;
+        });
+
+        const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+        const b = (sumY - m * sumX) / n;
+
+        const finalData = revenueByMonth.map(d => ({
+            ...d,
+            trend: Math.max(0, m * d.x + b)
+        }));
+
+        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth: finalData };
     }, [orders]);
 
     const recentOrders = useMemo(() => [...orders].reverse(), [orders]);
@@ -135,7 +153,7 @@ const Dashboard = () => {
             <div className="glass-panel p-8 rounded-2xl border border-white/5">
                 <h3 className="admin-section-title text-xl font-heading text-gold mb-6">Revenue Over Time</h3>
                 <div className="chart-container" style={{ height: 320 }}>
-                    {analytics.revenueByMonth.some(d => d.currentYear > 0 || d.previousYear > 0) ? (
+                    {analytics.revenueByMonth.some(d => d.currentYear > 0) ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={analytics.revenueByMonth} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                                 <defs>
@@ -153,12 +171,12 @@ const Dashboard = () => {
                                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} tickFormatter={v => v >= 1e6 ? `$${(v / 1e6).toFixed(1)}m` : `$${v}`} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '12px 16px' }}
-                                    formatter={(value) => [`$${Number(value).toLocaleString()}`, '']}
+                                    formatter={(value, name) => [`$${Number(value).toLocaleString()}`, name === 'trend' ? 'Trendline' : 'Actual Revenue']}
                                     labelFormatter={(l) => l}
                                 />
-                                <Legend wrapperStyle={{ paddingTop: 12 }} iconType="line" formatter={(value) => <span className="text-gray-400 text-sm">{value}</span>} />
-                                <Area type="monotone" dataKey="currentYear" name="Current Year" stroke="#D4AF37" strokeWidth={2} fill="url(#colorCurrent)" />
-                                <Line type="monotone" dataKey="previousYear" name="Previous Year" stroke="#D4AF37" strokeDasharray="5 5" strokeOpacity={0.6} dot={false} />
+                                <Legend wrapperStyle={{ paddingTop: 12 }} iconType="line" formatter={(value) => <span className="text-gray-400 text-sm">{value === 'trend' ? 'Trendline' : 'Actual Revenue'}</span>} />
+                                <Area type="monotone" dataKey="currentYear" name="currentYear" stroke="#D4AF37" strokeWidth={2} fill="url(#colorCurrent)" />
+                                <Line type="monotone" dataKey="trend" name="trend" stroke="#D4AF37" strokeDasharray="5 5" strokeOpacity={0.6} dot={false} />
                             </AreaChart>
                         </ResponsiveContainer>
                     ) : (
