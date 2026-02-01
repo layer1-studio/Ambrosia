@@ -14,6 +14,7 @@ const EMAILJS_CONFIG = {
 };
 
 const Messages = () => {
+    console.log("[Messages] Component Loaded - Build 1.1");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);

@@ -41,7 +41,7 @@ const PublicLayout = () => (
 );
 
 function App() {
-    console.log("VERSION CHECK: HASH ROUTER FIX V2 - FLAT ROUTES");
+    console.log("VERSION CHECK: HASH ROUTER FIX V3 - MESSAGES DEBUG");
     return (
         <AuthProvider>
             <CartProvider>
