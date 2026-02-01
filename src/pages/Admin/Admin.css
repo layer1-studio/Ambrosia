@@ -1,390 +1,455 @@
-/* Dark Theme Variables for Admin Section */
+/* Admin Theme - Matches main Ambrosia site (dark + gold) */
 .admin-theme {
-    /* Deeper, richer blacks */
-    --color-bg: #050505;
-    --color-surface: #0a0a0a;
+  --color-bg: #030303;
+  --color-surface: #0a0a0a;
+  --color-surface-light: #121212;
+  --color-text: #f5f5f5;
+  --color-text-muted: #888888;
+  --color-gold: #D4AF37;
+  --color-gold-muted: rgba(212, 175, 55, 0.2);
+  --color-gold-glow: rgba(212, 175, 55, 0.1);
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-border-glow: rgba(212, 175, 55, 0.2);
 
-    /* Typography */
-    --color-text: #FAFAFA;
-    --color-text-muted: #888888;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-    /* Gold Accents - Refined */
-    --color-border: rgba(212, 175, 55, 0.15);
-    --color-border-hover: rgba(212, 175, 55, 0.4);
-    --color-gold: #D4AF37;
-    --color-gold-hover: #F3E5AB;
-    /* Lighter, more elegant hover */
-    --color-gold-muted: rgba(212, 175, 55, 0.6);
+  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.1);
 
-    /* Fonts */
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Outfit', sans-serif;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
 
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    overflow-x: hidden;
-    letter-spacing: 0.02em;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  min-height: 100vh;
 }
 
-/* Luxury admin cards – dark surface, glassmorphism, refined shadows */
-.admin-card {
-    background: rgba(10, 10, 10, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--color-border);
-    border-radius: 1.25rem;
-    /* Slightly softer corners */
-    padding: 2.5rem;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+/* Glassmorphism Surface */
+.glass-panel {
+  background: rgba(18, 18, 18, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-premium);
 }
 
-.admin-card:hover {
-    border-color: var(--color-border-hover);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    transform: translateY(-2px);
+.glass-panel:hover {
+  border-color: var(--color-border-glow);
 }
 
-/* Subtle gold sheen on card hover */
-.admin-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-    opacity: 0;
-    transition: opacity 0.5s ease;
+/* Dashboard Cards */
+.admin-stat-card {
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.admin-card:hover::before {
-    opacity: 0.3;
+.admin-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-4px);
+  background: rgba(212, 175, 55, 0.02);
+}
+
+.admin-stat-card:hover::before {
+  opacity: 1;
 }
 
 /* Page Headers */
 .admin-header {
-    margin-bottom: 3.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .admin-title {
-    font-family: var(--font-heading);
-    font-size: 3.5rem;
-    color: #fff;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-}
-
-.admin-title .highlight {
-    color: var(--color-gold);
-    display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: -0.01em;
 }
 
 .admin-subtitle {
-    color: var(--color-text-muted);
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    opacity: 0.7;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 300;
 }
 
-/* Admin Input Fields - New Utility */
+/* Input Fields */
 .admin-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--color-border);
-    border-radius: 1rem;
-    padding: 1rem 1.5rem;
-    color: #fff;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    outline: none;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1.25rem;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
 }
 
 .admin-input:focus {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: var(--color-gold);
-    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.05);
 }
 
-.admin-input::placeholder {
-    color: rgba(255, 255, 255, 0.2);
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    font-weight: 500;
-}
-
-/* Admin table */
-.admin-table-container {
-    border: 1px solid var(--color-border);
-    border-radius: 1.25rem;
-    overflow-x: auto;
-    overflow-y: visible;
-    background: rgba(5, 5, 5, 0.5);
-    backdrop-filter: blur(10px);
+/* Table Design */
+.admin-table-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: rgba(10, 10, 10, 0.4);
 }
 
 .admin-table {
-    width: 100%;
-    min-width: 700px;
-    border-collapse: collapse;
-    font-size: 0.875rem;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .admin-table th {
-    text-align: left;
-    padding: 1rem 1.25rem;
-    white-space: nowrap;
-    font-family: var(--font-heading);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-size: 0.75rem;
-    color: var(--color-gold);
-    border-bottom: 1px solid var(--color-border);
-    background: rgba(212, 175, 55, 0.03);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.25rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .admin-table td {
-    padding: 1rem 1.25rem;
-    vertical-align: middle;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    color: #e5e5e5;
-    transition: color 0.3s ease;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  color: #d1d1d1;
 }
 
-.admin-table tbody tr {
-    transition: all 0.2s ease;
-    border-left: 2px solid transparent;
+.admin-table tr:last-child td {
+  border-bottom: none;
 }
 
-.admin-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.02);
-    border-left-color: var(--color-gold);
+.admin-table tr:hover td {
+  background: rgba(212, 175, 55, 0.01);
+  color: #fff;
 }
 
-.admin-table tbody tr:hover td {
-    color: #fff;
+/* Status Badges */
+.status-pill {
+  padding: 0.4rem 0.8rem;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Row action buttons */
-.admin-table .action-btn {
-    padding: 0.5rem;
-    border-radius: 0.75rem;
-    color: var(--color-text-muted);
-    transition: all 0.3s ease;
+.status-pill.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
-.admin-table .action-btn:hover {
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--color-gold);
+.status-pill.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
 }
 
-.admin-table .action-btn.delete:hover {
-    background: rgba(248, 113, 113, 0.1);
-    color: #f87171;
+.status-pill.info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
 }
 
-.admin-table tbody tr:last-child td {
-    border-bottom: none;
+.status-pill.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-/* Status badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    /* Pill shape */
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    border: 1px solid transparent;
+/* Premium Buttons */
+.btn-premium {
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid transparent;
 }
 
-.status-badge.pending {
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--color-gold);
-    border-color: rgba(212, 175, 55, 0.3);
+.btn-premium-gold {
+  background: var(--color-gold);
+  color: #000;
 }
 
-.status-badge.processing,
-.status-badge.shipped {
-    background: rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
-    border-color: rgba(56, 189, 248, 0.2);
+.btn-premium-gold:hover {
+  background: #e5c24a;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
 }
 
-.status-badge.completed,
-.status-badge.delivered {
-    background: rgba(74, 222, 128, 0.1);
-    color: #4ade80;
-    border-color: rgba(74, 222, 128, 0.2);
+.btn-premium-outline {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
 }
 
-.status-badge.cancelled {
-    background: rgba(248, 113, 113, 0.1);
-    color: #f87171;
-    border-color: rgba(248, 113, 113, 0.2);
+.btn-premium-outline:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+  background: rgba(212, 175, 55, 0.05);
 }
 
-/* Admin buttons */
-.btn-gold {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 2rem;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0.1) 100%);
-    border: 1px solid var(--color-gold);
-    color: var(--color-gold);
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+/* Layout Utilities */
+.admin-grid {
+  display: grid;
+  gap: 2rem;
 }
 
-.btn-gold:hover {
-    background: var(--color-gold);
-    color: #000;
-    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
-    transform: translateY(-2px);
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }
 
-.btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.8rem 1.6rem;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--color-text-muted);
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.chart-container {
+  height: 400px;
+  width: 100%;
 }
 
-.btn-ghost:hover {
-    color: #fff;
-    border-color: var(--color-gold);
-    background: rgba(212, 175, 55, 0.05);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #252525;
 }
 
 /* Animations */
-@keyframes slide-in-right {
-    from {
-        opacity: 0;
-        transform: translateX(20px);
-    }
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes scale-in {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+.animate-reveal {
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-@keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Modal Stylings */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
-.animate-slide-in-right {
-    animation: slide-in-right 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.admin-modal-content {
+  width: 100%;
+  max-width: 600px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
 }
 
-.animate-scale-in {
-    animation: scale-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Utility for text hierarchy */
+.text-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
 }
 
-.animate-fade-in {
-    animation: fade-in-up 0.6s ease-out forwards;
+/* Layout - top bar + main */
+.admin-topbar {
+  min-height: 4rem;
 }
 
-/* Scrollbar customization */
-.admin-theme ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+.admin-main {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
-.admin-theme ::-webkit-scrollbar-track {
-    background: transparent;
+.admin-sidebar {
+  flex-shrink: 0;
 }
 
-.admin-theme ::-webkit-scrollbar-thumb {
-    background: rgba(212, 175, 55, 0.2);
-    border-radius: 3px;
-    transition: background 0.3s;
+.admin-search-wrap input::placeholder {
+  color: var(--color-text-muted);
 }
 
-.admin-theme ::-webkit-scrollbar-thumb:hover {
-    background: rgba(212, 175, 55, 0.5);
+/* Mobile bottom nav - horizontal tabs */
+.admin-mobile-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
 }
 
-/* Custom Scrollbar Utility */
-.custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(212, 175, 55, 0.2) transparent;
+.admin-mobile-tab:hover {
+  color: #fff;
 }
 
-/* Shop-like Filter Buttons */
-.filter-btn {
-    padding: 0.75rem 2rem;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #666;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-weight: 600;
+.admin-mobile-tab.active,
+.admin-mobile-tab[aria-current="page"] {
+  color: var(--color-gold);
 }
 
-.filter-btn:hover {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.3);
+/* Wireframe: section headings (gold, serif) */
+.admin-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-gold);
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
 }
 
-.filter-btn.active {
-    background: rgba(212, 175, 55, 0.15);
-    color: var(--color-gold);
-    border-color: var(--color-gold);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+/* Filter pills - oval, gold when selected */
+.admin-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border-glow);
+  background: transparent;
+  color: var(--color-text-muted);
+  transition: all 0.2s;
+}
+
+.admin-pill:hover {
+  color: #fff;
+  border-color: var(--color-gold);
+}
+
+.admin-pill.active {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+  color: #000;
+}
+
+/* Reply modal - gold gradient Send button */
+.btn-send-reply {
+  background: linear-gradient(180deg, #e5c24a 0%, var(--color-gold) 50%, #b8941f 100%);
+  color: #000;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: none;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+}
+
+.btn-send-reply:hover {
+  filter: brightness(1.1);
+}
+
+/* Order details progress steps */
+.admin-order-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-order-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.admin-order-step.active {
+  color: var(--color-gold);
+}
+
+.admin-order-step.done {
+  color: var(--color-gold);
+}
+
+.admin-order-step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+}
+
+.admin-order-step.active .admin-order-step-dot,
+.admin-order-step.done .admin-order-step-dot {
+  background: var(--color-gold);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+.admin-order-step-line {
+  flex: 1;
+  height: 2px;
+  max-width: 60px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-order-step.done + .admin-order-step-line,
+.admin-order-step-line.done {
+  background: var(--color-gold);
+  opacity: 0.5;
 }

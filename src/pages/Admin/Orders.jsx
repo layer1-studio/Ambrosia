@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
-import { Search, Package, CheckCircle, Clock, Truck, Mail, Trash2 } from 'lucide-react';
+import { Search, Mail, Trash2, X, MapPin, Phone, User, Filter } from 'lucide-react';
 import './Admin.css';
 
 const Orders = () => {
@@ -21,7 +21,7 @@ const Orders = () => {
                 return {
                     id: doc.id,
                     ...data,
-                    date: data.created_at?.toDate().toLocaleDateString() || new Date().toLocaleDateString(),
+                    dateFormatted: data.created_at?.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) || new Date().toLocaleDateString(),
                     fulfillmentStatus: data.status || 'Pending',
                     paymentStatus: data.paymentStatus || 'Paid',
                     trackingNumber: data.trackingNumber || ''
@@ -52,42 +52,18 @@ const Orders = () => {
             });
             setTrackingInput('');
             setSelectedOrderId(null);
+            alert("Order #" + selectedOrder.id.slice(0, 8) + " marked as Shipped.");
         } catch (error) {
             alert("Failed to save tracking: " + error.message);
         }
     };
 
-    const handleDeleteOrder = (orderId, e) => {
-        if (e) e.stopPropagation();
-        setDeleteConfirm({ show: true, id: orderId });
-    };
-
-    const confirmDelete = async () => {
-        if (deleteConfirm.id) {
-            // await deleteDoc(doc(db, "orders", deleteConfirm.id)); // If deleting is actually desired
-            alert("Order delete action simulated.");
-            setDeleteConfirm({ show: false, id: null });
-        }
-    };
-
-    // New Minimal Status Component
-    const StatusIndicator = ({ status }) => {
-        const getStatusColor = (s) => {
-            switch (s) {
-                case 'Pending': return 'text-gold';
-                case 'Shipped': return 'text-blue-400';
-                case 'Delivered': return 'text-green-400';
-                case 'Cancelled': return 'text-red-400';
-                default: return 'text-gray-400';
-            }
-        };
-
-        return (
-            <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${getStatusColor(status)}`}>
-                <div className="w-1.5 h-1.5 rounded-full bg-current shadow-[0_0_8px_currentColor]"></div>
-                {status}
-            </div>
-        );
+    const getStatusPill = (status) => {
+        const s = status.toLowerCase();
+        if (s === 'delivered' || s === 'completed') return 'success';
+        if (s === 'pending' || s === 'processing') return 'warning';
+        if (s === 'shipped') return 'info';
+        return 'danger';
     };
 
     const filteredOrders = orders.filter(o => {
@@ -98,89 +74,106 @@ const Orders = () => {
         const searchable = [
             o.id || '',
             (o.firstName || '') + ' ' + (o.lastName || ''),
-            o.firstName || '',
-            o.lastName || '',
             o.user || o.email || '',
             o.phone || ''
         ].join(' ').toLowerCase();
         return searchable.includes(term);
     });
 
-    return (
-        <div className="space-y-12 animate-fade-in pb-20">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/5">
-                <div>
-                    <h1 className="text-6xl md:text-7xl font-heading text-white tracking-tighter mb-4">Ledger</h1>
-                    <p className="text-xs uppercase tracking-[0.4em] text-gray-400 font-bold">Transaction History</p>
-                </div>
+    const filterPills = [
+        { value: 'All', label: 'All' },
+        { value: 'Pending', label: 'Pending' },
+        { value: 'Shipped', label: 'Shipped' },
+    ];
 
-                <div className="flex flex-wrap gap-4 items-center">
-                    <div className="relative group">
-                        <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={16} />
+    const steps = ['Ordered', 'Processing', 'Shipped', 'Delivered'];
+    const statusToStep = { Pending: 0, Processing: 1, Shipped: 2, Delivered: 3 };
+    const stepIndex = selectedOrder ? (statusToStep[selectedOrder.fulfillmentStatus] ?? 1) : 0;
+
+    return (
+        <div className="space-y-6 animate-reveal">
+            <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold">Orders</h1>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
+                <div className="flex flex-1 gap-4 w-full">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={18} />
                         <input
                             type="text"
-                            placeholder="Search by order #, name, or phone..."
+                            placeholder="Search orders by ID, name, customer..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg py-2.5 pl-9 pr-4 w-72 text-sm text-white focus:border-gold focus:outline-none transition-all placeholder:text-gray-500"
+                            className="admin-input w-full pl-11 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl focus:border-gold/50"
                         />
                     </div>
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg py-2.5 px-4 text-sm text-white focus:border-gold focus:outline-none cursor-pointer min-w-[160px]"
-                    >
-                        <option value="All" className="bg-[#0a0a0a]">All Status</option>
-                        {['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(status => (
-                            <option key={status} value={status} className="bg-[#0a0a0a]">{status}</option>
-                        ))}
-                    </select>
+                    <div className="relative w-48 shrink-0">
+                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none" size={16} />
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
+                        >
+                            {filterPills.map(({ value, label }) => (
+                                <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label} Status</option>
+                            ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex gap-12 items-start relative">
-                {/* Main Table */}
-                <div className={`flex-1 transition-all duration-500 ${selectedOrder ? 'w-2/3 opacity-40 pointer-events-none blur-sm' : 'w-full'}`}>
-                    <table className="w-full text-left border-collapse">
+            <div className="relative">
+                <div className={`admin-table-wrapper glass-panel rounded-2xl border border-white/5 transition-all duration-300 ${selectedOrder ? 'opacity-40 blur-[2px] pointer-events-none' : ''}`}>
+                    <table className="admin-table">
                         <thead>
-                            <tr className="border-b border-white/5">
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Ref ID</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Client</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Date</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-right">Payment</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-right">Amount</th>
-                                <th className="py-6 px-4 text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold text-center">Status</th>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Date</th>
+                                <th>Payment Status</th>
+                                <th className="text-right">Total Amount</th>
+                                <th>Fulfillment Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={6} className="py-24 text-center text-gold/30 text-[10px] uppercase tracking-[0.5em] animate-pulse">Syncing...</td></tr>
+                                <tr>
+                                    <td colSpan={6} className="py-24 text-center">
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
+                                            <span className="text-sm text-gray-500">Syncing with database...</span>
+                                        </div>
+                                    </td>
+                                </tr>
                             ) : filteredOrders.length === 0 ? (
-                                <tr><td colSpan={6} className="py-24 text-center text-gray-700 text-[10px] uppercase tracking-[0.5em]">No Records</td></tr>
+                                <tr>
+                                    <td colSpan={6} className="py-24 text-center text-gray-500 font-medium">
+                                        No matching orders found.
+                                    </td>
+                                </tr>
                             ) : (
                                 filteredOrders.map(order => (
                                     <tr
                                         key={order.id}
                                         onClick={() => setSelectedOrderId(order.id)}
-                                        className="group cursor-pointer hover:bg-white/[0.02] transition-colors border-b border-white/[0.02]"
+                                        className="cursor-pointer group"
                                     >
-                                        <td className="py-6 px-4 font-mono text-xs text-gold/70 group-hover:text-gold transition-colors">
-                                            #{order.id.slice(0, 8)}
-                                        </td>
-                                        <td className="py-6 px-4">
-                                            <p className="text-sm text-white font-heading">{order.firstName} {order.lastName}</p>
-                                            <p className="text-[10px] text-gray-600 uppercase tracking-wider">{order.user}</p>
-                                        </td>
-                                        <td className="py-6 px-4 text-xs text-gray-500 font-mono">{order.date}</td>
-                                        <td className="py-6 px-4 text-[10px] text-right">
-                                            <span className={`px-2 py-1 rounded-full ${order.paymentStatus === 'Paid' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                        <td className="font-mono text-sm text-gold font-medium">ORD-{order.id.slice(0, 5).toUpperCase()}</td>
+                                        <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
+                                        <td className="text-gray-400 text-sm">{order.dateFormatted}</td>
+                                        <td>
+                                            <span className={`status-pill ${order.paymentStatus === 'Paid' ? 'success' : 'danger'} ${order.paymentStatus === 'Paid' ? '!bg-gold/20 !text-gold' : ''}`}>
                                                 {order.paymentStatus}
                                             </span>
                                         </td>
-                                        <td className="py-6 px-4 text-sm font-bold text-white text-right">${Number(order.total).toFixed(2)}</td>
-                                        <td className="py-6 px-4 flex justify-center">
-                                            <StatusIndicator status={order.fulfillmentStatus} />
+                                        <td className="text-right text-gold font-medium">${Number(order.total).toFixed(2)}</td>
+                                        <td>
+                                            <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
+                                                <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Shipped' ? 'bg-green-500' : 'bg-amber-500'}`} />
+                                                {order.fulfillmentStatus}
+                                            </span>
                                         </td>
                                     </tr>
                                 ))
@@ -189,113 +182,151 @@ const Orders = () => {
                     </table>
                 </div>
 
-                {/* Sliding Detail Panel */}
+                {/* Refined Detail Sidebar Overlay */}
                 {selectedOrder && (
-                    <div className="fixed top-24 right-0 h-[calc(100vh-6rem)] w-[500px] bg-[#080808] border-l border-white/10 shadow-[-50px_0_100px_rgba(0,0,0,0.8)] z-50 animate-slide-in-right overflow-y-auto custom-scrollbar p-12 flex flex-col">
-                        <div className="flex justify-between items-start mb-12">
-                            <div>
-                                <p className="text-[10px] text-gold uppercase tracking-[0.3em] font-bold mb-2">Invoice Details</p>
-                                <h2 className="text-3xl font-heading text-white">#{selectedOrder.id.slice(0, 8)}</h2>
-                            </div>
-                            <button onClick={() => setSelectedOrderId(null)} className="text-gray-500 hover:text-white transition-colors text-2xl">&times;</button>
-                        </div>
-
-                        <div className="space-y-12 flex-1">
-                            {/* Profile */}
-                            <div className="flex items-center gap-6">
-                                <div className="w-16 h-16 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center text-2xl font-heading text-white">
-                                    {selectedOrder.firstName?.charAt(0)}
-                                </div>
-                                <div>
-                                    <h3 className="text-xl text-white font-heading">{selectedOrder.firstName} {selectedOrder.lastName}</h3>
-                                    <div className="flex items-center gap-3 mt-1">
-                                        <Mail size={12} className="text-gray-600" />
-                                        <p className="text-xs text-gray-500 font-mono">{selectedOrder.email}</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <p className="text-xs text-gray-500 font-mono">{selectedOrder.phone}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Items */}
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold border-b border-white/5 pb-2">Manifest</h4>
-                                {selectedOrder.cart?.map((item, i) => (
-                                    <div key={i} className="flex gap-4 items-center">
-                                        <div className="w-12 h-12 bg-white/5 rounded-lg overflow-hidden">
-                                            <img src={item.image} alt="" className="w-full h-full object-cover opacity-80" />
+                    <div className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a] border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] z-50 animate-reveal overflow-y-auto">
+                        <div className="p-6 md:p-8 space-y-8">
+                            {/* Progress bar - Ordered → Processing → Shipped → Delivered */}
+                            <div className="admin-order-steps">
+                                {['Ordered', 'Processing', 'Shipped', 'Delivered'].map((step, i) => (
+                                    <React.Fragment key={step}>
+                                        <div className={`admin-order-step ${i <= stepIndex ? (i < stepIndex ? 'done' : 'active') : ''}`}>
+                                            <div className="admin-order-step-dot" />
+                                            <span>{step}</span>
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm text-white font-body">{item.name}</p>
-                                            <p className="text-[10px] text-gray-500">Qty: {item.quantity}</p>
-                                        </div>
-                                        <p className="text-sm font-mono text-gold">${(item.price * item.quantity).toFixed(2)}</p>
-                                    </div>
+                                        {i < 3 && <div className={`admin-order-step-line ${i < stepIndex ? 'done' : ''}`} />}
+                                    </React.Fragment>
                                 ))}
-                                <div className="flex justify-between pt-4 border-t border-white/5">
-                                    <span className="text-xs uppercase tracking-widest text-gray-500">Total</span>
-                                    <span className="text-xl font-heading text-white">${selectedOrder.total}</span>
+                            </div>
+
+                            {/* Header: Order #12345 - Processing + Update Status, Print Invoice */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-6">
+                                <h2 className="text-2xl font-heading text-gold">Order #{selectedOrder.id.slice(0, 8).toUpperCase()} - {selectedOrder.fulfillmentStatus}</h2>
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => { /* open status modal or inline */ }}
+                                        className="btn-premium btn-premium-gold px-5 py-2.5 rounded-xl text-sm font-bold"
+                                    >
+                                        Update Status
+                                    </button>
+                                    <button className="btn-premium btn-premium-outline px-5 py-2.5 rounded-xl text-sm font-bold border-gold/30 text-gold hover:bg-gold/10">
+                                        Print Invoice
+                                    </button>
+                                    <button onClick={() => setSelectedOrderId(null)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors" aria-label="Close">
+                                        <X size={20} />
+                                    </button>
                                 </div>
                             </div>
 
-                            {/* Logistics */}
-                            <div className="space-y-4">
-                                <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold border-b border-white/5 pb-2">Logistics</h4>
-                                <Truck size={12} className="text-gold mt-1" />
-                                <p className="text-sm text-gray-300 font-light leading-relaxed">
-                                    {selectedOrder.address}<br />
-                                    {selectedOrder.city}, {selectedOrder.country}
-                                </p>
+                            {/* Customer Info + Shipping Address cards */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="glass-panel p-6 rounded-2xl border border-gold/10">
+                                    <h3 className="admin-section-title text-gold mb-4">Customer Info</h3>
+                                    <div className="space-y-3 text-sm">
+                                        <div className="flex items-center gap-3 text-gray-300">
+                                            <User size={18} className="text-gold shrink-0" />
+                                            <span>Name</span>
+                                            <span className="text-white font-medium ml-auto">{selectedOrder.firstName} {selectedOrder.lastName}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-gray-300">
+                                            <Mail size={18} className="text-gold shrink-0" />
+                                            <span>Email</span>
+                                            <span className="text-white font-medium ml-auto truncate max-w-[180px]">{selectedOrder.email}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-gray-300">
+                                            <Phone size={18} className="text-gold shrink-0" />
+                                            <span>Phone</span>
+                                            <span className="text-white font-medium ml-auto">{selectedOrder.phone || '—'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="glass-panel p-6 rounded-2xl border border-gold/10">
+                                    <h3 className="admin-section-title text-gold mb-4">Shipping Address</h3>
+                                    <div className="flex gap-4">
+                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                                            <MapPin size={24} className="text-gold" />
+                                        </div>
+                                        <div className="text-sm text-gray-300">
+                                            <p className="text-white font-medium">{selectedOrder.address}</p>
+                                            <p>{selectedOrder.city}, {selectedOrder.zip}</p>
+                                            <p>Delivery method: Delivery</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Actions */}
-                        <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5 space-y-6">
-                            <h4 className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold">Update Status</h4>
-                            <div className="grid grid-cols-2 gap-3">
+                            {/* Itemized Order Summary */}
+                            <div className="glass-panel p-6 rounded-2xl border border-gold/10">
+                                <h3 className="admin-section-title text-gold mb-4">Itemized Order Summary</h3>
+                                <div className="space-y-4">
+                                    {selectedOrder.cart?.map((item, i) => (
+                                        <div key={i} className="flex items-center gap-4 py-3 border-b border-white/5 last:border-0">
+                                            <div className="w-14 h-14 rounded-lg overflow-hidden bg-black flex-shrink-0 flex items-center justify-center text-gray-600">
+                                                {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <span className="text-xs">X</span>}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-white">{item.name}</p>
+                                                <p className="text-xs text-gold">Gold Price</p>
+                                            </div>
+                                            <p className="text-gold font-semibold">${(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-6 pt-4 border-t border-white/5 text-right space-y-2">
+                                    <div className="flex justify-end gap-8 text-sm">
+                                        <span className="text-gray-400">Subtotal</span>
+                                        <span className="text-gold">${selectedOrder.total}</span>
+                                    </div>
+                                    <div className="flex justify-end gap-8 text-sm">
+                                        <span className="text-gray-400">Tax</span>
+                                        <span className="text-gold">$0.00</span>
+                                    </div>
+                                    <div className="flex justify-end gap-8 text-lg font-heading pt-2">
+                                        <span className="text-white">Total</span>
+                                        <span className="text-gold font-bold">${selectedOrder.total}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Fulfillment quick actions */}
+                            <div className="flex flex-wrap gap-3">
                                 {['Pending', 'Processing', 'Shipped', 'Delivered'].map(status => (
                                     <button
                                         key={status}
                                         onClick={() => handleStatusChange(selectedOrder.id, status)}
-                                        className={`py-3 px-4 rounded-lg text-[10px] uppercase tracking-widest font-bold transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
+                                        className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
                                     >
                                         {status}
                                     </button>
                                 ))}
-                            </div>
-                            <div className="relative">
                                 <input
                                     type="text"
                                     value={trackingInput}
                                     onChange={(e) => setTrackingInput(e.target.value)}
-                                    placeholder="ADD TRACKING #"
-                                    className="w-full bg-black border border-white/10 rounded-lg py-3 px-4 text-xs font-mono text-white focus:border-gold outline-none"
+                                    placeholder="Tracking number..."
+                                    className="admin-input flex-1 min-w-[120px] py-2 text-sm"
                                 />
-                                <button
-                                    onClick={handleSaveTracking}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-bold uppercase text-gold hover:text-white transition-colors"
-                                >
-                                    Save
+                                <button onClick={handleSaveTracking} disabled={!trackingInput.trim()} className="btn-premium btn-premium-gold py-2 px-4 text-sm disabled:opacity-30">
+                                    Mark Shipped
                                 </button>
                             </div>
                         </div>
                     </div>
                 )}
             </div>
-            {/* Custom Delete Confirmation Modal */}
+
+            {/* Modal - Simulated Print/Delete */}
             {deleteConfirm.show && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 animate-fade-in">
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setDeleteConfirm({ show: false, id: null })}></div>
-                    <div className="relative w-full max-w-sm bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 shadow-2xl animate-scale-in text-center">
-                        <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
+                <div className="admin-modal-overlay">
+                    <div className="admin-modal-content p-8 text-center animate-reveal">
+                        <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-red-500">
                             <Trash2 size={32} />
                         </div>
-                        <h3 className="text-xl font-heading text-white mb-2">Delete Record?</h3>
-                        <p className="text-sm text-gray-500 mb-8 leading-relaxed">This action is permanent for the ledger. Are you sure?</p>
+                        <h3 className="text-2xl font-heading text-white mb-2">Confirm Removal</h3>
+                        <p className="text-gray-500 text-sm mb-8">Are you sure you want to delete order #{deleteConfirm.id?.slice(0, 8)}? This workflow cannot be reversed.</p>
                         <div className="flex gap-4">
-                            <button onClick={() => setDeleteConfirm({ show: false, id: null })} className="flex-1 py-3 rounded-xl border border-white/10 text-[10px] uppercase tracking-widest font-bold hover:bg-white/5 transition-colors">Cancel</button>
-                            <button onClick={confirmDelete} className="flex-1 py-3 rounded-xl bg-red-600 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20">Confirm</button>
+                            <button className="flex-1 btn-premium btn-premium-outline" onClick={() => setDeleteConfirm({ show: false, id: null })}>Dismiss</button>
+                            <button className="flex-1 btn-premium bg-red-600 text-white hover:bg-red-500" onClick={() => alert("Action restricted in demo mode")}>Confirm Delete</button>
                         </div>
                     </div>
                 </div>

@@ -1,29 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { Mail, Search, Trash2, Send, AlertCircle, Archive, Check } from 'lucide-react';
+import { collection, onSnapshot, updateDoc, doc, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
+import { Mail, Send, Trash2, Archive, Check, User, MoreVertical, PenSquare } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import './Admin.css';
+
+// --- EmailJS Configuration ---
+// Update these with your live credentials from https://www.emailjs.com/
+const EMAILJS_CONFIG = {
+    SERVICE_ID: 'service_vnv2zdj',
+    TEMPLATE_ID: 'template_bny43aj',
+    PUBLIC_KEY: 'BsB9Xsr8nr5Yo-WuD'
+};
 
 const Messages = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filter, setFilter] = useState('all');
     const [replyText, setReplyText] = useState('');
     const [sending, setSending] = useState(false);
-    const [deleteConfirm, setDeleteConfirm] = useState({ show: false, id: null });
+    const [replyModalOpen, setReplyModalOpen] = useState(false);
+    const [statusFilter, setStatusFilter] = useState('all'); // all, new, archived
 
     useEffect(() => {
-        const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+        const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const msgs = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt?.toDate() || new Date()
+            setMessages(snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date()
+                };
             }));
-            setMessages(msgs);
             setLoading(false);
         });
         return () => unsubscribe();
@@ -32,203 +41,220 @@ const Messages = () => {
     const handleSelectMessage = async (msg) => {
         setSelectedMessage(msg);
         if (msg.status === 'new') {
-            await updateDoc(doc(db, 'messages', msg.id), { status: 'read' });
+            try {
+                await updateDoc(doc(db, "messages", msg.id), { status: 'read' });
+            } catch (error) {
+                console.error("Error updating status:", error);
+            }
         }
     };
 
-    const handleDelete = (id, e) => {
-        if (e) e.stopPropagation();
-        setDeleteConfirm({ show: true, id });
-    };
 
-    const confirmDelete = async () => {
-        if (deleteConfirm.id) {
-            await deleteDoc(doc(db, 'messages', deleteConfirm.id));
-            if (selectedMessage?.id === deleteConfirm.id) setSelectedMessage(null);
-            setDeleteConfirm({ show: false, id: null });
+    const handleDelete = async (id, e) => {
+        e?.stopPropagation();
+        if (window.confirm("Permanently purge this correspondence?")) {
+            try {
+                await deleteDoc(doc(db, "messages", id));
+                if (selectedMessage?.id === id) setSelectedMessage(null);
+            } catch (error) {
+                alert("Error deleting message: " + error.message);
+            }
         }
     };
 
     const handleArchive = async (id, e) => {
-        if (e) e.stopPropagation();
-        await updateDoc(doc(db, 'messages', id), { status: 'archived' });
-        if (selectedMessage?.id === id) setSelectedMessage(null);
+        e?.stopPropagation();
+        try {
+            await updateDoc(doc(db, "messages", id), { status: 'archived' });
+            if (selectedMessage?.id === id) setSelectedMessage(null);
+        } catch (error) {
+            alert("Error archiving message: " + error.message);
+        }
     };
 
-    const handleReply = async () => {
+    const filteredMessages = messages.filter(msg => {
+        let matchesStatus = true;
+        if (statusFilter === 'new') matchesStatus = msg.status === 'new' || msg.status === 'read';
+        if (statusFilter === 'archived') matchesStatus = msg.status === 'archived';
+        return matchesStatus;
+    });
+
+    const unreadCount = messages.filter(m => m.status === 'new').length;
+    const archivedCount = messages.filter(m => m.status === 'archived').length;
+
+    const openReplyModal = () => setReplyModalOpen(true);
+    const closeReplyModal = () => {
+        setReplyModalOpen(false);
+        setReplyText('');
+    };
+    const handleReplySubmit = async () => {
         if (!replyText.trim() || !selectedMessage) return;
         setSending(true);
-
         try {
-            const serviceID = 'service_vnv2zdj';
-            const templateID = 'template_bny43aj';
-            const publicKey = 'BsB9Xsr8nr5Yo-WuD';
-
-            const templateParams = {
-                to_name: selectedMessage.name,
-                to_email: selectedMessage.email,
-                original_message: selectedMessage.message,
-                reply_message: replyText,
-                subject: `Re: ${selectedMessage.subject}`
-            };
-
-            await emailjs.send(serviceID, templateID, templateParams, publicKey);
-            await updateDoc(doc(db, 'messages', selectedMessage.id), {
-                status: 'replied',
-                repliedAt: new Date()
-            });
-
-            alert(`Reply sent to ${selectedMessage.email}`);
+            await emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                { to_name: selectedMessage.name, to_email: selectedMessage.email, message: replyText, subject: `Re: ${selectedMessage.subject}` },
+                EMAILJS_CONFIG.PUBLIC_KEY
+            );
+            await updateDoc(doc(db, "messages", selectedMessage.id), { status: 'replied', reply: replyText, repliedAt: Timestamp.now() });
             setReplyText('');
-        } catch (error) {
-            console.error("Failed to send reply:", error);
-            alert(`Transmission failed. Error: ${error.text || error.message}`);
+            closeReplyModal();
+        } catch (err) {
+            alert('Failed to send reply: ' + err.message);
         } finally {
             setSending(false);
         }
     };
 
-    const filteredMessages = messages.filter(msg => {
-        const matchesSearch =
-            (msg.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (msg.subject || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (msg.email || '').toLowerCase().includes(searchTerm.toLowerCase());
-
-        if (filter === 'unread') return matchesSearch && msg.status === 'new';
-        if (filter === 'all') return matchesSearch && msg.status !== 'archived';
-        return matchesSearch;
-    });
-
-    if (loading) return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-            <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Syncing Inbox...</p>
-        </div>
-    );
-
     return (
-        <div className="flex flex-col space-y-6 animate-fade-in pb-8">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-heading text-white tracking-tight mb-2">Messages</h1>
-                    <p className="text-xs uppercase tracking-[0.2em] text-gray-400">Client Inquiries</p>
-                </div>
-                <div className="relative group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gold transition-colors" size={16} />
-                    <input
-                        type="text"
-                        placeholder="Search by name, subject, email..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-white/5 border border-white/10 rounded-lg py-2.5 pl-10 pr-4 w-full md:w-72 text-sm text-white focus:border-gold outline-none transition-all placeholder:text-gray-500"
-                    />
-                </div>
-            </div>
-
-            <div className="flex flex-1 min-h-[500px] gap-0 bg-[#080808] border border-white/5 rounded-2xl overflow-hidden">
-                {/* List View */}
-                <div className={`w-full lg:w-[320px] xl:w-[380px] flex flex-col border-r border-white/5 shrink-0 ${selectedMessage ? 'hidden lg:flex' : 'flex'}`}>
-                    <div className="p-3 flex gap-2 border-b border-white/5">
-                        {['all', 'unread'].map(f => (
+        <div className="h-[calc(100vh-140px)] flex flex-col animate-reveal min-h-0">
+            <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+                {/* Column 1: FILTERS */}
+                <aside className="w-[200px] shrink-0 flex flex-col border-r border-white/5 pr-4">
+                    <h2 className="admin-section-title text-gold font-heading mb-4">FILTERS</h2>
+                    <div className="space-y-1">
+                        {[
+                            { id: 'all', label: 'All' },
+                            { id: 'new', label: 'Unread', badge: unreadCount },
+                            { id: 'archived', label: 'Archived', badge: archivedCount },
+                        ].map(({ id, label, badge }) => (
                             <button
-                                key={f}
-                                onClick={() => setFilter(f)}
-                                className={`flex-1 py-2.5 text-[10px] uppercase tracking-wider font-bold rounded-lg transition-all ${filter === f ? 'bg-gold/15 text-gold border border-gold/30' : 'text-gray-500 hover:bg-white/5 border border-transparent'}`}
+                                key={id}
+                                type="button"
+                                onClick={() => setStatusFilter(id)}
+                                className={`w-full flex items-center justify-between py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${statusFilter === id ? 'text-gold border-b-2 border-gold' : 'text-gray-400 hover:text-white'}`}
                             >
-                                {f === 'all' ? 'All' : 'Unread'}
+                                <span>{label}</span>
+                                {badge !== undefined && (
+                                    <span className="w-5 h-5 rounded-full bg-gold/20 text-gold text-xs font-bold flex items-center justify-center">{badge}</span>
+                                )}
                             </button>
                         ))}
                     </div>
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
-                        {filteredMessages.length === 0 ? (
-                            <div className="p-10 text-center opacity-30 text-[10px] uppercase tracking-widest">No Messages</div>
+                </aside>
+
+                {/* Column 2: INBOX */}
+                <div className="w-[320px] lg:w-[380px] shrink-0 flex flex-col border-r border-white/5 overflow-hidden">
+                    <div className="flex items-center justify-between mb-4 shrink-0">
+                        <h2 className="admin-section-title text-gold font-heading mb-0">INBOX</h2>
+                        <button type="button" className="btn-premium btn-premium-gold !py-2 !px-4 text-xs font-bold rounded-xl">
+                            <PenSquare size={14} />
+                            New Message
+                        </button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-2">
+                        {loading ? (
+                            Array(5).fill(0).map((_, i) => <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />)
+                        ) : filteredMessages.length === 0 ? (
+                            <div className="py-8 text-center text-gray-500 text-sm">No messages</div>
                         ) : (
                             filteredMessages.map(msg => (
                                 <div
                                     key={msg.id}
                                     onClick={() => handleSelectMessage(msg)}
-                                    className={`p-4 md:p-5 border-b border-white/5 cursor-pointer hover:bg-white/[0.03] transition-colors relative ${selectedMessage?.id === msg.id ? 'bg-gold/[0.08] border-l-2 border-l-gold' : ''}`}
+                                    className={`flex gap-3 p-3 rounded-xl cursor-pointer transition-all ${selectedMessage?.id === msg.id ? 'bg-gold/10 border border-gold/20' : 'hover:bg-white/5 border border-transparent'}`}
                                 >
-                                    <div className="flex justify-between items-start gap-2 mb-1">
-                                        <h4 className={`text-sm font-semibold truncate flex-1 ${msg.status === 'new' ? 'text-white' : 'text-gray-400'}`}>{msg.name}</h4>
-                                        {msg.status === 'new' && <span className="w-2 h-2 rounded-full bg-gold shrink-0 mt-1.5"></span>}
-                                        {msg.status === 'replied' && <Check size={14} className="text-green-500 shrink-0" />}
+                                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
+                                        <User size={18} />
                                     </div>
-                                    <p className="text-xs text-gray-300 truncate mb-1">{msg.subject}</p>
-                                    <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">{msg.message}</p>
-                                    <p className="text-[10px] text-gray-600 mt-2">{msg.createdAt.toLocaleDateString()}</p>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-medium text-gold truncate">{msg.name}</p>
+                                        <p className="text-xs text-gray-500 truncate">{msg.message?.slice(0, 40)}...</p>
+                                        <div className="flex items-center justify-between mt-1">
+                                            <span className="text-[10px] text-gray-500">{msg.createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+                                            {msg.status === 'new' && <span className="w-4 h-4 rounded-full bg-gold text-black text-[10px] font-bold flex items-center justify-center">1</span>}
+                                        </div>
+                                    </div>
                                 </div>
                             ))
                         )}
                     </div>
                 </div>
 
-                {/* Reading Pane */}
-                <div className={`flex-1 flex flex-col min-w-0 bg-[#050505]/50 lg:bg-transparent absolute inset-0 lg:static z-20 ${selectedMessage ? 'flex' : 'hidden lg:flex'}`}>
+                {/* Column 3: MESSAGE */}
+                <div className={`flex-1 flex flex-col min-w-0 glass-panel rounded-2xl border border-white/5 overflow-hidden ${!selectedMessage ? 'hidden lg:flex items-center justify-center' : ''}`}>
                     {selectedMessage ? (
                         <>
-                            <div className="p-4 md:p-6 border-b border-white/5 flex flex-wrap justify-between items-start gap-4 bg-white/[0.02]">
-                                <div className="flex items-start gap-4 min-w-0 flex-1">
-                                    <button onClick={() => setSelectedMessage(null)} className="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white"><AlertCircle className="rotate-180" size={20} /></button>
-                                    <div className="w-11 h-11 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-lg font-heading text-gold shrink-0">
+                            <div className="p-6 border-b border-white/5 flex justify-between items-start shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center text-gold font-heading text-xl shrink-0">
                                         {selectedMessage.name.charAt(0)}
                                     </div>
-                                    <div className="min-w-0">
-                                        <h2 className="text-lg font-heading text-white truncate">{selectedMessage.subject}</h2>
-                                        <p className="text-xs text-gray-500 mt-0.5 truncate">{selectedMessage.name} &bull; {selectedMessage.email}</p>
-                                        <p className="text-[10px] text-gray-600 mt-1">{selectedMessage.createdAt.toLocaleString()}</p>
+                                    <div>
+                                        <p className="text-gold font-semibold">{selectedMessage.name}</p>
+                                        <p className="text-sm text-gray-500">{selectedMessage.email}</p>
+                                        <a href="#contact-details" className="text-xs text-gold hover:underline mt-0.5 inline-block">Contact - Details</a>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1 shrink-0">
-                                    <button onClick={(e) => handleArchive(selectedMessage.id, e)} className="p-2 hover:bg-white/5 hover:text-gold rounded-lg text-gray-500 transition-colors" title="Archive"><Archive size={18} /></button>
-                                    <button onClick={(e) => handleDelete(selectedMessage.id, e)} className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-lg text-gray-500 transition-colors" title="Delete"><Trash2 size={18} /></button>
-                                </div>
-                            </div>
-
-                            <div className="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar">
-                                <p className="text-gray-300 leading-relaxed whitespace-pre-wrap text-sm border-l-2 border-gold/30 pl-4">
-                                    {selectedMessage.message}
-                                </p>
-                            </div>
-
-                            <div className="p-4 md:p-6 border-t border-white/5 bg-white/[0.02] shrink-0">
-                                <textarea
-                                    value={replyText}
-                                    onChange={(e) => setReplyText(e.target.value)}
-                                    placeholder="Compose your reply..."
-                                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl p-4 text-sm text-white focus:border-gold/50 outline-none min-h-[120px] resize-none transition-all placeholder:text-gray-500 leading-relaxed mb-3"
-                                ></textarea>
-                                <button
-                                    onClick={handleReply}
-                                    disabled={!replyText.trim() || sending}
-                                    className="btn-gold !py-2.5 !px-6 rounded-lg flex items-center gap-2 text-xs"
-                                >
-                                    {sending ? 'Sending...' : <><Send size={14} /> Send Reply</>}
+                                <button type="button" onClick={(e) => handleDelete(selectedMessage.id, e)} className="p-2 text-gray-500 hover:text-white rounded-lg" aria-label="More options">
+                                    <MoreVertical size={20} />
                                 </button>
+                            </div>
+                            <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+                                <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{selectedMessage.message}</p>
+                            </div>
+                            <div className="p-6 border-t border-white/5 bg-white/[0.01] shrink-0">
+                                {!selectedMessage.reply ? (
+                                    <button
+                                        type="button"
+                                        onClick={openReplyModal}
+                                        className="btn-premium btn-premium-gold font-bold rounded-xl px-8 py-3"
+                                    >
+                                        REPLY TO MESSAGE
+                                    </button>
+                                ) : (
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 text-green-400 text-sm font-bold uppercase tracking-wider">
+                                            <Check size={18} strokeWidth={3} />
+                                            DISPATCHED REPLY
+                                        </div>
+                                        <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/10 text-gray-400 text-sm italic leading-relaxed">
+                                            "{selectedMessage.reply}"
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center opacity-20">
-                            <Mail size={48} strokeWidth={1} />
-                            <p className="text-[10px] uppercase tracking-[0.3em] mt-4 font-bold">Select a thread</p>
+                        <div className="text-center p-8">
+                            <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4 text-gold">
+                                <Mail size={28} />
+                            </div>
+                            <p className="text-gray-500 text-sm">Select a message</p>
                         </div>
                     )}
                 </div>
             </div>
-            {/* Custom Delete Confirmation Modal */}
-            {deleteConfirm.show && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 animate-fade-in">
-                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setDeleteConfirm({ show: false, id: null })}></div>
-                    <div className="relative w-full max-w-sm bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 shadow-2xl animate-scale-in text-center">
-                        <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
-                            <Trash2 size={32} />
+
+            {/* Reply Modal - wireframe: recipient, subject, textarea, Discard, Send Reply */}
+            {replyModalOpen && selectedMessage && (
+                <div className="admin-modal-overlay" onClick={closeReplyModal}>
+                    <div className="admin-modal-content p-6 md:p-8 rounded-2xl border border-gold/20 shadow-2xl max-w-lg w-full animate-reveal" onClick={e => e.stopPropagation()}>
+                        <div className="mb-6">
+                            <p className="text-xl font-heading font-bold text-gold">{selectedMessage.name}</p>
+                            <p className="text-sm text-gold/90 mt-0.5">Re: {selectedMessage.subject}</p>
                         </div>
-                        <h3 className="text-xl font-heading text-white mb-2">Delete Thread?</h3>
-                        <p className="text-sm text-gray-500 mb-8 leading-relaxed">This conversation will be permanently removed. Are you sure?</p>
-                        <div className="flex gap-4">
-                            <button onClick={() => setDeleteConfirm({ show: false, id: null })} className="flex-1 py-3 rounded-xl border border-white/10 text-[10px] uppercase tracking-widest font-bold hover:bg-white/5 transition-colors">Cancel</button>
-                            <button onClick={confirmDelete} className="flex-1 py-3 rounded-xl bg-red-600 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-red-500 transition-colors shadow-lg shadow-red-600/20">Confirm</button>
+                        <textarea
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            placeholder="Type your message..."
+                            className="admin-input w-full min-h-[200px] resize-none rounded-xl bg-white/[0.04] border-gold/20 text-white placeholder:text-gray-500"
+                            autoFocus
+                        />
+                        <div className="flex items-center justify-between gap-4 mt-6">
+                            <button type="button" onClick={closeReplyModal} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+                                <Trash2 size={18} />
+                                Discard
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleReplySubmit}
+                                disabled={!replyText.trim() || sending}
+                                className="btn-send-reply flex items-center gap-2 disabled:opacity-50"
+                            >
+                                {sending ? 'Sending...' : <>Send Reply</>}
+                            </button>
                         </div>
                     </div>
                 </div>

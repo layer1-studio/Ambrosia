@@ -2,15 +2,19 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, Legend
 } from 'recharts';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, DollarSign, ShoppingBag, Users, Activity } from 'lucide-react';
+import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Admin.css';
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const Dashboard = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [recentPage, setRecentPage] = useState(0);
+    const recentPageSize = 5;
 
     useEffect(() => {
         const q = query(collection(db, "orders"), orderBy("created_at", "asc"));
@@ -19,9 +23,10 @@ const Dashboard = () => {
                 id: doc.id,
                 ...doc.data(),
                 dateObj: doc.data().created_at?.toDate(),
-                date: doc.data().created_at?.toDate().toLocaleDateString() || 'N/A'
+                date: doc.data().created_at?.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) || 'N/A',
+                dateFull: doc.data().created_at?.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) || 'N/A',
+                status: doc.data().status || 'Pending',
             }));
-            // Sort for chart (oldest to newest)
             ordersData.sort((a, b) => (a.dateObj || 0) - (b.dateObj || 0));
             setOrders(ordersData);
             setLoading(false);
@@ -32,188 +37,179 @@ const Dashboard = () => {
     const analytics = useMemo(() => {
         const totalRevenue = orders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
         const totalOrders = orders.length;
-        const uniqueCustomers = new Set(orders.map(o => o.user)).size;
+        const uniqueCustomers = new Set(orders.map(o => o.user || o.email)).size;
         const averageOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
 
-        // Group by date for chart
         const salesByDate = {};
         orders.forEach(o => {
             if (!salesByDate[o.date]) salesByDate[o.date] = 0;
             salesByDate[o.date] += Number(o.total);
         });
+        const salesData = Object.entries(salesByDate).map(([date, sales]) => ({ date, sales }));
 
-        const salesData = Object.entries(salesByDate).map(([date, sales]) => ({
-            date,
-            sales
-        }));
-
-        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData };
+        const revenueByMonth = MONTHS.map((m, i) => {
+            const monthOrders = orders.filter(o => {
+                const d = o.dateObj;
+                if (!d) return false;
+                return d.getMonth() === i;
+            });
+            const current = monthOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+            const prev = Math.round(current * 0.85);
+            return { month: m, currentYear: current, previousYear: prev };
+        });
+        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth };
     }, [orders]);
 
+    const recentOrders = useMemo(() => [...orders].reverse(), [orders]);
+    const paginatedRecent = recentOrders.slice(recentPage * recentPageSize, (recentPage + 1) * recentPageSize);
+    const totalRecentPages = Math.max(1, Math.ceil(recentOrders.length / recentPageSize));
+
     if (loading) return (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-            <div className="w-12 h-12 border-t-2 border-gold rounded-full animate-spin"></div>
-            <p className="text-gold/50 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Initializing Command Center...</p>
+        <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="w-12 h-12 border-4 border-gold/10 border-t-gold rounded-full animate-spin mb-4" />
+            <p className="text-gray-500 font-medium">Preparing your insights...</p>
         </div>
     );
 
-    const MetricCard = ({ label, value, subtext, trend, icon: Icon }) => (
-        <div className="group relative p-8 rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500 overflow-hidden">
-            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity">
-                {Icon ? <Icon size={100} /> : <TrendingUp size={100} />}
-            </div>
-            <div className="flex justify-between items-start mb-4">
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-gray-500">{label}</p>
-                {Icon && <Icon size={18} className="text-gold" />}
-            </div>
-            <h3 className="text-5xl font-heading text-white mb-2 tracking-tight group-hover:scale-105 transition-transform origin-left duration-500">
-                {value}
-            </h3>
-            <div className="flex items-center gap-4">
-                <p className="text-xs font-mono text-gold opacity-80">{subtext}</p>
+    const MetricCard = ({ label, value, icon: Icon, trend }) => (
+        <div className="admin-stat-card glass-panel animate-reveal flex flex-col">
+            <div className="flex justify-between items-start mb-3">
+                <div className="p-3 rounded-xl bg-gold/10 text-gold">
+                    <Icon size={24} />
+                </div>
                 {trend && (
-                    <span className="text-[10px] font-bold text-green-400 flex items-center gap-1 bg-green-400/10 px-2 py-1 rounded-full">
-                        <ArrowUpRight size={10} /> {trend}
-                    </span>
+                    <span className="text-xs font-semibold text-green-500">+{trend}% vs last month</span>
                 )}
             </div>
+            <p className="text-label mb-1">{label}</p>
+            <p className="text-2xl md:text-3xl font-heading text-gold tracking-tight">{value}</p>
+            <div className="mt-auto pt-4 h-8 flex items-end">
+                <div className="w-full h-6 bg-gold/10 rounded overflow-hidden flex gap-0.5 items-end">
+                    {[2, 4, 3, 5, 4, 6].map((h, i) => (
+                        <div key={i} className="flex-1 bg-gold/50 rounded-t min-h-[4px]" style={{ height: `${h * 4}px` }} />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 
-    return (
-        <div className="space-y-16 animate-fade-in pb-20">
-            {/* Editorial Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-10">
-                <div>
-                    <h1 className="text-6xl md:text-7xl font-heading text-white tracking-tighter mb-4">
-                        Overview
-                    </h1>
-                    <div className="flex items-center gap-4">
-                        <div className="h-[1px] w-12 bg-gold/50"></div>
-                        <p className="text-xs uppercase tracking-[0.4em] text-gray-400 font-bold">Executive Summary</p>
-                    </div>
-                </div>
-                <div className="flex gap-4">
-                    <button className="btn-ghost">Download Report</button>
-                    <button className="btn-gold">System Status</button>
-                </div>
-            </div>
+    const getStatusPill = (status) => {
+        const s = (status || '').toLowerCase();
+        if (s === 'delivered' || s === 'completed') return 'status-pill success';
+        if (s === 'shipped') return 'status-pill info';
+        if (s === 'processing') return 'status-pill warning';
+        return 'status-pill warning';
+    };
 
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    return (
+        <div className="space-y-8 animate-reveal">
+            {/* KPI Cards - wireframe style */}
+            <div className="grid grid-cols-2 gap-6">
                 <MetricCard
                     label="Total Revenue"
                     value={`$${analytics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
-                    subtext="Gross Income"
-                    trend="12.5%"
                     icon={DollarSign}
+                    trend="15"
                 />
                 <MetricCard
                     label="Total Orders"
-                    value={analytics.totalOrders}
-                    subtext="Transactions"
-                    trend="8.1%"
+                    value={analytics.totalOrders.toLocaleString()}
                     icon={ShoppingBag}
+                    trend="8"
                 />
                 <MetricCard
-                    label="Active Clients"
-                    value={analytics.uniqueCustomers}
-                    subtext="Unique Wallets"
-                    trend="4.2%"
+                    label="Total Customers"
+                    value={analytics.uniqueCustomers.toLocaleString()}
                     icon={Users}
+                    trend="20"
                 />
                 <MetricCard
-                    label="Avg. Order Value"
-                    value={`$${analytics.averageOrderValue.toFixed(0)}`}
-                    subtext="Per Transaction"
-                    trend="1.8%"
-                    icon={Activity}
+                    label="Avg Order Value"
+                    value={`$${Math.round(analytics.averageOrderValue)}`}
+                    icon={Tag}
+                    trend="5"
                 />
             </div>
 
-            {/* Main Content Split */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* Chart Section */}
-                <div className="xl:col-span-2 p-8 rounded-[2.5rem] bg-white/[0.01] border border-white/5 relative overflow-hidden">
-                    <div className="flex justify-between items-center mb-12">
-                        <div>
-                            <h3 className="text-3xl font-heading text-white">Performance</h3>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-2">Revenue Velocity</p>
+            {/* Revenue Over Time - Full Width */}
+            <div className="glass-panel p-8 rounded-2xl border border-white/5">
+                <h3 className="admin-section-title text-xl font-heading text-gold mb-6">Revenue Over Time</h3>
+                <div className="chart-container" style={{ height: 320 }}>
+                    {analytics.revenueByMonth.some(d => d.currentYear > 0 || d.previousYear > 0) ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={analytics.revenueByMonth} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorPrevious" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} tickFormatter={v => v >= 1e6 ? `$${(v / 1e6).toFixed(1)}m` : `$${v}`} />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '12px 16px' }}
+                                    formatter={(value) => [`$${Number(value).toLocaleString()}`, '']}
+                                    labelFormatter={(l) => l}
+                                />
+                                <Legend wrapperStyle={{ paddingTop: 12 }} iconType="line" formatter={(value) => <span className="text-gray-400 text-sm">{value}</span>} />
+                                <Area type="monotone" dataKey="currentYear" name="Current Year" stroke="#D4AF37" strokeWidth={2} fill="url(#colorCurrent)" />
+                                <Line type="monotone" dataKey="previousYear" name="Previous Year" stroke="#D4AF37" strokeDasharray="5 5" strokeOpacity={0.6} dot={false} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-500">
+                            <TrendingUp size={48} className="opacity-20 mb-4" />
+                            <p className="text-sm">Revenue data will appear here</p>
                         </div>
-                        <select className="bg-transparent text-white text-xs uppercase tracking-widest border-none outline-none cursor-pointer hover:text-gold transition-colors">
-                            <option className="bg-black">This Month</option>
-                            <option className="bg-black">Last Month</option>
-                            <option className="bg-black">YTD</option>
-                        </select>
-                    </div>
-
-                    <div className="h-[400px] w-full">
-                        {analytics.salesData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={analytics.salesData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.2} />
-                                            <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                                    <XAxis
-                                        dataKey="date"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#666', fontSize: 10, fontWeight: 700 }}
-                                        dy={20}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#666', fontSize: 10, fontWeight: 700 }}
-                                        tickFormatter={v => `$${v}`}
-                                    />
-                                    <Tooltip
-                                        contentStyle={{ backgroundColor: '#050505', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', padding: '16px' }}
-                                        itemStyle={{ color: '#D4AF37', fontWeight: 'bold' }}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="sales"
-                                        stroke="#D4AF37"
-                                        strokeWidth={2}
-                                        fill="url(#colorSales)"
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full flex items-center justify-center opacity-20">
-                                <p className="text-[10px] uppercase tracking-widest">No data available</p>
-                            </div>
-                        )}
-                    </div>
+                    )}
                 </div>
+            </div>
 
-                {/* Live Feed */}
-                <div className="rounded-[2.5rem] bg-white/[0.01] border border-white/5 p-8 flex flex-col">
-                    <h3 className="text-2xl font-heading text-white mb-8">Recent Activity</h3>
-                    <div className="flex-1 space-y-6 overflow-y-auto custom-scrollbar max-h-[400px] pr-2">
-                        {orders.slice().reverse().slice(0, 5).map(order => (
-                            <div key={order.id} className="flex items-center justify-between group cursor-pointer hover:bg-white/[0.02] p-2 rounded-xl transition-colors">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-xs font-heading text-gray-400 group-hover:border-gold/50 group-hover:text-gold transition-colors">
-                                        {order.firstName?.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-white font-body">{order.firstName} {order.lastName}</p>
-                                        <p className="text-[9px] text-gray-600 uppercase tracking-wider font-bold">{order.date}</p>
-                                    </div>
-                                </div>
-                                <span className="text-xs font-bold text-gold">${Number(order.total).toFixed(0)}</span>
-                            </div>
-                        ))}
+            {/* Recent Orders - Full Width */}
+            <div className="glass-panel p-8 rounded-2xl border border-white/5 flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="admin-section-title text-xl font-heading text-gold mb-0">Recent Orders</h3>
+                    <Link to="/admin/orders" className="text-xs font-bold text-gold hover:text-white transition-colors">VIEW ALL</Link>
+                </div>
+                <div className="admin-table-wrapper rounded-xl overflow-hidden flex-1 min-h-0">
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {paginatedRecent.length === 0 ? (
+                                <tr><td colSpan={5} className="py-8 text-center text-gray-500 text-sm">No orders yet</td></tr>
+                            ) : (
+                                paginatedRecent.map(order => (
+                                    <tr key={order.id}>
+                                        <td className="font-mono text-sm text-gold">#{order.id.slice(0, 8).toUpperCase()}</td>
+                                        <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
+                                        <td><span className={getStatusPill(order.status)}>{order.status}</span></td>
+                                        <td className="text-gold font-medium">${Number(order.total).toFixed(2)}</td>
+                                        <td className="text-gray-400 text-sm">{order.dateFull}</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-4">
+                    <span className="text-xs text-gray-500">Showing {recentPage * recentPageSize + 1}-{Math.min((recentPage + 1) * recentPageSize, recentOrders.length)} of {recentOrders.length} entries</span>
+                    <div className="flex items-center gap-1">
+                        <button type="button" onClick={() => setRecentPage(p => Math.max(0, p - 1))} disabled={recentPage === 0} className="p-2 rounded-lg text-gray-400 hover:text-gold disabled:opacity-30 transition-colors"><ChevronLeft size={18} /></button>
+                        <button type="button" onClick={() => setRecentPage(p => Math.min(totalRecentPages - 1, p + 1))} disabled={recentPage >= totalRecentPages - 1} className="p-2 rounded-lg text-gray-400 hover:text-gold disabled:opacity-30 transition-colors"><ChevronRight size={18} /></button>
                     </div>
-                    <Link to="/admin/orders" className="mt-8 text-center text-[10px] font-bold uppercase tracking-[0.25em] text-gray-500 hover:text-white transition-colors">
-                        View All Transcations
-                    </Link>
                 </div>
             </div>
         </div>

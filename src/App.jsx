@@ -24,6 +24,9 @@ import Dashboard from './pages/Admin/Dashboard';
 import Orders from './pages/Admin/Orders';
 import Products from './pages/Admin/Products';
 import Messages from './pages/Admin/Messages';
+import Customers from './pages/Admin/Customers';
+import Analytics from './pages/Admin/Analytics';
+import Settings from './pages/Admin/Settings';
 import SidebarDemo from './pages/Admin/SidebarDemo';
 import './App.css';
 
@@ -53,6 +56,9 @@ function App() {
                                 <Route path="orders" element={<Orders />} />
                                 <Route path="products" element={<Products />} />
                                 <Route path="messages" element={<Messages />} />
+                                <Route path="customers" element={<Customers />} />
+                                <Route path="analytics" element={<Analytics />} />
+                                <Route path="settings" element={<Settings />} />
                             </Route>
 
                             {/* Public Routes - With Navbar/Footer Layout */}
