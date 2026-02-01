@@ -12,7 +12,7 @@ const Cart = () => {
                 <div className="container text-center">
                     <h1 className="text-4xl font-heading text-gold mb-8">Your Collection is Empty</h1>
                     <p className="text-gray-400 mb-12">The essence of Ceylon awaits. Begin your curation.</p>
-                    <Link to="/shop" className="btn">View Collection</Link>
+                    <Link to="/shop" className="btn empty-cart-btn">View Collection</Link>
                 </div>
             </div>
         );
