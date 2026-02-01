@@ -31,6 +31,30 @@ select.form-input {
     appearance: none;
 }
 
+.contact-method-item {
+    animation: reveal-up 0.6s ease-out forwards;
+}
+
+.contact-method-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.contact-method-item:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes reveal-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 992px) {
     .contact-content .grid {
         grid-template-columns: 1fr;
