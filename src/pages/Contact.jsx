@@ -47,58 +47,58 @@ const Contact = () => {
             <section className="contact-content py-20">
                 <div className="container grid grid-cols-2 gap-20">
                     <div className="contact-info">
-                        <h2 className="text-4xl font-heading text-white mb-10">Get in Touch</h2>
+                        <h2 className="contact-info-title">Get in Touch</h2>
 
-                        <div className="contact-methods space-y-10">
-                            <div className="contact-method-item flex items-start gap-6 group">
-                                <div className="method-icon-wrap w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center text-gold group-hover:bg-gold/10 transition-colors">
+                        <div className="contact-methods">
+                            <div className="contact-method-item">
+                                <div className="method-icon-wrap">
                                     <Mail size={20} />
                                 </div>
                                 <div className="method-details">
-                                    <h4 className="text-gold uppercase tracking-[0.2em] text-[10px] font-bold mb-1">Email Essence</h4>
-                                    <p className="text-xl text-white font-medium">essence@ambrosiaspice.com</p>
+                                    <h4 className="method-label">Email Essence</h4>
+                                    <p className="method-value">essence@ambrosiaspice.com</p>
                                 </div>
                             </div>
 
-                            <div className="contact-method-item flex items-start gap-6 group">
-                                <div className="method-icon-wrap w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center text-gold group-hover:bg-gold/10 transition-colors">
+                            <div className="contact-method-item">
+                                <div className="method-icon-wrap">
                                     <Phone size={20} />
                                 </div>
                                 <div className="method-details">
-                                    <h4 className="text-gold uppercase tracking-[0.2em] text-[10px] font-bold mb-1">Voice Liaison</h4>
-                                    <p className="text-xl text-white font-medium">+94 11 234 5678</p>
+                                    <h4 className="method-label">Voice Liaison</h4>
+                                    <p className="method-value">+94 11 234 5678</p>
                                 </div>
                             </div>
 
-                            <div className="contact-method-item flex items-start gap-6 group">
-                                <div className="method-icon-wrap w-12 h-12 rounded-xl bg-gold/5 border border-gold/10 flex items-center justify-center text-gold group-hover:bg-gold/10 transition-colors">
+                            <div className="contact-method-item">
+                                <div className="method-icon-wrap">
                                     <MapPin size={20} />
                                 </div>
                                 <div className="method-details">
-                                    <h4 className="text-gold uppercase tracking-[0.2em] text-[10px] font-bold mb-1">Global HQ</h4>
-                                    <p className="text-xl text-white font-medium leading-snug">Galle Road, Colombo 03, <br />Sri Lanka</p>
+                                    <h4 className="method-label">Global HQ</h4>
+                                    <p className="method-value">Galle Road, Colombo 03, <br />Sri Lanka</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="social-presence mt-16 pt-10 border-t border-white/5">
-                            <h4 className="text-gray-500 uppercase tracking-[0.1em] text-[10px] font-bold mb-6 italic">Follow Our Journey</h4>
-                            <div className="flex gap-8">
-                                <a href="#" className="social-link-item group flex items-center gap-3 text-gold/60 hover:text-white transition-all text-sm">
-                                    <div className="social-icon w-8 h-8 rounded-lg border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Instagram size={16} />
+                        <div className="social-presence">
+                            <h4 className="social-presence-label">Follow Our Journey</h4>
+                            <div className="social-link-grid">
+                                <a href="#" className="social-link-item">
+                                    <div className="social-icon">
+                                        <Instagram size={18} />
                                     </div>
                                     <span>Instagram</span>
                                 </a>
-                                <a href="#" className="social-link-item group flex items-center gap-3 text-gold/60 hover:text-white transition-all text-sm">
-                                    <div className="social-icon w-8 h-8 rounded-lg border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Facebook size={16} />
+                                <a href="#" className="social-link-item">
+                                    <div className="social-icon">
+                                        <Facebook size={18} />
                                     </div>
                                     <span>Facebook</span>
                                 </a>
-                                <a href="#" className="social-link-item group flex items-center gap-3 text-gold/60 hover:text-white transition-all text-sm">
-                                    <div className="social-icon w-8 h-8 rounded-lg border border-gold/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Linkedin size={16} />
+                                <a href="#" className="social-link-item">
+                                    <div className="social-icon">
+                                        <Linkedin size={18} />
                                     </div>
                                     <span>LinkedIn</span>
                                 </a>

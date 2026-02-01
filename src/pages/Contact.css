@@ -31,7 +31,23 @@ select.form-input {
     appearance: none;
 }
 
+.contact-info-title {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 3.5rem;
+    font-family: var(--font-heading);
+}
+
+.contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+}
+
 .contact-method-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
     animation: reveal-up 0.6s ease-out forwards;
 }
 
@@ -41,6 +57,95 @@ select.form-input {
 
 .contact-method-item:nth-child(3) {
     animation-delay: 0.2s;
+}
+
+.method-icon-wrap {
+    width: 3.5rem;
+    height: 3.5rem;
+    min-width: 3.5rem;
+    border-radius: 1rem;
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    transition: all 0.3s ease;
+}
+
+.contact-method-item:hover .method-icon-wrap {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+}
+
+.method-label {
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.method-value {
+    font-size: 1.25rem;
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.social-presence {
+    margin-top: 5rem;
+    padding-top: 3.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.social-presence-label {
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.social-link-grid {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.social-link-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(212, 175, 55, 0.6);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.social-link-item:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.social-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-link-item:hover .social-icon {
+    border-color: var(--color-primary);
+    background: rgba(212, 175, 55, 0.05);
 }
 
 @keyframes reveal-up {
