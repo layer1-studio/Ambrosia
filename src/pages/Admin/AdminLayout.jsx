@@ -61,33 +61,41 @@ const AdminLayout = () => {
 
     return (
         <div className="admin-theme min-h-screen bg-[#030303]">
-            {/* Main top horizontal navbar */}
-            <header className="h-20 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50 px-6 flex items-center justify-between">
-                <div className="flex items-center gap-8">
+            {/* Main top horizontal navbar - Exact Wireframe Implementation */}
+            <header className="h-20 bg-[#0a0a0a]/95 backdrop-blur-2xl border-b border-white/5 sticky top-0 z-50 px-8 flex items-center justify-between shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+                <div className="flex items-center gap-12">
                     {/* Brand Label - Far Left */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3.5 group cursor-default">
                         <LaurelLogo />
-                        <span className="text-sm font-bold tracking-[0.3em] uppercase text-gold whitespace-nowrap">Ambrosia Admin</span>
+                        <span className="text-sm font-bold tracking-[0.4em] uppercase text-gold whitespace-nowrap drop-shadow-[0_0_10px_rgba(197,168,114,0.3)]">Ambrosia Admin</span>
                     </div>
 
                     {/* Navigation Divider */}
-                    <div className="h-8 w-px bg-white/10 hidden xl:block" />
+                    <div className="h-10 w-px bg-white/5 hidden 2xl:block" />
 
-                    {/* Main Nav Links - Center Group */}
-                    <nav className="hidden lg:flex items-center gap-1">
+                    {/* Main Nav Links - Center Group (Icons above Names) */}
+                    <nav className="hidden lg:flex items-center gap-2">
                         {navItems.map(({ path, label, icon: Icon, end }) => (
                             <NavLink
                                 key={path}
                                 to={path}
                                 end={!!end}
                                 className={({ isActive }) =>
-                                    `flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all group ${isActive ? 'text-gold' : 'text-gray-500 hover:text-white'}`
+                                    `flex flex-col items-center gap-1.5 px-6 py-2 rounded-2xl transition-all duration-300 group relative ${isActive
+                                        ? 'text-gold drop-shadow-[0_0_8px_rgba(197,168,114,0.5)]'
+                                        : 'text-gray-500 hover:text-gray-200'
+                                    }`
                                 }
                             >
                                 {({ isActive }) => (
                                     <>
-                                        <Icon size={18} className={isActive ? 'text-gold' : 'group-hover:scale-110 transition-transform'} />
-                                        <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+                                        <Icon size={20} className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+                                        <span className="text-[10px] font-bold uppercase tracking-[0.15em]">{label}</span>
+
+                                        {/* Premium Glow for Active State */}
+                                        {isActive && (
+                                            <div className="absolute inset-0 bg-gold/5 rounded-2xl blur-md -z-10 animate-pulse" />
+                                        )}
                                     </>
                                 )}
                             </NavLink>
@@ -95,23 +103,31 @@ const AdminLayout = () => {
                     </nav>
                 </div>
 
-                {/* Right Side Controls */}
+                {/* Right Side Controls - Exact Wireframe Order */}
                 <div className="flex items-center gap-4">
-                    {/* Account Name - Initial in Circle */}
-                    <div className="flex items-center gap-3">
-                        <div className="hidden sm:block text-right">
-                            <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-none">{displayName}</p>
-                        </div>
-                        <div className="w-9 h-9 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold font-bold text-sm">
+                    {/* User Profile - Initial in Circle */}
+                    <div className="flex items-center gap-3 pr-2">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30 flex items-center justify-center text-gold font-bold text-sm shadow-[0_0_15px_rgba(197,168,114,0.15)] ring-1 ring-gold/10">
                             {displayName.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="hidden xl:block text-left">
+                            <p className="text-[10px] font-bold text-white/90 uppercase tracking-widest leading-none">{displayName}</p>
+                            <p className="text-[9px] text-gray-500 font-medium uppercase mt-1">Administrator</p>
                         </div>
                     </div>
 
-                    {/* Dashboard Tools */}
-                    <div className="flex items-center gap-2 border-l border-white/10 pl-4">
+                    <div className="h-8 w-px bg-white/10 hidden sm:block mx-2" />
+
+                    {/* Tool Group: Settings & Logout */}
+                    <div className="flex items-center gap-3">
                         <NavLink
                             to="/admin/settings"
-                            className={({ isActive }) => `p-2 rounded-lg transition-all ${isActive ? 'text-gold' : 'text-gray-500 hover:text-white'}`}
+                            className={({ isActive }) =>
+                                `p-2.5 rounded-xl border transition-all duration-300 ${isActive
+                                    ? 'bg-gold/10 border-gold/30 text-gold shadow-[0_0_10px_rgba(197,168,114,0.2)]'
+                                    : 'border-white/5 text-gray-400 hover:text-white hover:border-white/10'
+                                }`
+                            }
                             title="Settings"
                         >
                             <Settings size={20} />
@@ -119,11 +135,10 @@ const AdminLayout = () => {
 
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-all"
-                            title="Logout"
+                            className="flex items-center gap-3 pl-4 pr-5 py-2.5 rounded-xl bg-red-500/5 border border-red-500/10 text-gray-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 transition-all duration-300 group"
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest">Sign Out</span>
-                            <LogOut size={16} />
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Sign Out</span>
+                            <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
                 </div>
