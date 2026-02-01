@@ -74,14 +74,14 @@ const AdminLayout = () => {
                 </div>
 
                 {/* Center: Navigation - Always Visible */}
-                <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar mx-4">
+                <nav className="flex items-center gap-6 overflow-x-auto no-scrollbar mx-4">
                     {navItems.map(({ path, label, icon: Icon, end }) => (
                         <NavLink
                             key={path}
                             to={path}
                             end={!!end}
                             className={({ isActive }) =>
-                                `flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-300 group min-w-[70px] ${isActive
+                                `flex flex-col items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 group min-w-[80px] ${isActive
                                     ? 'text-gold'
                                     : 'text-gray-500 hover:text-white'
                                 }`
@@ -103,9 +103,9 @@ const AdminLayout = () => {
                 </nav>
 
                 {/* Right: User Controls */}
-                <div className="flex items-center gap-3 min-w-max">
+                <div className="flex items-center gap-6 min-w-max">
                     {/* User Profile */}
-                    <div className="flex items-center gap-3 pr-2">
+                    <div className="flex items-center pr-2">
                         <div className="user-initial-circle bg-gold/10 border border-gold/30 text-gold font-bold text-sm">
                             {displayName.charAt(0).toUpperCase()}
                         </div>
@@ -114,7 +114,7 @@ const AdminLayout = () => {
                     <div className="h-6 w-px bg-white/10 mx-1" />
 
                     {/* Tools */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
                         <NavLink
                             to="/secured-web-ambrosia/admin/settings"
                             className={({ isActive }) =>
@@ -128,7 +128,7 @@ const AdminLayout = () => {
 
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-white/5 text-gray-400 hover:text-red-400 hover:bg-red-400/5 hover:border-red-400/20 transition-all"
+                            className="flex items-center gap-3 px-4 py-2 rounded-lg border border-white/5 text-gray-400 hover:text-red-400 hover:bg-red-400/5 hover:border-red-400/20 transition-all"
                         >
                             <span className="text-[10px] font-bold uppercase tracking-widest bg-transparent border-none p-0">Sign Out</span>
                             <LogOut size={14} />
