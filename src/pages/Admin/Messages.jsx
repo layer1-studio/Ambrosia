@@ -90,23 +90,36 @@ const Messages = () => {
     const handleReplySubmit = async () => {
         if (!replyText.trim() || !selectedMessage) return;
         setSending(true);
+
+        const emailParams = {
+            to_name: selectedMessage.name?.trim() || 'Valued Customer',
+            to_email: selectedMessage.email?.trim(),
+            reply_message: replyText.trim(),
+            original_message: selectedMessage.message?.trim() || 'No original message content available.',
+            subject: `Re: ${selectedMessage.subject || 'Your inquiry'}`
+        };
+
+        console.log('[EmailJS Debug] Preparing to send payload:', emailParams);
+
         try {
-            await emailjs.send(
+            const result = await emailjs.send(
                 EMAILJS_CONFIG.SERVICE_ID,
                 EMAILJS_CONFIG.TEMPLATE_ID,
-                {
-                    to_name: selectedMessage.name,
-                    to_email: selectedMessage.email,
-                    reply_message: replyText,
-                    original_message: selectedMessage.message,
-                    subject: `Re: ${selectedMessage.subject}`
-                },
+                emailParams,
                 EMAILJS_CONFIG.PUBLIC_KEY
             );
-            await updateDoc(doc(db, "messages", selectedMessage.id), { status: 'replied', reply: replyText, repliedAt: Timestamp.now() });
+            console.log('[EmailJS Debug] Success result:', result);
+
+            await updateDoc(doc(db, "messages", selectedMessage.id), {
+                status: 'replied',
+                reply: replyText,
+                repliedAt: Timestamp.now()
+            });
+
             setReplyText('');
             closeReplyModal();
         } catch (err) {
+            console.error('[EmailJS Debug] Error sending email:', err);
             alert('Failed to send reply: ' + err.message);
         } finally {
             setSending(false);
