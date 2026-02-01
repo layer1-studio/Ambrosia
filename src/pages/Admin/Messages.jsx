@@ -128,8 +128,8 @@ const Messages = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-140px)] flex flex-col animate-reveal min-h-0">
-            <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+        <div className="h-[calc(100vh-160px)] flex flex-col animate-reveal min-h-0">
+            <div className="flex-1 flex gap-6 min-h-0 overflow-hidden pb-4 border-b border-white/5">
                 {/* Column 1: FILTERS */}
                 <aside className="w-[200px] shrink-0 h-full flex flex-col border-r border-white/10 pr-4">
                     <h2 className="admin-section-title text-gold font-heading mb-4">FILTERS</h2>
