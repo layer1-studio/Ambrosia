@@ -8,8 +8,8 @@
   --color-gold: #D4AF37;
   --color-gold-muted: rgba(212, 175, 55, 0.2);
   --color-gold-glow: rgba(212, 175, 55, 0.1);
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-glow: rgba(212, 175, 55, 0.2);
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-glow: rgba(212, 175, 55, 0.4);
 
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Outfit', sans-serif;
@@ -33,7 +33,7 @@
   background: rgba(18, 18, 18, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   box-shadow: var(--shadow-premium);
 }
 
@@ -95,7 +95,7 @@
 .admin-input {
   width: 100%;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 0.875rem 1.25rem;
   color: #fff;
@@ -113,7 +113,7 @@
 .admin-table-wrapper {
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   background: rgba(10, 10, 10, 0.4);
 }
 
@@ -224,6 +224,7 @@
 
 .btn-premium-outline {
   background: transparent;
+  border-width: 2px;
   border-color: var(--color-border);
   color: var(--color-text);
 }
@@ -304,7 +305,7 @@
   width: 100%;
   max-width: 600px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-gold-muted);
   background: var(--color-surface);
   box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -382,7 +383,7 @@
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 600;
-  border: 1px solid var(--color-border-glow);
+  border: 2px solid var(--color-border-glow);
   background: transparent;
   color: var(--color-text-muted);
   transition: all 0.2s;
