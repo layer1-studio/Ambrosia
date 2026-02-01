@@ -50,7 +50,6 @@ const AdminLayout = () => {
         { path: '/admin/products', label: 'Products', icon: Package },
         { path: '/admin/messages', label: 'Messages', icon: Mail },
         { path: '/admin/customers', label: 'Customers', icon: Users },
-        { path: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
     ];
     const footerNav = [
         { path: '/admin/settings', label: 'Settings', icon: Settings },
