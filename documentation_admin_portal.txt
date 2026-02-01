@@ -1,0 +1,77 @@
+================================================================================
+AMBROSIA ADMIN PORTAL - SYSTEM DOCUMENTATION
+================================================================================
+
+1. ACCESS & SECURITY OBFUSCATION
+--------------------------------------------------------------------------------
+- Obfuscated URL: Protected under the /secured-web-ambrosia/ prefix.
+- Entry: /secured-web-ambrosia/login
+- Dashboard: /secured-web-ambrosia/admin
+- Authentication: Firebase Auth with "Admin" role verification in Firestore.
+- Guarding: AdminLayout component automatically redirects non-authenticated or 
+  non-admin users to the login screen.
+
+2. ADMIN UI DESIGN SYSTEM
+--------------------------------------------------------------------------------
+- Layout: Modern static horizontal top navbar (no hamburger menus).
+- Borders: Bold 2px thickness on all interactive panels and tables to 
+  increase visual distinction.
+- Spacing: 32px external grid spacing and 12px internal row gaps.
+- Icons: Lucide React (Home, ShoppingBag, Package, Mail, Users, Settings).
+
+3. PAGE-BY-PAGE MODULES
+--------------------------------------------------------------------------------
+
+[DASHBOARD]
+- Features: 
+    * High-level metrics: Total Revenue, Orders, Products, Average Value.
+    * Sales Charts: Revenue trends over time (via Recharts).
+    * Recent Orders Feed: Quick link to most recent acquisition requests.
+- Dev: Aggregates Firestore collections using efficient mapping.
+
+[ORDER MANAGEMENT]
+- Features: 
+    * Comprehensive list with pagination (10 per page).
+    * Extended Workflow: Filter by status (New, Processing, Shipped, Delivered, 
+      Cancelled, Reviews).
+    * Order Details Modal: View full customer details, individual item breakdown, 
+      and automated totals.
+    * Live Status Updates: Instantly update Firestore to notify customers.
+
+[PRODUCT CATALOG]
+- Features: 
+    * Inventory Control: Update stock, price, category, and units.
+    * Stock Warnings: Automatic highlighting of "Low Stock" (red text/icons).
+    * Real-time synchronization with the Public Storefront.
+- Dev: Uses optimistic UI updates for a snappy feel.
+
+[MESSAGE COMMAND CENTER (INBOX)]
+- Features: 
+    * Unified Inbox: Tracks inquiries from the public contact form.
+    * Smart Status: New, Read, Replied.
+    * Advanced Reply System:
+        * EmailJS Integration: Send direct replies to customers from the portal.
+        * Multi-Reply Support: Allows "Reply Again" for follow-up communication.
+        * Dispatched Feed: Shows the history of what was sent to the customer.
+- Design: Alternating row colors for better scannability.
+
+[CUSTOMER REGISTRY]
+- Features: 
+    * Unified database combining e-commerce Buyers and Newsletter Subscribers.
+    * Lifetime Value (LTV) calculation: Automatically calculates total spent per client.
+    * Identification: Unique email-based mapping.
+    * Filtering: View only clients, only subscribers, or both.
+- Dev: Uses `useMemo` for high-performance client-side data merging of multiple collections.
+
+[ANALYTICS & SETTINGS]
+- Status: Architecturally staged / "Coming Soon" placeholders.
+- Design: Pulse-animation icons and descriptive developmental roadmaps.
+
+4. TECHNICAL ARCHITECTURE (ADMIN)
+--------------------------------------------------------------------------------
+- Real-time Engine: Firestore `onSnapshot` for zero-latency updates.
+- Auth State: Persistent login session management.
+- Batch Operations: Used in Order Fulfillment to ensure data integrity.
+- Deployment Sync: version log (e.g., V4) maintained in App.jsx to verify 
+  deployment status.
+================================================================================

@@ -1,0 +1,118 @@
+================================================================================
+AMBROSIA PUBLIC WEBSITE - SYSTEM DOCUMENTATION
+================================================================================
+
+1. BRAND AESTHETIC & DESIGN PHILOSOPHY
+--------------------------------------------------------------------------------
+- Theme: High-fidelity "Divine Essence" Dark Mode.
+- Color Palette: 
+    * Primary: Gold (#D4AF37 / #B8860B)
+    * Background: Deep Black (#0a0a0a) / Charcoal (#111)
+    * Secondary: Soft White / Gray-400 for secondary text.
+- Typography: 
+    * Headings: Playfair Display (Serif) for a royal, premium feel.
+    * Body: Inter / Sans-serif for modern readability.
+- Layout: Glassmorphism (semi-transparent borders/backgrounds), generous padding, 
+  and smooth fade-in animations (animate-fade-in).
+
+2. PAGE-BY-PAGE BREAKDOWN
+--------------------------------------------------------------------------------
+
+[HOME]
+- Features: 
+    * High-impact Hero section with tagline.
+    * Brand Intro section explaining the "Ambrosia" concept.
+    * Featured Products carousel/grid.
+    * Gastronomy previews (Recipes).
+    * Social proof through customer testimonials.
+- Dev: Composed of reusable components (Hero, BrandIntro, Products, RecipesHome, Testimonials).
+
+[OUR HERITAGE / ABOUT US]
+- Features: 
+    * Narrative sections detailing the Sri Lankan cinnamon legacy.
+    * Sourcing statistics (Artisan counts, Organic percentages).
+    * Ethical cultivation mission statement.
+- Design: Split-grid layouts with high-quality garden imagery.
+
+[ABOUT CINNAMON]
+- Features: 
+    * Immersive full-screen background video of cinnamon production.
+    * Historical timeline of the estate (milestones from 1824-2022).
+    * "Tale of Origin" deep dive.
+- Dev: Uses HTML5 video element with absolute path management for GitHub Pages stability.
+
+[DIGITAL BOUTIQUE / SHOP]
+- Features: 
+    * Real-time product synchronization from Firebase Firestore.
+    * Advanced Filtering: Categories (Sticks, Powder, Blends, Gift Sets).
+    * Search: Instant text-matching filtering.
+    * Sorting: Price High-to-Low and Low-to-High.
+    * Stock Management: Real-time "Low Stock" and "Sold Out" badges.
+- Dev: Uses `onSnapshot` for real-time DB updates. Persistent Cart Context integration.
+
+[GASTRONOMY & RITES / RECIPES]
+- Features: 
+    * Curation of culinary rituals using cinnamon.
+    * Category tags (Sweet, Savory, Potions).
+    * Time-to-prepare indicators.
+- Design: Card-based grid with hover-zoom effects.
+
+[RECIPE DETAIL]
+- Features: 
+    * Detailed background story/description.
+    * Structured ingredient list.
+    * Step-by-step preparation guide.
+    * Print and Share functionality (Placeholders).
+
+[LIAISON / CONTACT]
+- Features: 
+    * Direct inquiry form.
+    * Category selection (Wholesale, Press, General).
+    * Real-time submission to Firestore "messages" collection.
+- Dev: Client-side validation for email formats.
+
+[YOUR SELECTION / CART]
+- Features: 
+    * Dynamic price calculations.
+    * Quantity increment/decrement buttons.
+    * Removal of individual items.
+    * subtotal logic.
+- Dev: Powered by `CartContext` for cross-page persistence.
+
+[CHECKOUT]
+- Features: 
+    * Two-step Acquisition: Delivery Details -> Payment Simulation.
+    * Email Verification and Field Validation.
+    * Automatic Inventory Check: Uses Firestore `writeBatch` to atomically 
+      decrement stock upon purchase.
+- Dev: Integrates `EmailJS` at the finish line to send confirmed HTML receipts 
+  containing order summaries and absolute image URLs for email client compatibility.
+
+[TRACK ORDER]
+- Features: 
+    * Authorization Check: Requires Order ID + Buyer's Email to view data.
+    * Real-time Shipment tracking (Shipped, Delivered, Pending).
+- Dev: Direct Firestore document fetch with security logic on the client.
+
+[SUPPORT / FAQ]
+- Features: 
+    * FAQ accordion for common queries.
+    * "Security by Obscurity" design principles.
+- Design: Interactive Chevrons and smooth expansion animations.
+
+[LEGAL / PRIVACY & TERMS]
+- Features: 
+    * Detailed clauses on Data Sanctity and Intellectual Property.
+    * "Simple Summary" boxes for quick reading.
+- Design: Minimalist centered layout with "flourish" dividers.
+
+3. CORE DEVELOPMENT TECH STACK
+--------------------------------------------------------------------------------
+- Framework: React (Vite-powered).
+- Routing: React Router with `HashRouter` (required for GitHub Pages sub-directory support).
+- Database: Google Firebase (Cloud Firestore).
+- Authentication: Firebase Auth (reserved for Admin).
+- Emails: EmailJS (Browser SDK).
+- Icons: Lucide React.
+- Deployment: GitHub Pages.
+================================================================================
