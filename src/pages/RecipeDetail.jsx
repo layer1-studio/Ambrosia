@@ -1,17 +1,67 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { recipes } from '../data/recipes';
-import { ArrowLeft, Clock, Share2, Printer } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
+import { useCart } from '../context/CartContext';
+import { useCurrency } from '../context/CurrencyContext';
+import { ArrowLeft, Clock, Share2, Printer, ShoppingBag, Plus } from 'lucide-react';
 import './RecipeDetail.css';
+
+// Fallback images if DB doesn't have them
+import divineImg from '../assets/images/divine.png';
+import kuveniImg from '../assets/images/kuveni.png';
+import ravanaImg from '../assets/images/ravana.png';
+import gardenImg from '../assets/images/garden.png';
+
+const IMAGE_MAP = {
+    'divine': divineImg,
+    'kuveni': kuveniImg,
+    'ravana': ravanaImg,
+    'garden': gardenImg
+};
 
 const RecipeDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const recipe = recipes.find(r => r.id === parseInt(id));
+    const [relatedProduct, setRelatedProduct] = React.useState(null);
+    const [fetchingProduct, setFetchingProduct] = React.useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+
+        if (recipe && recipe.relatedProductType) {
+            fetchRelatedProduct();
+        }
+    }, [recipe]);
+
+    const fetchRelatedProduct = async () => {
+        setFetchingProduct(true);
+        try {
+            const q = query(
+                collection(db, "products"),
+                where("imageType", "==", recipe.relatedProductType),
+                limit(1)
+            );
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                const doc = querySnapshot.docs[0];
+                const data = doc.data();
+                setRelatedProduct({
+                    id: doc.id,
+                    ...data,
+                    image: data.imageUrl || IMAGE_MAP[data.imageType] || IMAGE_MAP.divine
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching related product:", error);
+        } finally {
+            setFetchingProduct(false);
+        }
+    };
 
     const handlePrint = () => {
         window.print();
@@ -127,6 +177,36 @@ const RecipeDetail = () => {
                             <Printer size={14} /> Print
                         </button>
                     </div>
+
+                    {/* Related Product Section */}
+                    {relatedProduct && (
+                        <div className="related-product-section">
+                            <div className="section-header">
+                                <h3 className="section-title">The Sovereign Spice</h3>
+                                <div className="section-line"></div>
+                            </div>
+                            <div className="related-product-card">
+                                <div className="rp-image">
+                                    <img src={relatedProduct.image} alt={relatedProduct.name} />
+                                </div>
+                                <div className="rp-info">
+                                    <span className="rp-label">Essential for this Ritual</span>
+                                    <h4>{relatedProduct.name}</h4>
+                                    <p>{relatedProduct.description || "The finest grade Ceylon Cinnamon, essential for achieving the divine profile of this ritual."}</p>
+                                    <div className="rp-price-action">
+                                        <span className="rp-price">{formatPrice(relatedProduct.price)}</span>
+                                        <button
+                                            className="rp-add-btn"
+                                            onClick={() => addToCart(relatedProduct)}
+                                        >
+                                            <ShoppingBag size={16} />
+                                            Acquire Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

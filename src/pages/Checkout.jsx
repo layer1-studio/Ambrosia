@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, writeBatch, doc, increment } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
@@ -8,6 +9,7 @@ import './Checkout.css';
 
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
+    const { formatPrice } = useCurrency();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('card');
@@ -213,7 +215,7 @@ const Checkout = () => {
                         </section>
 
                         {/* Shipping Method */}
-                        <section className="checkout-section mb-12">
+                        <section className="checkout-section mb-40">
                             <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Shipping Method</h2>
                             <div className="shipping-options space-y-4">
                                 <label className={`shipping-option flex items-center justify-between p-4 bg-[#111] border rounded cursor-pointer ${formData.shippingMethod === 'standard' ? 'border-gold' : 'border-white/5'}`}>
@@ -225,7 +227,7 @@ const Checkout = () => {
                                         />
                                         <span>Standard (5-10 Days)</span>
                                     </div>
-                                    <span className="text-gold">$10.00</span>
+                                    <span className="text-gold">{formatPrice(10)}</span>
                                 </label>
                                 <label className={`shipping-option flex items-center justify-between p-4 bg-[#111] border rounded cursor-pointer ${formData.shippingMethod === 'express' ? 'border-gold' : 'border-white/5'}`}>
                                     <div className="flex items-center gap-4">
@@ -236,7 +238,7 @@ const Checkout = () => {
                                         />
                                         <span>Express (2-3 Days)</span>
                                     </div>
-                                    <span className="text-gold">$25.00</span>
+                                    <span className="text-gold">{formatPrice(25)}</span>
                                 </label>
                             </div>
                         </section>
@@ -254,10 +256,10 @@ const Checkout = () => {
                                 </button>
                                 <button
                                     type="button"
-                                    className={`payment-tab flex-1 p-4 rounded border ${paymentMethod === 'paypal' ? 'border-gold text-gold bg-gold/5' : 'border-white/5 text-gray-400'}`}
-                                    onClick={() => setPaymentMethod('paypal')}
+                                    className={`payment-tab flex-1 p-4 rounded border ${paymentMethod === 'bank' ? 'border-gold text-gold bg-gold/5' : 'border-white/5 text-gray-400'}`}
+                                    onClick={() => setPaymentMethod('bank')}
                                 >
-                                    PayPal
+                                    Bank Transfer
                                 </button>
                             </div>
 
@@ -273,8 +275,21 @@ const Checkout = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="paypal-notice p-8 bg-blue-600/5 border border-blue-600/20 rounded text-center">
-                                    <p className="text-gray-300">Complete your acquisition securely with PayPal.</p>
+                                <div className="bank-transfer-details p-8 bg-gold/5 border border-gold/10 rounded space-y-4">
+                                    <p className="text-gray-300 text-sm italic mb-4">Transfer the total amount to the following account to complete your acquisition.</p>
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Bank</span>
+                                        <span className="text-white font-medium">Ceylon National Bank</span>
+                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Account Name</span>
+                                        <span className="text-white font-medium">Ambrosia Private Limited</span>
+                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Account Number</span>
+                                        <span className="text-white font-mono font-bold tracking-wider">0045-8821-3390</span>
+                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Branch</span>
+                                        <span className="text-white font-medium">Colombo Main Branch</span>
+                                    </div>
+                                    <div className="mt-6 p-4 border-t border-white/5 text-[11px] text-gray-400">
+                                        * Please use your Order ID as the reference. Dispatch will occur upon confirmation of funds.
+                                    </div>
                                 </div>
                             )}
                         </section>
@@ -303,22 +318,22 @@ const Checkout = () => {
                                                 <p className="text-gray-500 text-[10px] uppercase tracking-widest">Qty: {item.quantity}</p>
                                             </div>
                                         </div>
-                                        <span className="text-gold text-sm font-bold">${(item.price * item.quantity).toFixed(2)}</span>
+                                        <span className="text-gold text-sm font-bold">{formatPrice(item.price * item.quantity)}</span>
                                     </div>
                                 ))}
                             </div>
                             <div className="summary-details pt-8 border-top border-white/10 space-y-4">
                                 <div className="flex justify-between text-gray-400">
                                     <span>Subtotal</span>
-                                    <span>${cartTotal.toFixed(2)}</span>
+                                    <span>{formatPrice(cartTotal)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-400">
                                     <span>Shipping</span>
-                                    <span>${shippingCost.toFixed(2)}</span>
+                                    <span>{formatPrice(shippingCost)}</span>
                                 </div>
                                 <div className="flex justify-between text-xl text-white font-heading font-bold pt-4 border-top border-white/5">
                                     <span>Total</span>
-                                    <span className="text-gold">${finalTotal.toFixed(2)}</span>
+                                    <span className="text-gold">{formatPrice(finalTotal)}</span>
                                 </div>
                             </div>
                         </div>

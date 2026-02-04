@@ -21,7 +21,7 @@ const BrandIntro = () => {
                         </p>
                     </div>
                     <div className="quick-links">
-                        <h3 className="text-xl font-heading mb-6 text-gold">Explore Ambrosia</h3>
+                        <h3 className="text-xl font-heading text-gold">Explore Ambrosia</h3>
                         <div className="links-stack">
                             <Link to="/shop" className="quick-link-item">
                                 <span className="link-icon">→</span>

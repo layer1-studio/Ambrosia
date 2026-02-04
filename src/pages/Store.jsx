@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useCart } from '../context/CartContext';
+import { useCurrency } from '../context/CurrencyContext';
 import './Store.css';
 
 // Fallback images if DB doesn't have them
@@ -11,6 +12,7 @@ import ravanaImg from '../assets/images/ravana.png';
 
 const Store = () => {
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
@@ -128,7 +130,7 @@ const Store = () => {
                                             <span className="item-cat">{product.category}</span>
                                             <h3 className="item-name">{product.name}</h3>
                                             <div className="flex justify-between items-center w-full mb-4">
-                                                <p className="item-price">${Number(product.price).toFixed(2)}</p>
+                                                <p className="item-price">{formatPrice(product.price)}</p>
                                                 <span className="text-xs text-gray-500">{product.unit || 'per unit'}</span>
                                             </div>
                                             <button

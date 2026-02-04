@@ -9,6 +9,7 @@ export const recipes = [
         category: "Beverages",
         image: divineImg,
         time: "5 mins",
+        relatedProductType: "divine",
         desc: "A warm, soul-soothing elixir infused with Ambrosia Divine Essence.",
         ingredients: [
             "1 tsp Ambrosia Divine Essence (Ground Cinnamon)",
@@ -28,6 +29,7 @@ export const recipes = [
         category: "Beverages",
         image: gardenImg,
         time: "15 mins",
+        relatedProductType: "kuveni",
         desc: "A spiced tea tradition using whole Kuveni sticks.",
         ingredients: [
             "2 Kuveni Cinnamon Sticks",
@@ -50,6 +52,7 @@ export const recipes = [
         category: "Desserts",
         image: divineImg,
         time: "45 mins",
+        relatedProductType: "divine",
         desc: "A classic dessert elevated by the floral notes of Ceylon cinnamon.",
         ingredients: [
             "1 sheet Puff Pastry",
@@ -71,6 +74,7 @@ export const recipes = [
         category: "Wellness",
         image: gardenImg,
         time: "4 min read",
+        relatedProductType: "kuveni",
         desc: "How a pinch of Ambrosia every morning can change your metabolism.",
         ingredients: [
             "1 Kuveni Cinnamon Stick",
