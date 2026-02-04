@@ -1,10 +1,12 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 import './Cart.css';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+    const { formatPrice } = useCurrency();
 
     if (cartItems.length === 0) {
         return (
@@ -39,7 +41,7 @@ const Cart = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-white font-heading text-xl mb-1">{item.name}</h3>
-                                        <p className="text-gold text-sm">${item.price.toFixed(2)}</p>
+                                        <p className="text-gold text-sm">{formatPrice(item.price)}</p>
                                         <button onClick={() => removeFromCart(item.id)} className="text-gray-600 text-xs mt-2 hover:text-red-500 transition-colors uppercase">Remove</button>
                                     </div>
                                 </div>
@@ -49,27 +51,33 @@ const Cart = () => {
                                     <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="qty-btn">+</button>
                                 </div>
                                 <div className="text-right text-white font-bold">
-                                    ${(item.price * item.quantity).toFixed(2)}
+                                    {formatPrice(item.price * item.quantity)}
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     <div className="cart-summary bg-[#111] p-8 rounded-lg border border-white/5 h-fit">
-                        <h2 className="text-2xl font-heading text-white mb-8">Summary</h2>
-                        <div className="summary-row flex justify-between mb-4">
-                            <span className="text-gray-400">Subtotal</span>
-                            <span className="text-white">${cartTotal.toFixed(2)}</span>
+                        <h2 className="summary-title font-heading text-gold">Summary</h2>
+
+                        <div className="summary-row subtotal">
+                            <span className="summary-label">Subtotal</span>
+                            <span className="summary-value">{formatPrice(cartTotal)}</span>
                         </div>
-                        <div className="summary-row flex justify-between mb-8 pb-8 border-bottom border-white/5">
-                            <span className="text-gray-400">Shipping</span>
-                            <span className="text-gold">Calculated at checkout</span>
+
+                        <div className="summary-row shipping">
+                            <span className="summary-label">Shipping</span>
+                            <span className="summary-value text-gold">Calculated at checkout</span>
                         </div>
-                        <div className="summary-row flex justify-between mb-12">
-                            <span className="text-xl text-white font-heading">Total</span>
-                            <span className="text-xl text-gold font-bold">${cartTotal.toFixed(2)}</span>
+
+                        <div className="summary-row total">
+                            <span className="total-label font-heading">Total</span>
+                            <span className="total-value">{formatPrice(cartTotal)}</span>
                         </div>
-                        <Link to="/checkout" className="btn w-full text-center">Proceed to Checkout</Link>
+
+                        <Link to="/checkout" className="btn w-full text-center proceed-btn">
+                            Proceed to Checkout
+                        </Link>
                     </div>
                 </div>
             </div>

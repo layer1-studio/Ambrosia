@@ -53,3 +53,69 @@
     margin-top: 4rem;
     display: inline-block;
 }
+
+/* Summary Alignment & Gaps */
+.cart-summary {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    padding: 3rem;
+    position: sticky;
+    top: 150px;
+}
+
+.summary-title {
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summary-row.subtotal {
+    margin-bottom: 1.5rem;
+}
+
+.summary-row.shipping {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-row.total {
+    margin-bottom: 3rem;
+}
+
+.summary-label {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+}
+
+.summary-value {
+    color: #fff;
+    font-weight: 500;
+}
+
+.total-label {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.total-value {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.proceed-btn {
+    padding: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+}

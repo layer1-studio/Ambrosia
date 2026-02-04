@@ -1,12 +1,14 @@
 import { db } from '../firebase';
 import { collection, getDocs, limit, query } from 'firebase/firestore';
 import { useCart } from '../context/CartContext';
+import { useCurrency } from '../context/CurrencyContext';
 import './Products.css';
 import { Image as ImageIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const Products = () => {
     const { addToCart } = useCart();
+    const { formatPrice } = useCurrency();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -69,7 +71,7 @@ const Products = () => {
                             <div className="product-info">
                                 <h3 className="product-name">{product.name}</h3>
                                 <p className="product-desc line-clamp-2">{product.description || product.category || "Premium Cinnamon Product"}</p>
-                                <span className="product-price">${Number(product.price).toFixed(2)}</span>
+                                <span className="product-price">{formatPrice(product.price)}</span>
                                 <button
                                     onClick={() => addToCart(product)}
                                     disabled={Number(product.stock) === 0}

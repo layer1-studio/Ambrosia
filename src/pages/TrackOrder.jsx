@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { useCurrency } from '../context/CurrencyContext';
 
 const TrackOrder = () => {
     const [orderId, setOrderId] = useState('');
@@ -8,6 +9,7 @@ const TrackOrder = () => {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { formatPrice } = useCurrency();
 
     const handleTrack = async (e) => {
         e.preventDefault();
@@ -109,13 +111,13 @@ const TrackOrder = () => {
                                     {order.cart?.map((item, idx) => (
                                         <li key={idx} className="text-sm text-gray-300 flex justify-between">
                                             <span>{item.quantity}x {item.name}</span>
-                                            <span className="text-gold">${item.price}</span>
+                                            <span className="text-gold">{formatPrice(item.price)}</span>
                                         </li>
                                     ))}
                                 </ul>
                                 <div className="mt-4 pt-4 border-t border-white/10 flex justify-between font-bold text-white">
                                     <span>Total</span>
-                                    <span>${order.total?.toFixed(2)}</span>
+                                    <span>{formatPrice(order.total)}</span>
                                 </div>
                             </div>
                         </div>

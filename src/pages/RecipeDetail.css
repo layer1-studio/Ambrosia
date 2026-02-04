@@ -316,3 +316,132 @@
         font-size: 2.5rem;
     }
 }
+
+/* Related Product Section */
+.related-product-section {
+    margin-top: 6rem;
+}
+
+.related-product-card {
+    display: flex;
+    gap: 3rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    transition: all 0.3s ease;
+}
+
+.related-product-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(212, 175, 55, 0.2);
+    transform: translateY(-5px);
+}
+
+.rp-image {
+    width: 200px;
+    height: 200px;
+    min-width: 200px;
+    background: #000;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    padding: 1rem;
+}
+
+.rp-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.rp-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.rp-label {
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.rp-info h4 {
+    font-size: 2rem;
+    font-family: var(--font-heading);
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.rp-info p {
+    font-size: 1rem;
+    color: #888;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.rp-price-action {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.rp-price {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.rp-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2.5rem;
+    border-radius: 3rem;
+    background: var(--color-primary);
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rp-add-btn:hover {
+    background: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+@media (max-width: 768px) {
+    .related-product-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .rp-image {
+        width: 150px;
+        height: 150px;
+        min-width: 150px;
+    }
+
+    .rp-price-action {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
