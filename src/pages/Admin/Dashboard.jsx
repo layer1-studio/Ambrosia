@@ -6,11 +6,13 @@ import {
 } from 'recharts';
 import { Link } from 'react-router-dom';
 import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const Dashboard = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [recentPage, setRecentPage] = useState(0);
@@ -121,11 +123,11 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-8 animate-reveal">
-            {/* KPI Cards - wireframe style */}
+            {/* KPI Cards - grid layout */}
             <div className="grid grid-cols-2 gap-6">
                 <MetricCard
                     label="Total Revenue"
-                    value={`$${analytics.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+                    value={formatPrice(analytics.totalRevenue)}
                     icon={DollarSign}
                     trend="15"
                 />
@@ -143,7 +145,7 @@ const Dashboard = () => {
                 />
                 <MetricCard
                     label="Avg Order Value"
-                    value={`$${Math.round(analytics.averageOrderValue)}`}
+                    value={formatPrice(analytics.averageOrderValue)}
                     icon={Tag}
                     trend="5"
                 />
@@ -168,10 +170,10 @@ const Dashboard = () => {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} tickFormatter={v => v >= 1e6 ? `$${(v / 1e6).toFixed(1)}m` : `$${v}`} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} tickFormatter={v => formatPrice(v)} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '12px 16px' }}
-                                    formatter={(value, name) => [`$${Number(value).toLocaleString()}`, name === 'trend' ? 'Trendline' : 'Actual Revenue']}
+                                    formatter={(value, name) => [formatPrice(value), name === 'trend' ? 'Trendline' : 'Actual Revenue']}
                                     labelFormatter={(l) => l}
                                 />
                                 <Legend wrapperStyle={{ paddingTop: 12 }} iconType="line" formatter={(value) => <span className="text-gray-400 text-sm">{value === 'trend' ? 'Trendline' : 'Actual Revenue'}</span>} />
@@ -214,7 +216,7 @@ const Dashboard = () => {
                                         <td className="font-mono text-sm text-gold">#{order.id.slice(0, 8).toUpperCase()}</td>
                                         <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
                                         <td><span className={getStatusPill(order.status)}>{order.status}</span></td>
-                                        <td className="text-gold font-medium">${Number(order.total).toFixed(2)}</td>
+                                        <td className="text-gold font-medium">{formatPrice(order.total)}</td>
                                         <td className="text-gray-400 text-sm">{order.dateFull}</td>
                                     </tr>
                                 ))

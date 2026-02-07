@@ -4,6 +4,7 @@ import { Home, ShoppingBag, Package, LogOut, Mail, Users, BarChart3, Settings, H
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../../context/AuthContext';
+import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
 const LaurelLogo = () => (
@@ -16,6 +17,7 @@ const LaurelLogo = () => (
 const AdminLayout = () => {
     const navigate = useNavigate();
     const { currentUser, isAdmin, loading } = useAuth();
+    const { currency, setCurrency, availableCurrencies } = useCurrency();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     React.useEffect(() => {
@@ -59,9 +61,9 @@ const AdminLayout = () => {
     const displayLabel = displayName.replace(/\s+/g, ' ') + ' - Pro User';
 
     return (
-        <div className="admin-theme min-h-screen bg-[#030303]">
-            {/* Main top horizontal navbar - Fixed Layout */}
-            <header className="h-20 bg-[#0a0a0a] border-b border-white/5 sticky top-0 z-50 px-6 flex items-center justify-between shadow-2xl">
+        <div className="admin-theme min-h-screen bg-[#030303] overflow-x-hidden">
+            {/* Main top horizontal navbar - Static Layout for better sidebar clarity */}
+            <header className="h-20 bg-[#0a0a0a] border-b border-white/5 px-6 flex items-center justify-between shadow-2xl relative z-40">
                 {/* Left: Brand */}
                 <div className="flex items-center gap-8 min-w-max">
                     <div className="flex items-center gap-3">
@@ -115,6 +117,20 @@ const AdminLayout = () => {
 
                     {/* Tools */}
                     <div className="flex items-center gap-4">
+                        {/* Global Currency Selector */}
+                        <div className="flex items-center bg-white/5 border border-white/10 rounded-lg px-2 py-1">
+                            <span className="text-[9px] font-bold text-gray-500 uppercase mr-2 ml-1">Currency:</span>
+                            <select
+                                value={currency}
+                                onChange={(e) => setCurrency(e.target.value)}
+                                className="bg-transparent border-none text-[11px] font-bold text-gold focus:ring-0 cursor-pointer outline-none"
+                            >
+                                {availableCurrencies.map(c => (
+                                    <option key={c} value={c} className="bg-[#0a0a0a] text-white">{c}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <NavLink
                             to="/secured-web-ambrosia/admin/settings"
                             className={({ isActive }) =>
