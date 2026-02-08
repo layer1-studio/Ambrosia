@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
@@ -306,139 +307,151 @@ const Orders = () => {
 
                 </div>
 
-                {/* Refined Detail Sidebar Overlay */}
-                {selectedOrder && (
-                    <div className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a] border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] z-[100] animate-reveal overflow-y-auto">
-                        <div className="p-6 md:p-8 space-y-8">
-                            {/* Progress bar - Ordered → Processing → Shipped → Delivered */}
-                            <div className="admin-order-steps">
-                                {steps.map((step, i) => (
-                                    <React.Fragment key={step}>
-                                        <div className={`admin-order-step ${i <= stepIndex ? (i < stepIndex ? 'done' : 'active') : ''}`}>
-                                            <div className="admin-order-step-dot" />
-                                            <span>{step}</span>
-                                        </div>
-                                        {i < steps.length - 1 && <div className={`admin-order-step-line ${i < stepIndex ? 'done' : ''}`} />}
-                                    </React.Fragment>
-                                ))}
-                            </div>
+                {/* Refined Detail Modal - Using Portal to break out of all stacking contexts */}
+                {selectedOrder && createPortal(
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6" style={{ position: 'fixed' }}>
+                        {/* Backdrop */}
+                        <div
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in"
+                            onClick={() => setSelectedOrderId(null)}
+                        />
 
-                            {/* Header: Order #12345 - Processing + Update Status, Print Invoice */}
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-6">
-                                <h2 className="text-2xl font-heading text-gold">Order #{selectedOrder.id.slice(0, 8).toUpperCase()} - {selectedOrder.fulfillmentStatus}</h2>
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={scrollToStatus}
-                                        className="btn-premium btn-premium-gold px-5 py-2.5 rounded-xl text-sm font-bold"
-                                    >
-                                        Update Status
-                                    </button>
-                                    <button
-                                        onClick={handlePrint}
-                                        className="btn-premium btn-premium-outline px-5 py-2.5 rounded-xl text-sm font-bold border-gold/30 text-gold hover:bg-gold/10"
-                                    >
-                                        Print Invoice
-                                    </button>
-                                    <button onClick={() => setSelectedOrderId(null)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors" aria-label="Close">
-                                        <X size={20} />
-                                    </button>
-                                </div>
-                            </div>
+                        {/* Modal Content */}
+                        <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#0a0a0a] border border-gold/20 rounded-2xl shadow-2xl flex flex-col animate-scale-in overflow-hidden">
+                            {/* Scrollable Body */}
+                            <div className="overflow-y-auto custom-scrollbar p-6 md:p-8 space-y-8">
 
-                            {/* Customer Info + Shipping Address cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="glass-panel p-6 rounded-2xl border border-gold/10">
-                                    <h3 className="admin-section-title text-gold mb-4">Customer Info</h3>
-                                    <div className="space-y-3 text-sm">
-                                        <div className="flex items-center gap-3 text-gray-300">
-                                            <User size={18} className="text-gold shrink-0" />
-                                            <span>Name</span>
-                                            <span className="text-white font-medium ml-auto">{selectedOrder.firstName} {selectedOrder.lastName}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-gray-300">
-                                            <Mail size={18} className="text-gold shrink-0" />
-                                            <span>Email</span>
-                                            <span className="text-white font-medium ml-auto truncate max-w-[180px]">{selectedOrder.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-gray-300">
-                                            <Phone size={18} className="text-gold shrink-0" />
-                                            <span>Phone</span>
-                                            <span className="text-white font-medium ml-auto">{selectedOrder.phone || '—'}</span>
-                                        </div>
+                                {/* Header */}
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-6">
+                                    <h2 className="text-2xl font-heading text-gold">Order #{selectedOrder.id.slice(0, 8).toUpperCase()} - {selectedOrder.fulfillmentStatus}</h2>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={scrollToStatus}
+                                            className="btn-premium btn-premium-gold px-5 py-2.5 rounded-xl text-sm font-bold"
+                                        >
+                                            Update Status
+                                        </button>
+                                        <button
+                                            onClick={handlePrint}
+                                            className="btn-premium btn-premium-outline px-5 py-2.5 rounded-xl text-sm font-bold border-gold/30 text-gold hover:bg-gold/10"
+                                        >
+                                            Print Invoice
+                                        </button>
+                                        <button onClick={() => setSelectedOrderId(null)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:bg-red-500/20 hover:text-red-500" aria-label="Close">
+                                            <X size={20} />
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="glass-panel p-6 rounded-2xl border border-gold/10">
-                                    <h3 className="admin-section-title text-gold mb-4">Shipping Address</h3>
-                                    <div className="flex gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                                            <MapPin size={24} className="text-gold" />
-                                        </div>
-                                        <div className="text-sm text-gray-300">
-                                            <p className="text-white font-medium">{selectedOrder.address}</p>
-                                            <p>{selectedOrder.city}, {selectedOrder.zip}</p>
-                                            <p>Delivery method: Delivery</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            {/* Itemized Order Summary */}
-                            <div className="glass-panel p-6 rounded-2xl border border-gold/10">
-                                <h3 className="admin-section-title text-gold mb-4">Itemized Order Summary</h3>
-                                <div className="space-y-4">
-                                    {selectedOrder.cart?.map((item, i) => (
-                                        <div key={i} className="flex items-center gap-4 py-3 border-b border-white/5 last:border-0">
-                                            <div className="w-14 h-14 rounded-lg overflow-hidden bg-black flex-shrink-0 flex items-center justify-center text-gray-600">
-                                                {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <span className="text-xs">X</span>}
+                                {/* Progress bar - Ordered → Processing → Shipped → Delivered */}
+                                <div className="admin-order-steps">
+                                    {steps.map((step, i) => (
+                                        <React.Fragment key={step}>
+                                            <div className={`admin-order-step ${i <= stepIndex ? (i < stepIndex ? 'done' : 'active') : ''}`}>
+                                                <div className="admin-order-step-dot" />
+                                                <span>{step}</span>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-white">{item.name}</p>
-                                                <p className="text-xs text-gold">Gold Price</p>
-                                            </div>
-                                            <p className="text-gold font-semibold">{formatOrderPrice(item.price * (item.quantity || 1), selectedOrder)}</p>
-                                        </div>
+                                            {i < steps.length - 1 && <div className={`admin-order-step-line ${i < stepIndex ? 'done' : ''}`} />}
+                                        </React.Fragment>
                                     ))}
                                 </div>
-                                <div className="mt-6 pt-4 border-t border-white/5 text-right space-y-2">
-                                    <div className="flex justify-end gap-8 text-sm">
-                                        <span className="text-gray-400">Subtotal</span>
-                                        <span className="text-gold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
+
+                                {/* Customer Info + Shipping Address cards */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="glass-panel p-6 rounded-2xl border border-gold/10 !mb-0">
+                                        <h3 className="admin-section-title text-gold mb-4">Customer Info</h3>
+                                        <div className="space-y-3 text-sm">
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <User size={18} className="text-gold shrink-0" />
+                                                <span>Name</span>
+                                                <span className="text-white font-medium ml-auto">{selectedOrder.firstName} {selectedOrder.lastName}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <Mail size={18} className="text-gold shrink-0" />
+                                                <span>Email</span>
+                                                <span className="text-white font-medium ml-auto truncate max-w-[180px]">{selectedOrder.email}</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-gray-300">
+                                                <Phone size={18} className="text-gold shrink-0" />
+                                                <span>Phone</span>
+                                                <span className="text-white font-medium ml-auto">{selectedOrder.phone || '—'}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-end gap-8 text-sm">
-                                        <span className="text-gray-400">Tax</span>
-                                        <span className="text-gold">{formatOrderPrice(0, selectedOrder)}</span>
-                                    </div>
-                                    <div className="flex justify-end gap-8 text-lg font-heading pt-2">
-                                        <span className="text-white">Total</span>
-                                        <span className="text-gold font-bold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
+                                    <div className="glass-panel p-6 rounded-2xl border border-gold/10 !mb-0">
+                                        <h3 className="admin-section-title text-gold mb-4">Shipping Address</h3>
+                                        <div className="flex gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
+                                                <MapPin size={24} className="text-gold" />
+                                            </div>
+                                            <div className="text-sm text-gray-300">
+                                                <p className="text-white font-medium">{selectedOrder.address}</p>
+                                                <p>{selectedOrder.city}, {selectedOrder.zip}</p>
+                                                <p>Delivery method: Delivery</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Fulfillment quick actions */}
-                            <div id="fulfillment-actions" className="flex flex-wrap gap-3 scroll-mt-8">
-                                {['New', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Reviews', 'Cancelled', 'Refunded'].map(status => (
-                                    <button
-                                        key={status}
-                                        onClick={() => handleStatusChange(selectedOrder.id, status)}
-                                        className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black shadow-[0_0_15px_rgba(197,168,114,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
-                                    >
-                                        {status}
+                                {/* Itemized Order Summary */}
+                                <div className="glass-panel p-6 rounded-2xl border border-gold/10 !mb-0">
+                                    <h3 className="admin-section-title text-gold mb-4">Itemized Order Summary</h3>
+                                    <div className="space-y-4">
+                                        {selectedOrder.cart?.map((item, i) => (
+                                            <div key={i} className="flex items-center gap-4 py-3 border-b border-white/5 last:border-0">
+                                                <div className="w-14 h-14 rounded-lg overflow-hidden bg-black flex-shrink-0 flex items-center justify-center text-gray-600">
+                                                    {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" /> : <span className="text-xs">X</span>}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-white">{item.name}</p>
+                                                    <p className="text-xs text-gold">Gold Price</p>
+                                                </div>
+                                                <p className="text-gold font-semibold">{formatOrderPrice(item.price * (item.quantity || 1), selectedOrder)}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-6 pt-4 border-t border-white/5 text-right space-y-2">
+                                        <div className="flex justify-end gap-8 text-sm">
+                                            <span className="text-gray-400">Subtotal</span>
+                                            <span className="text-gold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
+                                        </div>
+                                        <div className="flex justify-end gap-8 text-sm">
+                                            <span className="text-gray-400">Tax</span>
+                                            <span className="text-gold">{formatOrderPrice(0, selectedOrder)}</span>
+                                        </div>
+                                        <div className="flex justify-end gap-8 text-lg font-heading pt-2">
+                                            <span className="text-white">Total</span>
+                                            <span className="text-gold font-bold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Fulfillment quick actions */}
+                                <div id="fulfillment-actions" className="flex flex-wrap gap-3 scroll-mt-8 pb-4">
+                                    {['New', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Reviews', 'Cancelled', 'Refunded'].map(status => (
+                                        <button
+                                            key={status}
+                                            onClick={() => handleStatusChange(selectedOrder.id, status)}
+                                            className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase transition-all ${selectedOrder.fulfillmentStatus === status ? 'bg-gold text-black shadow-[0_0_15px_rgba(197,168,114,0.3)]' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}
+                                        >
+                                            {status}
+                                        </button>
+                                    ))}
+                                    <input
+                                        type="text"
+                                        value={trackingInput}
+                                        onChange={(e) => setTrackingInput(e.target.value)}
+                                        placeholder="Tracking number..."
+                                        className="admin-input flex-1 min-w-[120px] py-2 text-sm"
+                                    />
+                                    <button onClick={handleSaveTracking} disabled={!trackingInput.trim()} className="btn-premium btn-premium-gold py-2 px-4 text-sm disabled:opacity-30">
+                                        Mark Shipped
                                     </button>
-                                ))}
-                                <input
-                                    type="text"
-                                    value={trackingInput}
-                                    onChange={(e) => setTrackingInput(e.target.value)}
-                                    placeholder="Tracking number..."
-                                    className="admin-input flex-1 min-w-[120px] py-2 text-sm"
-                                />
-                                <button onClick={handleSaveTracking} disabled={!trackingInput.trim()} className="btn-premium btn-premium-gold py-2 px-4 text-sm disabled:opacity-30">
-                                    Mark Shipped
-                                </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
 
