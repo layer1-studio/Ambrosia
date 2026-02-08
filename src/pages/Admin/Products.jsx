@@ -124,7 +124,7 @@ const Products = () => {
         const stock = Number(item.stock) || 0;
         const point = Number(item.reorderPoint) || 10;
         if (stock === 0) return { label: "Out of Stock", color: 'danger' };
-        if (stock <= point) return { label: "Low Stock", color: 'warning' };
+        if (stock <= point) return { label: "Low Stock", color: 'danger' };
         return { label: "Fully Stocked", color: 'success' };
     };
 
@@ -222,9 +222,11 @@ const Products = () => {
                                         </button>
                                     </div>
                                     <p className="text-gold font-medium text-xs">${Number(product.price).toFixed(2)}</p>
-                                    <div className="mt-1 flex items-center justify-between gap-2">
-                                        <span className="text-[10px] text-gray-400">Stock: {Number(product.stock) || 0}</span>
-                                        <span className={`text-[10px] font-bold ${isInStock ? 'text-green-400' : isLowStock ? 'text-orange-400' : 'text-red-400'}`}>
+                                    <div className="mt-2 flex items-center justify-between gap-2">
+                                        <span className={`text-[10px] ${!isInStock ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
+                                            Stock: {Number(product.stock) || 0}
+                                        </span>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isInStock ? 'text-green-400 bg-green-400/10' : 'bg-red-500/20 text-red-500'}`}>
                                             {isInStock ? 'IN STOCK' : isLowStock ? 'LOW STOCK' : 'OUT'}
                                         </span>
                                     </div>

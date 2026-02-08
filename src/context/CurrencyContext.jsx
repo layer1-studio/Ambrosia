@@ -4,7 +4,7 @@ const CurrencyContext = createContext();
 
 export const useCurrency = () => useContext(CurrencyContext);
 
-const EXCHANGE_RATES = {
+export const EXCHANGE_RATES = {
     USD: 1,
     LKR: 300,
     EUR: 0.92,

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useCurrency } from '../../context/CurrencyContext';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { Search, Mail, Trash2, X, MapPin, Phone, User, Filter } from 'lucide-react';
 import './Admin.css';
 
 const Orders = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
@@ -35,6 +37,12 @@ const Orders = () => {
         return () => unsubscribe();
     }, []);
 
+    useEffect(() => {
+        if (selectedOrderId) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [selectedOrderId]);
+
     const handleStatusChange = async (orderId, newStatus) => {
         try {
             await updateDoc(doc(db, "orders", orderId), { status: newStatus });
@@ -55,6 +63,99 @@ const Orders = () => {
             alert("Order #" + selectedOrder.id.slice(0, 8) + " marked as Shipped.");
         } catch (error) {
             alert("Failed to save tracking: " + error.message);
+        }
+    };
+
+    const handlePrint = () => {
+        if (!selectedOrder) return;
+        const printWindow = window.open('', '_blank');
+        const invoiceContent = `
+            <html>
+                <head>
+                    <title>Invoice - ${selectedOrder.id}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; line-height: 1.6; }
+                        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #D4AF37; padding-bottom: 20px; margin-bottom: 30px; align-items: center; }
+                        .logo { color: #D4AF37; font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; }
+                        .invoice-info { text-align: right; }
+                        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 40px; }
+                        .section-title { color: #D4AF37; text-transform: uppercase; font-size: 13px; font-weight: 700; letter-spacing: 2px; margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 6px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+                        th { text-align: left; padding: 15px; border-bottom: 2px solid #f0f0f0; color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+                        td { padding: 15px; border-bottom: 1px solid #f8f8f8; font-size: 14px; }
+                        .total-row { text-align: right; font-size: 20px; font-weight: bold; margin-top: 30px; border-top: 2px solid #D4AF37; padding-top: 15px; }
+                        .footer { margin-top: 80px; text-align: center; color: #bbb; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">Ambrosia</div>
+                        <div class="invoice-info">
+                            <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px;">INVOICE</h1>
+                            <p style="margin: 5px 0; font-family: monospace;">#ORD-${selectedOrder.id.slice(0, 8).toUpperCase()}</p>
+                            <p style="margin: 5px 0; color: #666; font-size: 14px;">Date: ${selectedOrder.dateFormatted}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <div class="section-title">Customer Information</div>
+                            <strong style="font-size: 16px;">${selectedOrder.firstName} ${selectedOrder.lastName}</strong><br>
+                            ${selectedOrder.email}<br>
+                            ${selectedOrder.phone || 'No phone provided'}
+                        </div>
+                        <div>
+                            <div class="section-title">Shipping Logistics</div>
+                            <p style="margin: 0;">${selectedOrder.address}</p>
+                            <p style="margin: 0;">${selectedOrder.city}, ${selectedOrder.zip}</p>
+                            <p style="margin: 10px 0 0; color: #D4AF37; font-size: 12px; font-weight: bold;">METHOD: Standard Delivery</p>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Details</th>
+                                <th style="text-align: center;">Quantity</th>
+                                <th style="text-align: right;">Unit Price</th>
+                                <th style="text-align: right;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${selectedOrder.cart?.map(item => `
+                                <tr>
+                                    <td><strong>${item.name}</strong></td>
+                                    <td style="text-align: center;">${item.quantity || 1}</td>
+                                    <td style="text-align: right;">${formatPrice(item.price)}</td>
+                                    <td style="text-align: right;">${formatPrice(item.price * (item.quantity || 1))}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="total-row">
+                        <span style="font-size: 14px; color: #888; font-weight: normal; margin-right: 20px;">GRAND TOTAL</span>
+                        ${formatPrice(selectedOrder.total)}
+                    </div>
+
+                    <div class="footer">
+                        Authentic Ceylon Cinnamon • Curated by Divine Essence
+                    </div>
+                </body>
+            </html>
+        `;
+        printWindow.document.write(invoiceContent);
+        printWindow.document.close();
+        // Wait for images if any (though we are using text names now)
+        setTimeout(() => {
+            printWindow.print();
+        }, 500);
+    };
+
+    const scrollToStatus = () => {
+        const element = document.getElementById('fulfillment-actions');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
@@ -173,7 +274,7 @@ const Orders = () => {
                                                 {order.paymentStatus}
                                             </span>
                                         </td>
-                                        <td className="text-right text-gold font-medium">${Number(order.total).toFixed(2)}</td>
+                                        <td className="text-right text-gold font-medium">{formatPrice(order.total)}</td>
                                         <td>
                                             <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
                                                 <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
@@ -194,7 +295,7 @@ const Orders = () => {
 
                 {/* Refined Detail Sidebar Overlay */}
                 {selectedOrder && (
-                    <div className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a] border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] z-50 animate-reveal overflow-y-auto">
+                    <div className="fixed top-0 right-0 h-full w-full max-w-2xl bg-[#0a0a0a] border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] z-[100] animate-reveal overflow-y-auto">
                         <div className="p-6 md:p-8 space-y-8">
                             {/* Progress bar - Ordered → Processing → Shipped → Delivered */}
                             <div className="admin-order-steps">
@@ -214,12 +315,15 @@ const Orders = () => {
                                 <h2 className="text-2xl font-heading text-gold">Order #{selectedOrder.id.slice(0, 8).toUpperCase()} - {selectedOrder.fulfillmentStatus}</h2>
                                 <div className="flex items-center gap-3">
                                     <button
-                                        onClick={() => { /* open status modal or inline */ }}
+                                        onClick={scrollToStatus}
                                         className="btn-premium btn-premium-gold px-5 py-2.5 rounded-xl text-sm font-bold"
                                     >
                                         Update Status
                                     </button>
-                                    <button className="btn-premium btn-premium-outline px-5 py-2.5 rounded-xl text-sm font-bold border-gold/30 text-gold hover:bg-gold/10">
+                                    <button
+                                        onClick={handlePrint}
+                                        className="btn-premium btn-premium-outline px-5 py-2.5 rounded-xl text-sm font-bold border-gold/30 text-gold hover:bg-gold/10"
+                                    >
                                         Print Invoice
                                     </button>
                                     <button onClick={() => setSelectedOrderId(null)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors" aria-label="Close">
@@ -278,28 +382,28 @@ const Orders = () => {
                                                 <p className="text-sm font-medium text-white">{item.name}</p>
                                                 <p className="text-xs text-gold">Gold Price</p>
                                             </div>
-                                            <p className="text-gold font-semibold">${(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                                            <p className="text-gold font-semibold">{formatPrice(item.price * (item.quantity || 1))}</p>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="mt-6 pt-4 border-t border-white/5 text-right space-y-2">
                                     <div className="flex justify-end gap-8 text-sm">
                                         <span className="text-gray-400">Subtotal</span>
-                                        <span className="text-gold">${selectedOrder.total}</span>
+                                        <span className="text-gold">{formatPrice(selectedOrder.total)}</span>
                                     </div>
                                     <div className="flex justify-end gap-8 text-sm">
                                         <span className="text-gray-400">Tax</span>
-                                        <span className="text-gold">$0.00</span>
+                                        <span className="text-gold">{formatPrice(0)}</span>
                                     </div>
                                     <div className="flex justify-end gap-8 text-lg font-heading pt-2">
                                         <span className="text-white">Total</span>
-                                        <span className="text-gold font-bold">${selectedOrder.total}</span>
+                                        <span className="text-gold font-bold">{formatPrice(selectedOrder.total)}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Fulfillment quick actions */}
-                            <div className="flex flex-wrap gap-3">
+                            <div id="fulfillment-actions" className="flex flex-wrap gap-3 scroll-mt-8">
                                 {['New', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Reviews', 'Cancelled', 'Refunded'].map(status => (
                                     <button
                                         key={status}
