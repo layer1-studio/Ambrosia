@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import { useCurrency } from '../context/CurrencyContext';
+import { useCurrency, EXCHANGE_RATES } from '../context/CurrencyContext';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, writeBatch, doc, increment } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
@@ -9,7 +9,7 @@ import './Checkout.css';
 
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
-    const { formatPrice } = useCurrency();
+    const { formatPrice, currency } = useCurrency();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('card');
@@ -68,7 +68,9 @@ const Checkout = () => {
                 paymentStatus: 'Paid', // Simulating successful payment
                 fulfillmentStatus: 'Pending',
                 created_at: serverTimestamp(),
-                user: formData.email
+                user: formData.email,
+                originalCurrency: currency,
+                exchangeRate: EXCHANGE_RATES[currency] || 1,
             });
 
             // Decrement Inventory for each item

@@ -53,7 +53,11 @@ function App() {
                                 {/* Admin Routes - No Public Navbar/Footer */}
                                 <Route path="/secured-web-ambrosia/demo" element={<SidebarDemo />} />
                                 <Route path="/secured-web-ambrosia/login" element={<AdminLogin />} />
-                                <Route path="/secured-web-ambrosia/admin" element={<AdminLayout />}>
+                                <Route path="/secured-web-ambrosia/admin" element={
+                                    <CurrencyProvider storageKey="ambrosia_admin_currency">
+                                        <AdminLayout />
+                                    </CurrencyProvider>
+                                }>
                                     <Route index element={<Dashboard />} />
                                     <Route path="orders" element={<Orders />} />
                                     <Route path="products" element={<Products />} />

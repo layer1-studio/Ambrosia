@@ -22,15 +22,15 @@ const CURRENCY_SYMBOLS = {
     CAD: 'C$'
 };
 
-export const CurrencyProvider = ({ children }) => {
+export const CurrencyProvider = ({ children, storageKey = 'ambrosia_currency' }) => {
     const [currency, setCurrency] = useState(() => {
-        const saved = localStorage.getItem('ambrosia_currency');
+        const saved = localStorage.getItem(storageKey);
         return saved || 'USD';
     });
 
     useEffect(() => {
-        localStorage.setItem('ambrosia_currency', currency);
-    }, [currency]);
+        localStorage.setItem(storageKey, currency);
+    }, [currency, storageKey]);
 
     const convert = (amount) => {
         const rate = EXCHANGE_RATES[currency] || 1;

@@ -6,7 +6,7 @@ import { Search, Mail, Trash2, X, MapPin, Phone, User, Filter } from 'lucide-rea
 import './Admin.css';
 
 const Orders = () => {
-    const { formatPrice } = useCurrency();
+    const { formatPrice, currencySymbols } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
@@ -42,6 +42,16 @@ const Orders = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }, [selectedOrderId]);
+
+    // Helper to format price based on order's original currency or fallback to admin's current
+    const formatOrderPrice = (amount, order) => {
+        if (order?.originalCurrency && order?.exchangeRate) {
+            const sym = currencySymbols[order.originalCurrency] || '$';
+            const val = (amount * order.exchangeRate).toFixed(2);
+            return `${sym}${val}`;
+        }
+        return formatPrice(amount);
+    };
 
     const handleStatusChange = async (orderId, newStatus) => {
         try {
@@ -126,8 +136,8 @@ const Orders = () => {
                                 <tr>
                                     <td><strong>${item.name}</strong></td>
                                     <td style="text-align: center;">${item.quantity || 1}</td>
-                                    <td style="text-align: right;">${formatPrice(item.price)}</td>
-                                    <td style="text-align: right;">${formatPrice(item.price * (item.quantity || 1))}</td>
+                                    <td style="text-align: right;">${formatOrderPrice(item.price, selectedOrder)}</td>
+                                    <td style="text-align: right;">${formatOrderPrice(item.price * (item.quantity || 1), selectedOrder)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -135,7 +145,7 @@ const Orders = () => {
 
                     <div class="total-row">
                         <span style="font-size: 14px; color: #888; font-weight: normal; margin-right: 20px;">GRAND TOTAL</span>
-                        ${formatPrice(selectedOrder.total)}
+                        ${formatOrderPrice(selectedOrder.total, selectedOrder)}
                     </div>
 
                     <div class="footer">
@@ -275,7 +285,7 @@ const Orders = () => {
                                                     {order.paymentStatus}
                                                 </span>
                                             </td>
-                                            <td className="text-right text-gold font-medium">{formatPrice(order.total)}</td>
+                                            <td className="text-right text-gold font-medium">{formatOrderPrice(order.total, order)}</td>
                                             <td>
                                                 <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
                                                     <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
@@ -385,22 +395,22 @@ const Orders = () => {
                                                 <p className="text-sm font-medium text-white">{item.name}</p>
                                                 <p className="text-xs text-gold">Gold Price</p>
                                             </div>
-                                            <p className="text-gold font-semibold">{formatPrice(item.price * (item.quantity || 1))}</p>
+                                            <p className="text-gold font-semibold">{formatOrderPrice(item.price * (item.quantity || 1), selectedOrder)}</p>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="mt-6 pt-4 border-t border-white/5 text-right space-y-2">
                                     <div className="flex justify-end gap-8 text-sm">
                                         <span className="text-gray-400">Subtotal</span>
-                                        <span className="text-gold">{formatPrice(selectedOrder.total)}</span>
+                                        <span className="text-gold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
                                     </div>
                                     <div className="flex justify-end gap-8 text-sm">
                                         <span className="text-gray-400">Tax</span>
-                                        <span className="text-gold">{formatPrice(0)}</span>
+                                        <span className="text-gold">{formatOrderPrice(0, selectedOrder)}</span>
                                     </div>
                                     <div className="flex justify-end gap-8 text-lg font-heading pt-2">
                                         <span className="text-white">Total</span>
-                                        <span className="text-gold font-bold">{formatPrice(selectedOrder.total)}</span>
+                                        <span className="text-gold font-bold">{formatOrderPrice(selectedOrder.total, selectedOrder)}</span>
                                     </div>
                                 </div>
                             </div>
