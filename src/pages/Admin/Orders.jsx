@@ -200,97 +200,100 @@ const Orders = () => {
     const stepIndex = selectedOrder ? (statusToStep[selectedOrder.fulfillmentStatus] ?? 1) : 0;
 
     return (
-        <div className="space-y-6 animate-reveal">
-            <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold">Orders</h1>
+        <>
+            <div className="space-y-6 animate-reveal">
+                <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold">Orders</h1>
 
-            <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
-                <div className="flex flex-1 gap-4 w-full">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search orders by ID, name, customer..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="admin-input w-full pl-11 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl focus:border-gold/50"
-                        />
-                    </div>
-                    <div className="relative w-48 shrink-0">
-                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none" size={16} />
-                        <select
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                            className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
-                        >
-                            {filterPills.map(({ value, label }) => (
-                                <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label}</option>
-                            ))}
-                        </select>
+                <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
+                    <div className="flex flex-1 gap-4 w-full">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search orders by ID, name, customer..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="admin-input w-full pl-11 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl focus:border-gold/50"
+                            />
+                        </div>
+                        <div className="relative w-48 shrink-0">
+                            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none" size={16} />
+                            <select
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
+                            >
+                                {filterPills.map(({ value, label }) => (
+                                    <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div className="relative">
-                <div className={`admin-table-wrapper glass-panel rounded-2xl border border-white/5 transition-all duration-300 ${selectedOrder ? 'opacity-40 blur-[2px] pointer-events-none' : ''}`}>
-                    <table className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer Name</th>
-                                <th>Date</th>
-                                <th>Payment Status</th>
-                                <th className="text-right">Total Amount</th>
-                                <th>Fulfillment Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                <div className="relative">
+                    <div className={`admin-table-wrapper glass-panel rounded-2xl border border-white/5 transition-all duration-300 ${selectedOrder ? 'opacity-40 blur-[2px] pointer-events-none' : ''}`}>
+                        <table className="admin-table">
+                            <thead>
                                 <tr>
-                                    <td colSpan={6} className="py-24 text-center">
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
-                                            <span className="text-sm text-gray-500">Syncing with database...</span>
-                                        </div>
-                                    </td>
+                                    <th>Order ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Date</th>
+                                    <th>Payment Status</th>
+                                    <th className="text-right">Total Amount</th>
+                                    <th>Fulfillment Status</th>
                                 </tr>
-                            ) : filteredOrders.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6} className="py-24 text-center text-gray-500 font-medium">
-                                        No matching orders found.
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredOrders.map(order => (
-                                    <tr
-                                        key={order.id}
-                                        onClick={() => setSelectedOrderId(order.id)}
-                                        className="cursor-pointer group"
-                                    >
-                                        <td className="font-mono text-sm text-gold font-medium">ORD-{order.id.slice(0, 5).toUpperCase()}</td>
-                                        <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
-                                        <td className="text-gray-400 text-sm">{order.dateFormatted}</td>
-                                        <td>
-                                            <span className={`status-pill ${order.paymentStatus === 'Paid' ? 'success' : 'danger'} ${order.paymentStatus === 'Paid' ? '!bg-gold/20 !text-gold' : ''}`}>
-                                                {order.paymentStatus}
-                                            </span>
-                                        </td>
-                                        <td className="text-right text-gold font-medium">{formatPrice(order.total)}</td>
-                                        <td>
-                                            <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
-                                                <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
-                                                    order.fulfillmentStatus === 'Shipped' ? 'bg-blue-500' :
-                                                        order.fulfillmentStatus === 'New' ? 'bg-gold animate-pulse' :
-                                                            order.fulfillmentStatus === 'Reviews' ? 'bg-purple-500' :
-                                                                'bg-amber-500'
-                                                    }`} />
-                                                {order.fulfillmentStatus}
-                                            </span>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} className="py-24 text-center">
+                                            <div className="flex flex-col items-center gap-3">
+                                                <div className="w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" />
+                                                <span className="text-sm text-gray-500">Syncing with database...</span>
+                                            </div>
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : filteredOrders.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="py-24 text-center text-gray-500 font-medium">
+                                            No matching orders found.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredOrders.map(order => (
+                                        <tr
+                                            key={order.id}
+                                            onClick={() => setSelectedOrderId(order.id)}
+                                            className="cursor-pointer group"
+                                        >
+                                            <td className="font-mono text-sm text-gold font-medium">ORD-{order.id.slice(0, 5).toUpperCase()}</td>
+                                            <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
+                                            <td className="text-gray-400 text-sm">{order.dateFormatted}</td>
+                                            <td>
+                                                <span className={`status-pill ${order.paymentStatus === 'Paid' ? 'success' : 'danger'} ${order.paymentStatus === 'Paid' ? '!bg-gold/20 !text-gold' : ''}`}>
+                                                    {order.paymentStatus}
+                                                </span>
+                                            </td>
+                                            <td className="text-right text-gold font-medium">{formatPrice(order.total)}</td>
+                                            <td>
+                                                <span className={`status-pill ${getStatusPill(order.fulfillmentStatus)} inline-flex items-center gap-1.5`}>
+                                                    <span className={`w-2 h-2 rounded-full ${order.fulfillmentStatus === 'Delivered' ? 'bg-green-500' :
+                                                        order.fulfillmentStatus === 'Shipped' ? 'bg-blue-500' :
+                                                            order.fulfillmentStatus === 'New' ? 'bg-gold animate-pulse' :
+                                                                order.fulfillmentStatus === 'Reviews' ? 'bg-purple-500' :
+                                                                    'bg-amber-500'
+                                                        }`} />
+                                                    {order.fulfillmentStatus}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
 
                 {/* Refined Detail Sidebar Overlay */}
@@ -445,7 +448,7 @@ const Orders = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
