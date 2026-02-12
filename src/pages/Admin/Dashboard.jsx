@@ -5,7 +5,7 @@ import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, Legend
 } from 'recharts';
 import { Link } from 'react-router-dom';
-import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight, AlertCircle, Package } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
@@ -14,6 +14,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const Dashboard = () => {
     const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [recentPage, setRecentPage] = useState(0);
     const recentPageSize = 5;
@@ -33,7 +34,15 @@ const Dashboard = () => {
             setOrders(ordersData);
             setLoading(false);
         });
-        return () => unsubscribe();
+
+        const unsubProducts = onSnapshot(collection(db, "products"), (snapshot) => {
+            setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        });
+
+        return () => {
+            unsubscribe();
+            unsubProducts();
+        };
     }, []);
 
     const analytics = useMemo(() => {
@@ -77,8 +86,10 @@ const Dashboard = () => {
             trend: Math.max(0, m * d.x + b)
         }));
 
-        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth: finalData };
-    }, [orders]);
+        const lowStockProducts = products.filter(p => (Number(p.stock) || 0) <= (Number(p.reorderPoint) || 10));
+
+        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth: finalData, lowStockProducts };
+    }, [orders, products]);
 
     const recentOrders = useMemo(() => [...orders].reverse(), [orders]);
     const paginatedRecent = recentOrders.slice(recentPage * recentPageSize, (recentPage + 1) * recentPageSize);
@@ -123,6 +134,40 @@ const Dashboard = () => {
 
     return (
         <div className="space-y-8 animate-reveal">
+            {/* Low Stock Alerts - High Prominence */}
+            {analytics.lowStockProducts.length > 0 && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 mb-8 animate-pulse overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <AlertCircle size={120} className="text-red-500" />
+                    </div>
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="p-2 bg-red-500/20 rounded-lg text-red-500">
+                            <AlertCircle size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-heading text-red-500">Inventory Alert</h2>
+                            <p className="text-[10px] text-red-400 font-bold tracking-[0.2em] uppercase">Critical stock levels detected</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {analytics.lowStockProducts.map(product => (
+                            <div key={product.id} className="flex items-center gap-3 bg-red-500/5 border border-red-500/10 p-3 rounded-xl">
+                                <div className="w-10 h-10 bg-black/40 rounded flex items-center justify-center shrink-0">
+                                    <Package size={18} className="text-red-500/50" />
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium text-white truncate">{product.name}</p>
+                                    <p className="text-[10px] text-red-400 font-bold uppercase">Stock: {product.stock} / {product.reorderPoint || 10} goal</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-red-500/10 text-right">
+                        <Link to="/secured-web-ambrosia/admin/products" className="text-xs font-bold text-red-400 hover:text-white transition-colors uppercase tracking-widest">Restock Items &rarr;</Link>
+                    </div>
+                </div>
+            )}
+
             {/* KPI Cards - grid layout */}
             <div className="grid grid-cols-2 gap-6">
                 <MetricCard
@@ -154,7 +199,7 @@ const Dashboard = () => {
             {/* Revenue Over Time - Full Width */}
             <div className="glass-panel p-8 rounded-2xl border border-white/5">
                 <h3 className="admin-section-title text-xl font-heading text-gold mb-6">Revenue Over Time</h3>
-                <div className="chart-container" style={{ height: 320 }}>
+                <div className="chart-container" style={{ height: 320, width: '100%', minWidth: 0 }}>
                     {analytics.revenueByMonth.some(d => d.currentYear > 0) ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={analytics.revenueByMonth} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
@@ -212,7 +257,11 @@ const Dashboard = () => {
                                 <tr><td colSpan={5} className="py-8 text-center text-gray-500 text-sm">No orders yet</td></tr>
                             ) : (
                                 paginatedRecent.map(order => (
-                                    <tr key={order.id}>
+                                    <tr
+                                        key={order.id}
+                                        className="cursor-pointer hover:bg-white/5 transition-colors group"
+                                        onClick={() => navigate('/secured-web-ambrosia/admin/orders')}
+                                    >
                                         <td className="font-mono text-sm text-gold">#{order.id.slice(0, 8).toUpperCase()}</td>
                                         <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
                                         <td><span className={getStatusPill(order.status)}>{order.status}</span></td>

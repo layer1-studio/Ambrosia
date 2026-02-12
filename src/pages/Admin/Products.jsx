@@ -151,13 +151,13 @@ const Products = () => {
                         />
                     </div>
                     <div className="relative w-48 shrink-0">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none">
+                        <div className="absolute left-10 top-1/2 -translate-y-1/2 text-gold pointer-events-none">
                             <Filter size={16} />
                         </div>
                         <select
                             value={activeCategory}
                             onChange={(e) => setActiveCategory(e.target.value)}
-                            className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
+                            className="admin-input w-full pl-20 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
                         >
                             <option value="All">All</option>
                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -226,7 +226,7 @@ const Products = () => {
                                         <span className={`text-[10px] ${!isInStock ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
                                             Stock: {Number(product.stock) || 0}
                                         </span>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isInStock ? 'text-green-400 bg-green-400/10' : 'bg-red-500/20 text-red-500'}`}>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isInStock ? 'text-green-400 bg-green-400/10' : isLowStock ? 'bg-red-500 text-white animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-gray-800 text-gray-400'}`}>
                                             {isInStock ? 'IN STOCK' : isLowStock ? 'LOW STOCK' : 'OUT'}
                                         </span>
                                     </div>
@@ -239,7 +239,7 @@ const Products = () => {
 
             {/* Premium Full-Sceen Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[60] bg-[#030303]/95 backdrop-blur-2xl flex justify-end animate-reveal">
+                <div className="fixed inset-0 z-[60] bg-[#030303]/95 backdrop-blur-2xl flex justify-end animate-reveal" style={{ top: 0, left: 0, right: 0, bottom: 0 }}>
                     <div className="w-full max-w-2xl bg-[#0a0a0a] border-l border-white/10 h-full overflow-y-auto flex flex-col">
                         <div className="p-8 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#0a0a0a] z-10">
                             <div>

@@ -4,6 +4,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { Search, Mail, Trash2, X, MapPin, Phone, User, Filter } from 'lucide-react';
+import { sendStatusEmail } from '../../utils/email';
 import './Admin.css';
 
 const Orders = () => {
@@ -57,6 +58,13 @@ const Orders = () => {
     const handleStatusChange = async (orderId, newStatus) => {
         try {
             await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+
+            // Send notification email for significant status changes
+            const order = orders.find(o => o.id === orderId);
+            console.log(`[Orders Debug] Status changed to ${newStatus} for order ${orderId}. Order found:`, !!order);
+            if (order && ['Delivered', 'Cancelled', 'Refunded', 'Shipped'].includes(newStatus)) {
+                await sendStatusEmail(order, newStatus);
+            }
         } catch (error) {
             alert("Update failed: " + error.message);
         }
@@ -69,6 +77,10 @@ const Orders = () => {
                 trackingNumber: trackingInput,
                 status: 'Shipped'
             });
+
+            // Send notification email for Shipped with tracking
+            console.log(`[Orders Debug] Saving tracking for order ${selectedOrder.id}. Calling sendStatusEmail...`);
+            await sendStatusEmail(selectedOrder, 'Shipped', trackingInput);
             setTrackingInput('');
             setSelectedOrderId(null);
             alert("Order #" + selectedOrder.id.slice(0, 8) + " marked as Shipped.");
@@ -228,11 +240,11 @@ const Orders = () => {
                             />
                         </div>
                         <div className="relative w-48 shrink-0">
-                            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none" size={16} />
+                            <Filter className="absolute left-10 top-1/2 -translate-y-1/2 text-gold pointer-events-none" size={16} />
                             <select
                                 value={filter}
                                 onChange={(e) => setFilter(e.target.value)}
-                                className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
+                                className="admin-input w-full pl-20 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50"
                             >
                                 {filterPills.map(({ value, label }) => (
                                     <option key={value} value={value} className="bg-[#0a0a0a] text-white">{label}</option>
@@ -309,11 +321,12 @@ const Orders = () => {
 
                 {/* Refined Detail Modal - Using Portal to break out of all stacking contexts */}
                 {selectedOrder && createPortal(
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6" style={{ position: 'fixed' }}>
+                    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
                         {/* Backdrop */}
                         <div
                             className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in"
                             onClick={() => setSelectedOrderId(null)}
+                            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
                         />
 
                         {/* Modal Content */}

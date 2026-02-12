@@ -141,13 +141,13 @@ const Customers = () => {
                         />
                     </div>
                     <div className="relative w-56 shrink-0">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gold pointer-events-none">
+                        <div className="absolute left-10 top-1/2 -translate-y-1/2 text-gold pointer-events-none">
                             <Filter size={16} />
                         </div>
                         <select
                             value={filterType}
                             onChange={(e) => setFilterType(e.target.value)}
-                            className="admin-input w-full pl-11 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50 text-sm"
+                            className="admin-input w-full pl-20 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50 text-sm"
                         >
                             {['All', 'Customer', 'Subscriber', 'Both'].map(t => (
                                 <option key={t} value={t} className="bg-[#0a0a0a] text-white">{t}</option>
