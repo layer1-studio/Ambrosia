@@ -2,6 +2,7 @@ import { db } from '../firebase';
 import { collection, getDocs, limit, query } from 'firebase/firestore';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
+import Reveal from './Reveal';
 import './Products.css';
 import { Image as ImageIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -51,12 +52,12 @@ const Products = () => {
     return (
         <section id="products" className="products-section">
             <div className="container">
-                <div className="section-header">
+                <Reveal as="div" className="section-header">
                     <h2 className="section-title">Royal Collections</h2>
                     <p className="section-subtitle">Curated from the ancient gardens of Ceylon.</p>
-                </div>
+                </Reveal>
 
-                <div className="products-grid">
+                <Reveal as="div" className="products-grid" stagger delay={100}>
                     {products.map((product) => (
                         <div key={product.id} className="product-card">
                             <div className="product-image-wrapper">
@@ -82,7 +83,7 @@ const Products = () => {
                             </div>
                         </div>
                     ))}
-                </div>
+                </Reveal>
             </div>
         </section>
     );

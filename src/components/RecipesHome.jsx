@@ -3,6 +3,7 @@ import divineImg from '../assets/images/divine.png';
 import gardenImg from '../assets/images/garden.png';
 import './RecipesHome.css';
 import { Link } from 'react-router-dom';
+import Reveal from './Reveal';
 
 const recipes = [
     {
@@ -85,12 +86,12 @@ const RecipesHome = () => {
     return (
         <section className="recipes-home-section">
             <div className="container">
-                <div className="section-header">
+                <Reveal as="div" className="section-header">
                     <h2 className="section-title">Recipes & Rituals</h2>
                     <p className="section-subtitle">Discover the endless possibilities of true cinnamon.</p>
-                </div>
+                </Reveal>
 
-                <div className="recipes-home-scroll">
+                <Reveal as="div" className="recipes-home-scroll" stagger delay={100}>
                     {recipes.map((recipe) => (
                         <Link to={`/recipes/${recipe.id}`} key={recipe.id} className="recipe-home-card cursor-pointer group block">
                             <div className="recipe-home-image overflow-hidden">
@@ -101,11 +102,11 @@ const RecipesHome = () => {
                                 <span className="recipe-home-time">{recipe.time}</span>
                                 <h3 className="recipe-home-title group-hover:text-gold transition-colors">{recipe.title}</h3>
                                 <p className="recipe-home-desc">{recipe.desc}</p>
-                                <Link to="/recipes" className="recipe-home-link bg-transparent border-0 cursor-pointer p-0 inline-block text-gold/80 italic text-xs mt-2 group-hover:text-gold group-hover:translate-x-1 transition-all">Read More →</Link>
+                                <span className="recipe-home-link inline-block text-gold/80 italic text-xs mt-2 group-hover:text-gold group-hover:translate-x-1 transition-all">Read More →</span>
                             </div>
                         </Link>
                     ))}
-                </div>
+                </Reveal>
             </div>
         </section>
     );

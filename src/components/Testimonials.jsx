@@ -1,4 +1,5 @@
 import React from 'react';
+import Reveal from './Reveal';
 import './Testimonials.css';
 
 const testimonials = [
@@ -23,11 +24,11 @@ const Testimonials = () => {
     return (
         <section className="testimonials-section">
             <div className="container">
-                <div className="section-header">
+                <Reveal as="div" className="section-header">
                     <h2 className="section-title">What Our Customers Say</h2>
-                </div>
+                </Reveal>
 
-                <div className="testimonials-grid">
+                <Reveal as="div" className="testimonials-grid" stagger delay={100}>
                     {testimonials.map((t) => (
                         <div key={t.id} className="testimonial-card">
                             <div className="stars">
@@ -39,7 +40,7 @@ const Testimonials = () => {
                             {/* Anonymous - No Name/Role displayed */}
                         </div>
                     ))}
-                </div>
+                </Reveal>
             </div>
         </section>
     );

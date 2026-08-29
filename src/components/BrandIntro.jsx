@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Reveal from './Reveal';
 import './BrandIntro.css';
 
 const BrandIntro = () => {
@@ -7,7 +8,7 @@ const BrandIntro = () => {
         <section id="heritage" className="brand-intro-section">
             <div className="container">
                 <div className="intro-grid">
-                    <div className="intro-text">
+                    <Reveal as="div" className="intro-text">
                         <span className="gold-label">Our Mission</span>
                         <h2 className="text-4xl font-heading mb-6 text-white">Ambrosia — The True Gold of the East</h2>
                         <p className="intro-p">
@@ -19,8 +20,8 @@ const BrandIntro = () => {
                             Our mission is singular: To bring the finest grade cinnamon, once reserved for
                             European royalty, directly to the modern connoisseur.
                         </p>
-                    </div>
-                    <div className="quick-links">
+                    </Reveal>
+                    <Reveal as="div" className="quick-links" delay={150}>
                         <h3 className="text-xl font-heading text-gold">Explore Ambrosia</h3>
                         <div className="links-stack">
                             <Link to="/shop" className="quick-link-item">
@@ -45,7 +46,7 @@ const BrandIntro = () => {
                                 </div>
                             </Link>
                         </div>
-                    </div>
+                    </Reveal>
                 </div>
             </div>
         </section>
