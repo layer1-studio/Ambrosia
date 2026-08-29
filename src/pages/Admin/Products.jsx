@@ -243,8 +243,8 @@ const Products = () => {
                     <div className="w-full max-w-2xl bg-[#0a0a0a] border-l border-white/10 h-full overflow-y-auto flex flex-col">
                         <div className="p-8 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#0a0a0a] z-10">
                             <div>
-                                <h2 className="text-2xl font-heading text-white">{currentProductId ? 'Update Product' : 'Establish New Entry'}</h2>
-                                <p className="text-[10px] text-gold font-bold tracking-[0.2em] uppercase mt-1">Catalog Registry</p>
+                                <h2 className="text-2xl font-heading text-white">{currentProductId ? 'Edit Product' : 'Add Product'}</h2>
+                                <p className="text-[10px] text-gold font-bold tracking-[0.2em] uppercase mt-1">{currentProductId ? formData.sku || 'Product' : 'New catalog entry'}</p>
                             </div>
                             <button onClick={() => { setIsModalOpen(false); setCurrentProductId(null); }} className="p-2 rounded-full border border-white/5 text-gray-500 hover:text-white transition-colors">
                                 <X size={24} />
@@ -256,17 +256,17 @@ const Products = () => {
                                 <h3 className="text-label border-b border-white/5 pb-2">Primary Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[11px] text-gray-500 font-bold uppercase">Stock Keeping Unit (SKU)</label>
+                                        <label className="text-[11px] text-gray-500 font-bold uppercase">SKU</label>
                                         <input type="text" value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} className="admin-input font-mono" placeholder="AMB-CORE-001" required />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[11px] text-gray-500 font-bold uppercase">Classification</label>
+                                        <label className="text-[11px] text-gray-500 font-bold uppercase">Category</label>
                                         <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="admin-input bg-black">
                                             {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                         </select>
                                     </div>
                                     <div className="col-span-full space-y-2">
-                                        <label className="text-[11px] text-gray-500 font-bold uppercase">Display Name</label>
+                                        <label className="text-[11px] text-gray-500 font-bold uppercase">Name</label>
                                         <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="admin-input" placeholder="Luxury Cinnamon Blend" required />
                                     </div>
                                 </div>

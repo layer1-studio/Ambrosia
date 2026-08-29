@@ -129,8 +129,11 @@ const Dashboard = () => {
         const s = (status || '').toLowerCase();
         if (s === 'delivered' || s === 'completed') return 'status-pill success';
         if (s === 'shipped') return 'status-pill info';
-        if (s === 'processing') return 'status-pill warning';
-        return 'status-pill warning';
+        if (s === 'pending' || s === 'processing') return 'status-pill warning';
+        if (s === 'new') return 'status-pill new-status';
+        if (s === 'reviews') return 'status-pill reviews-status';
+        if (s === 'cancelled' || s === 'refunded') return 'status-pill danger';
+        return 'status-pill default';
     };
 
     return (
