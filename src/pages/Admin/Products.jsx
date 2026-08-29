@@ -137,6 +137,8 @@ const Products = () => {
 
     return (
         <div className="space-y-8 animate-reveal">
+            <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold">Products Management</h1>
+
             {/* Top bar - wireframe: Search, Category dropdown, ADD PRODUCT */}
             <div className="flex flex-col lg:flex-row gap-4 items-center mb-10">
                 <div className="flex flex-1 gap-4 w-full">
@@ -172,8 +174,6 @@ const Products = () => {
                     ADD PRODUCT
                 </button>
             </div>
-
-            <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold">Products Management</h1>
 
             {/* Product grid - 3 columns, wireframe card style */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
