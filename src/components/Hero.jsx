@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import heroBg from '../assets/images/hero_bg.png';
 import './Hero.css';
 
@@ -20,8 +21,8 @@ const Hero = () => {
                     hand-harvested Ceylon Cinnamon, cultivated in the heart of Sri Lanka.
                 </p>
                 <div className="hero-actions">
-                    <a href="#products" className="btn">View Collection</a>
-                    <a href="#heritage" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Our Heritage</a>
+                    <Link to="/shop" className="btn">View Collection</Link>
+                    <Link to="/about-us" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Our Heritage</Link>
                 </div>
             </div>
         </section>

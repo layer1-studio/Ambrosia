@@ -204,7 +204,7 @@ const Messages = () => {
                                     <div>
                                         <p className="text-gold font-semibold">{selectedMessage.name}</p>
                                         <p className="text-sm text-gray-500">{selectedMessage.email}</p>
-                                        <a href="#contact-details" className="text-xs text-gold hover:underline mt-0.5 inline-block">Contact - Details</a>
+                                        <span className="text-xs text-gold mt-0.5 inline-block">Contact Details</span>
                                     </div>
                                 </div>
                                 <button type="button" onClick={(e) => handleDelete(selectedMessage.id, e)} className="p-2 text-gray-500 hover:text-white rounded-lg" aria-label="More options">
