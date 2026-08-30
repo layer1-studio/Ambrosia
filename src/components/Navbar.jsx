@@ -27,7 +27,11 @@ const Navbar = () => {
         <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
             <div className="nav-container">
                 <Link to="/" className="nav-logo">
-                    Ambrosia
+                    <img src={`${import.meta.env.BASE_URL}images/ambrosia-icon-cream.png`} alt="" className="nav-logo-icon" />
+                    <span className="nav-logo-text">
+                        <span className="nav-logo-main">Ambrosia</span>
+                        <span className="nav-logo-sub">Ceylon</span>
+                    </span>
                 </Link>
 
                 {/* Desktop Links */}

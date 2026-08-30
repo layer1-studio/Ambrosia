@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { db, storage } from '../../firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, setDoc, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Plus, X, Search, AlertTriangle, Image as ImageIcon, Check, MoreVertical } from 'lucide-react';
+import { Plus, X, Search, AlertTriangle, Image as ImageIcon, Check, MoreVertical, Download } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
@@ -14,6 +14,50 @@ const IMAGE_MAP = {
 };
 
 const CATEGORIES = ['Powder', 'Sticks', 'Blends', 'Gift Sets', 'Limited Edition', 'Skin Care', 'Hair Care', 'Wellness', 'Sets'];
+
+// Real catalog, transcribed from the client's product packaging (Ambrosia Ceylon).
+// Prices/cost/stock are placeholders — review and adjust after import.
+const REAL_CATALOG = [
+    {
+        id: 'kuveni-reserve',
+        sku: 'AMB-KUV-100',
+        name: "Kuveni's Reserve",
+        category: 'Sticks',
+        price: 45.00,
+        cost: 18.00,
+        stock: 50,
+        reorderPoint: 10,
+        description: "The Queen's Selection. Inspired by Queen Kuveni of ancient Lanka, renowned for her wisdom and healing lineage. Kuveni's Reserve features the finest Alba quills — slender, sweet, and delicately hand-rolled by master peelers. 100% Pure Ceylon Cinnamon (Cinnamomum zeylanicum). Origin: Southern Hills of Sri Lanka. Net Weight: 100g. Store in a cool, dry place away from sunlight; best before 12 months from packing.",
+        image: '/Ambrosia/images/kuveni-reserve.jpg',
+        featured: true
+    },
+    {
+        id: 'ravana-blend',
+        sku: 'AMB-RAV-045',
+        name: "Ravana's Blend",
+        category: 'Powder',
+        price: 20.00,
+        cost: 8.00,
+        stock: 60,
+        reorderPoint: 12,
+        description: "The King's Craft. Inspired by King Ravana, master of herbs, Ayurveda, and alchemy. This finely milled Alba powder delivers a naturally sweet, warm flavour for culinary and wellness rituals. 100% Pure Ceylon Cinnamon Powder. Origin: Southern Hills of Sri Lanka. Net Weight: 45g. Store in a cool, dry place away from sunlight; best before 12 months from packing.",
+        image: '/Ambrosia/images/ravana-blend.jpg',
+        featured: true
+    },
+    {
+        id: 'divine-essence',
+        sku: 'AMB-DIV-015',
+        name: 'Divine Essence',
+        category: 'Wellness',
+        price: 18.00,
+        cost: 7.00,
+        stock: 40,
+        reorderPoint: 8,
+        description: "Pure Ceylon Cinnamon Leaf Oil. Add a few drops to a diffuser, blend with carrier oils for massage, or use in steam inhalation (1-2 drops). Also lovely for naturally scenting a room or in handcrafted aroma blends. Net Weight: 15ml. Store in a cool, dry place away from sunlight; best before 12 months from packing.",
+        image: '/Ambrosia/images/divine-essence.jpg',
+        featured: true
+    }
+];
 
 const Products = () => {
     const { formatPrice } = useCurrency();
@@ -143,6 +187,18 @@ const Products = () => {
         setIsModalOpen(true);
     };
 
+    const handleImportCatalog = async () => {
+        if (!window.confirm(`Import/refresh the ${REAL_CATALOG.length} real Ambrosia Ceylon products (Kuveni's Reserve, Ravana's Blend, Divine Essence)? This won't touch or delete any existing products.`)) return;
+        try {
+            for (const { id, ...data } of REAL_CATALOG) {
+                await setDoc(doc(db, "products", id), data, { merge: true });
+            }
+            alert("Imported. Remember to review the placeholder prices/stock and delete the old test products when ready.");
+        } catch (error) {
+            alert("Import failed: " + error.message);
+        }
+    };
+
     return (
         <div>
             {/* Category tabs + search + new product */}
@@ -169,6 +225,15 @@ const Products = () => {
                         className="flex-1 min-w-0 bg-transparent border-none text-[#f2efe9] text-xs outline-none placeholder:text-[#615c54]"
                     />
                 </div>
+                <button
+                    type="button"
+                    onClick={handleImportCatalog}
+                    className="btn-premium btn-premium-outline shrink-0"
+                    title="Add/refresh Kuveni's Reserve, Ravana's Blend, Divine Essence from the real packaging"
+                >
+                    <Download size={14} />
+                    Import real catalog
+                </button>
                 <button
                     type="button"
                     onClick={openNew}

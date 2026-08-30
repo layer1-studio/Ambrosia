@@ -10,9 +10,7 @@ import './Admin.css';
 const BASE = '/secured-web-ambrosia/admin';
 
 const LaurelLogo = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-gold shrink-0" aria-hidden>
-        <path d="M12 2L14 8L20 9L15 13L17 19L12 16L7 19L9 13L4 9L10 8L12 2Z" fill="currentColor" />
-    </svg>
+    <img src={`${import.meta.env.BASE_URL}images/ambrosia-icon-cream.png`} alt="" className="h-[18px] w-auto shrink-0" />
 );
 
 const NAV_MAIN = [

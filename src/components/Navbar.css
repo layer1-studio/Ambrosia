@@ -26,20 +26,47 @@
 
 .nav-logo {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
     color: var(--color-primary);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 700;
-    line-height: 1;
     z-index: 1001;
     /* Above mobile menu */
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.nav-logo-icon {
+    height: 2.1rem;
+    width: auto;
+    display: block;
+}
+
+.nav-logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    gap: 0.2rem;
+}
+
+.nav-logo-main {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.nav-logo-sub {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-weight: 500;
+    color: var(--color-text-muted);
 }
 
 .nav-links {
     display: flex;
     gap: 2.5rem;
+    margin-left: 3.5rem;
 }
 
 .nav-link {
