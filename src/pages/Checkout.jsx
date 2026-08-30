@@ -15,7 +15,6 @@ const Checkout = () => {
     const { formatPrice, currency } = useCurrency();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState('card');
 
     // Form State
     const [formData, setFormData] = useState({
@@ -179,16 +178,16 @@ const Checkout = () => {
     const finalTotal = cartTotal + shippingCost;
 
     return (
-        <div className="checkout-page py-32">
+        <div className="checkout-page py-24">
             <div className="container">
-                <h1 className="text-5xl font-heading text-gold mb-12">Checkout</h1>
+                <h1 className="text-4xl font-heading text-gold mb-12 pb-6 border-b-2 border-white/10">Checkout</h1>
 
-                <form onSubmit={handlePlaceOrder} className="checkout-grid grid grid-cols-2 gap-20">
+                <form onSubmit={handlePlaceOrder} className="checkout-grid grid grid-cols-2 gap-16">
                     <div className="checkout-form">
                         {/* Shipping Info */}
-                        <section className="checkout-section mb-12">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Delivery Details</h2>
-                            <div className="grid grid-cols-2 gap-6 mb-6">
+                        <section className="checkout-section mb-16">
+                            <span className="checkout-eyebrow">01 — Delivery details</span>
+                            <div className="grid grid-cols-2 gap-4 mt-6">
                                 <input
                                     type="text" name="firstName" placeholder="First Name"
                                     className="form-input" required
@@ -199,18 +198,16 @@ const Checkout = () => {
                                     className="form-input" required
                                     value={formData.lastName} onChange={handleInputChange}
                                 />
-                            </div>
-                            <input
-                                type="email" name="email" placeholder="Email Address"
-                                className="form-input mb-6" required
-                                value={formData.email} onChange={handleInputChange}
-                            />
-                            <input
-                                type="text" name="address" placeholder="Address"
-                                className="form-input mb-6" required
-                                value={formData.address} onChange={handleInputChange}
-                            />
-                            <div className="grid grid-cols-2 gap-6 mb-6">
+                                <input
+                                    type="email" name="email" placeholder="Email Address"
+                                    className="form-input col-span-2" required
+                                    value={formData.email} onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text" name="address" placeholder="Address"
+                                    className="form-input col-span-2" required
+                                    value={formData.address} onChange={handleInputChange}
+                                />
                                 <input
                                     type="text" name="city" placeholder="City"
                                     className="form-input" required
@@ -221,134 +218,92 @@ const Checkout = () => {
                                     className="form-input" required
                                     value={formData.country} onChange={handleInputChange}
                                 />
+                                <input
+                                    type="tel" name="phone" placeholder="Contact Number (for delivery)"
+                                    className="form-input col-span-2" required
+                                    value={formData.phone} onChange={handleInputChange}
+                                />
                             </div>
-                            <input
-                                type="tel" name="phone" placeholder="Contact Number (for delivery)"
-                                className="form-input mb-6" required
-                                value={formData.phone} onChange={handleInputChange}
-                            />
                         </section>
 
                         {/* Shipping Method */}
-                        <section className="checkout-section mb-40">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Shipping Method</h2>
-                            <div className="shipping-options space-y-4">
-                                <label className={`shipping-option flex items-center justify-between p-4 bg-[#111] border rounded cursor-pointer ${formData.shippingMethod === 'standard' ? 'border-gold' : 'border-white/5'}`}>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="radio" name="shipping"
-                                            checked={formData.shippingMethod === 'standard'}
-                                            onChange={() => handleShippingChange('standard', 10)}
-                                        />
-                                        <span>Standard (5-10 Days)</span>
-                                    </div>
-                                    <span className="text-gold">{formatPrice(10)}</span>
+                        <section className="checkout-section mb-16">
+                            <span className="checkout-eyebrow">02 — Shipping method</span>
+                            <div className="shipping-options mt-6 border-t border-white/10">
+                                <label className={`shipping-option ${formData.shippingMethod === 'standard' ? 'active' : ''}`}>
+                                    <input
+                                        type="radio" name="shipping"
+                                        checked={formData.shippingMethod === 'standard'}
+                                        onChange={() => handleShippingChange('standard', 10)}
+                                    />
+                                    <span className="shipping-option-label">Standard (5–10 days)</span>
+                                    <span className="shipping-option-price">{formatPrice(10)}</span>
                                 </label>
-                                <label className={`shipping-option flex items-center justify-between p-4 bg-[#111] border rounded cursor-pointer ${formData.shippingMethod === 'express' ? 'border-gold' : 'border-white/5'}`}>
-                                    <div className="flex items-center gap-4">
-                                        <input
-                                            type="radio" name="shipping"
-                                            checked={formData.shippingMethod === 'express'}
-                                            onChange={() => handleShippingChange('express', 25)}
-                                        />
-                                        <span>Express (2-3 Days)</span>
-                                    </div>
-                                    <span className="text-gold">{formatPrice(25)}</span>
+                                <label className={`shipping-option ${formData.shippingMethod === 'express' ? 'active' : ''}`}>
+                                    <input
+                                        type="radio" name="shipping"
+                                        checked={formData.shippingMethod === 'express'}
+                                        onChange={() => handleShippingChange('express', 25)}
+                                    />
+                                    <span className="shipping-option-label">Express (2–3 days)</span>
+                                    <span className="shipping-option-price">{formatPrice(25)}</span>
                                 </label>
                             </div>
                         </section>
 
                         {/* Payment Method */}
-                        <section className="checkout-section mb-12">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Payment Method</h2>
-                            <div className="payment-tabs flex gap-4 mb-8">
-                                <button
-                                    type="button"
-                                    className={`payment-tab flex-1 p-4 rounded border ${paymentMethod === 'card' ? 'border-gold text-gold bg-gold/5' : 'border-white/5 text-gray-400'}`}
-                                    onClick={() => setPaymentMethod('card')}
-                                >
-                                    Credit Card
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`payment-tab flex-1 p-4 rounded border ${paymentMethod === 'bank' ? 'border-gold text-gold bg-gold/5' : 'border-white/5 text-gray-400'}`}
-                                    onClick={() => setPaymentMethod('bank')}
-                                >
-                                    Bank Transfer
-                                </button>
+                        <section className="checkout-section mb-16">
+                            <span className="checkout-eyebrow">03 — Payment method</span>
+                            <div className="card-details mt-6">
+                                <div className="checkout-note">
+                                    Note: This is a secure demonstration. No charges will be applied.
+                                </div>
+                                <input type="text" placeholder="Card Number" className="form-input" />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input type="text" placeholder="MM / YY" className="form-input" />
+                                    <input type="text" placeholder="CVV" className="form-input" />
+                                </div>
                             </div>
-
-                            {paymentMethod === 'card' ? (
-                                <div className="card-details space-y-6">
-                                    <div className="p-4 bg-gold/5 border border-gold/20 text-gray-300 text-sm rounded">
-                                        Note: This is a secure demonstration. No charges will be applied.
-                                    </div>
-                                    <input type="text" placeholder="Card Number" className="form-input" />
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <input type="text" placeholder="MM / YY" className="form-input" />
-                                        <input type="text" placeholder="CVV" className="form-input" />
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="bank-transfer-details p-8 bg-gold/5 border border-gold/10 rounded space-y-4">
-                                    <p className="text-gray-300 text-sm italic mb-4">Transfer the total amount to the following account to complete your acquisition.</p>
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Bank</span>
-                                        <span className="text-white font-medium">Ceylon National Bank</span>
-                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Account Name</span>
-                                        <span className="text-white font-medium">Ambrosia Private Limited</span>
-                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Account Number</span>
-                                        <span className="text-white font-mono font-bold tracking-wider">0045-8821-3390</span>
-                                        <span className="text-gray-500 uppercase tracking-widest text-[10px]">Branch</span>
-                                        <span className="text-white font-medium">Colombo Main Branch</span>
-                                    </div>
-                                    <div className="mt-6 p-4 border-t border-white/5 text-[11px] text-gray-400">
-                                        * Please use your Order ID as the reference. Dispatch will occur upon confirmation of funds.
-                                    </div>
-                                </div>
-                            )}
                         </section>
 
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`btn w-full py-5 text-lg uppercase tracking-widest mt-8 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`btn w-full py-5 text-sm uppercase tracking-widest ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {isLoading ? 'Processing...' : 'Confirm Order'}
                         </button>
                     </div>
 
                     <div className="checkout-sidebar">
-                        <div className="order-summary bg-[#111] p-10 rounded-lg border border-white/5 sticky top-32">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Order Summary</h2>
-                            <div className="order-items space-y-6 mb-10 max-h-96 overflow-y-auto pr-2">
+                        <div className="order-summary sticky top-32">
+                            <span className="checkout-eyebrow">Order summary</span>
+                            <div className="order-items mt-6">
                                 {cartItems.map(item => (
-                                    <div key={item.id} className="flex justify-between items-center bg-black/20 p-3 rounded border border-white/5">
-                                        <div className="flex items-center gap-4">
-                                            <div className="item-thumbnail-mini w-12 h-12 overflow-hidden rounded bg-gray-800">
-                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                            </div>
-                                            <div>
-                                                <p className="text-white text-xs font-heading leading-tight mb-1">{item.name}</p>
-                                                <p className="text-gray-500 text-[10px] uppercase tracking-widest">Qty: {item.quantity}</p>
-                                            </div>
+                                    <div key={item.id} className="order-item-row">
+                                        <div className="item-thumbnail-mini">
+                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                         </div>
-                                        <span className="text-gold text-sm font-bold">{formatPrice(item.price * item.quantity)}</span>
+                                        <div className="order-item-info">
+                                            <p className="order-item-name">{item.name}</p>
+                                            <p className="order-item-qty">Qty {item.quantity}</p>
+                                        </div>
+                                        <span className="order-item-price">{formatPrice(item.price * item.quantity)}</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className="summary-details pt-8 border-t border-white/10 space-y-4">
-                                <div className="flex justify-between text-gray-400">
+                            <div className="summary-details">
+                                <div className="summary-row">
                                     <span>Subtotal</span>
                                     <span>{formatPrice(cartTotal)}</span>
                                 </div>
-                                <div className="flex justify-between text-gray-400">
+                                <div className="summary-row">
                                     <span>Shipping</span>
                                     <span>{formatPrice(shippingCost)}</span>
                                 </div>
-                                <div className="flex justify-between text-xl text-white font-heading font-bold pt-4 border-t border-white/5">
+                                <div className="summary-row summary-total">
                                     <span>Total</span>
-                                    <span className="text-gold">{formatPrice(finalTotal)}</span>
+                                    <span>{formatPrice(finalTotal)}</span>
                                 </div>
                             </div>
                         </div>
