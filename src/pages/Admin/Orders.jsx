@@ -116,7 +116,8 @@ const Orders = () => {
                         <div>
                             <div class="section-title">Shipping Logistics</div>
                             <p style="margin: 0;">${selectedOrder.address}</p>
-                            <p style="margin: 0;">${selectedOrder.city}, ${selectedOrder.zip}</p>
+                            <p style="margin: 0;">${[selectedOrder.city, selectedOrder.state].filter(Boolean).join(', ')} ${selectedOrder.zip || ''}</p>
+                            <p style="margin: 0;">${selectedOrder.country || ''}</p>
                             <p style="margin: 10px 0 0; color: #5b0e22; font-size: 12px; font-weight: bold;">METHOD: Standard Delivery</p>
                         </div>
                     </div>
@@ -307,7 +308,7 @@ const Orders = () => {
                                 <div className="mt-2.5 flex flex-col gap-1.5">
                                     <div className="flex justify-between gap-3"><span className="text-[11px] text-[#615c54]">Email</span><span className="text-[11px] text-[#c9c4bb] truncate">{selectedOrder.email}</span></div>
                                     <div className="flex justify-between gap-3"><span className="text-[11px] text-[#615c54]">Phone</span><span className="font-mono text-[11px] text-[#c9c4bb]">{selectedOrder.phone || '—'}</span></div>
-                                    <div className="flex justify-between gap-3"><span className="text-[11px] text-[#615c54]">Ship to</span><span className="text-[11px] text-[#c9c4bb] text-right">{selectedOrder.address}, {selectedOrder.city}</span></div>
+                                    <div className="flex justify-between gap-3"><span className="text-[11px] text-[#615c54] shrink-0">Ship to</span><span className="text-[11px] text-[#c9c4bb] text-right">{[selectedOrder.address, selectedOrder.city, selectedOrder.state, selectedOrder.zip, selectedOrder.country].filter(Boolean).join(', ')}</span></div>
                                 </div>
                             </div>
 

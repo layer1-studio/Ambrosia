@@ -103,7 +103,8 @@ const TrackOrder = () => {
                                 <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Destination</h3>
                                 <p className="text-white">{order.firstName} {order.lastName}</p>
                                 <p className="text-gray-400 text-sm">{order.address}</p>
-                                <p className="text-gray-400 text-sm">{order.city}, {order.country}</p>
+                                <p className="text-gray-400 text-sm">{[order.city, order.state, order.zip].filter(Boolean).join(', ')}</p>
+                                <p className="text-gray-400 text-sm">{order.country}</p>
                             </div>
                             <div>
                                 <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Selection ({order.items})</h3>

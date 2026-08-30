@@ -23,6 +23,8 @@ const Checkout = () => {
         email: '',
         address: '',
         city: '',
+        state: '',
+        zip: '',
         country: '',
         phone: '',
         shippingMethod: 'standard'
@@ -53,7 +55,7 @@ const Checkout = () => {
             return;
         }
 
-        if (!formData.firstName || !formData.lastName || !formData.address || !formData.city || !formData.country) {
+        if (!formData.firstName || !formData.lastName || !formData.address || !formData.city || !formData.zip || !formData.country) {
             alert("Please complete all required fields for delivery.");
             setIsLoading(false);
             return;
@@ -212,6 +214,16 @@ const Checkout = () => {
                                     type="text" name="city" placeholder="City"
                                     className="form-input" required
                                     value={formData.city} onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text" name="state" placeholder="State / Province"
+                                    className="form-input"
+                                    value={formData.state} onChange={handleInputChange}
+                                />
+                                <input
+                                    type="text" name="zip" placeholder="Postal Code"
+                                    className="form-input" required
+                                    value={formData.zip} onChange={handleInputChange}
                                 />
                                 <input
                                     type="text" name="country" placeholder="Country"
