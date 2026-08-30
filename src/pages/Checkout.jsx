@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency, EXCHANGE_RATES } from '../context/CurrencyContext';
 import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp, writeBatch, doc, increment } from 'firebase/firestore';
+import { collection, doc, runTransaction, serverTimestamp } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import './Checkout.css';
 
@@ -11,7 +11,7 @@ import './Checkout.css';
 const ADMIN_NOTIFICATION_EMAIL = 'studio.layer1@gmail.com';
 
 const Checkout = () => {
-    const { cartItems, cartTotal, clearCart } = useCart();
+    const { cartItems, cartTotal, clearCart, removeFromCart } = useCart();
     const { formatPrice, currency } = useCurrency();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
@@ -61,32 +61,45 @@ const Checkout = () => {
             return;
         }
 
-        // Create Order in Firestore
+        // Create the order and decrement inventory atomically — either both happen or
+        // neither does, so a missing/deleted product can't leave a phantom "Paid" order
+        // behind with stock never touched and the customer's cart stuck forever.
         try {
-            const orderRef = await addDoc(collection(db, 'orders'), {
-                ...formData,
-                items: cartItems.length,
-                total: finalTotal,
-                cart: cartItems.map(item => ({ id: item.id, name: item.name, quantity: item.quantity, price: item.price })),
-                status: 'New', // Pending, Processing, etc.
-                paymentStatus: 'Paid', // Simulating successful payment
-                fulfillmentStatus: 'Pending',
-                created_at: serverTimestamp(),
-                user: formData.email,
-                originalCurrency: currency,
-                exchangeRate: EXCHANGE_RATES[currency] || 1,
-            });
+            const orderRef = doc(collection(db, 'orders'));
 
-            // Decrement Inventory for each item
-            const batch = writeBatch(db);
-            cartItems.forEach(item => {
-                const productRef = doc(db, 'products', item.id);
-                // Atomically decrement stock
-                batch.update(productRef, {
-                    stock: increment(-item.quantity)
+            await runTransaction(db, async (transaction) => {
+                const productRefs = cartItems.map(item => doc(db, 'products', item.id));
+                const productSnaps = await Promise.all(productRefs.map(ref => transaction.get(ref)));
+
+                const missing = productSnaps
+                    .map((snap, i) => (snap.exists() ? null : cartItems[i]))
+                    .filter(Boolean);
+
+                if (missing.length > 0) {
+                    const err = new Error('Some items in your cart are no longer available.');
+                    err.missingItems = missing;
+                    throw err;
+                }
+
+                productSnaps.forEach((snap, i) => {
+                    const currentStock = Number(snap.data().stock) || 0;
+                    transaction.update(productRefs[i], { stock: currentStock - cartItems[i].quantity });
+                });
+
+                transaction.set(orderRef, {
+                    ...formData,
+                    items: cartItems.length,
+                    total: finalTotal,
+                    cart: cartItems.map(item => ({ id: item.id, name: item.name, quantity: item.quantity, price: item.price })),
+                    status: 'New', // Pending, Processing, etc.
+                    paymentStatus: 'Paid', // Simulating successful payment
+                    fulfillmentStatus: 'Pending',
+                    created_at: serverTimestamp(),
+                    user: formData.email,
+                    originalCurrency: currency,
+                    exchangeRate: EXCHANGE_RATES[currency] || 1,
                 });
             });
-            await batch.commit();
 
             // Send Confirmation Email via EmailJS
             try {
@@ -166,7 +179,13 @@ const Checkout = () => {
 
         } catch (error) {
             console.error("Order failed:", error);
-            alert("Failed to place order. Please try again.");
+            if (error.missingItems?.length) {
+                error.missingItems.forEach(item => removeFromCart(item.id));
+                const names = error.missingItems.map(item => item.name).join(', ');
+                alert(`Sorry, these item(s) are no longer available and have been removed from your cart: ${names}. Please review your cart and try again.`);
+            } else {
+                alert("Failed to place order. Please try again.");
+            }
             setIsLoading(false);
         }
     };
