@@ -64,8 +64,8 @@ select.form-input {
     height: 3.5rem;
     min-width: 3.5rem;
     border-radius: 1rem;
-    background: rgba(212, 175, 55, 0.05);
-    border: 1px solid rgba(212, 175, 55, 0.15);
+    background: rgba(217, 214, 186, 0.05);
+    border: 1px solid rgba(217, 214, 186, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,7 +74,7 @@ select.form-input {
 }
 
 .contact-method-item:hover .method-icon-wrap {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(217, 214, 186, 0.1);
     border-color: var(--color-primary);
     transform: scale(1.05);
 }
@@ -121,7 +121,7 @@ select.form-input {
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: rgba(212, 175, 55, 0.6);
+    color: rgba(217, 214, 186, 0.6);
     text-decoration: none;
     font-size: 0.9rem;
     transition: all 0.3s ease;
@@ -136,7 +136,7 @@ select.form-input {
     width: 2.2rem;
     height: 2.2rem;
     border-radius: 0.75rem;
-    border: 1px solid rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(217, 214, 186, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -145,7 +145,7 @@ select.form-input {
 
 .social-link-item:hover .social-icon {
     border-color: var(--color-primary);
-    background: rgba(212, 175, 55, 0.05);
+    background: rgba(217, 214, 186, 0.05);
 }
 
 @keyframes reveal-up {

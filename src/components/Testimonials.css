@@ -14,7 +14,7 @@
     background: var(--color-surface);
     padding: 3rem 2rem;
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(217, 214, 186, 0.05);
     transition: all 0.3s ease;
     position: relative;
 }

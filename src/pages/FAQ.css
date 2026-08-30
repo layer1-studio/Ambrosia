@@ -53,14 +53,14 @@
 }
 
 .faq-card:hover {
-  border-color: rgba(212, 175, 55, 0.2);
+  border-color: rgba(217, 214, 186, 0.2);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .faq-card.open {
   background: rgba(21, 21, 21, 0.95);
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.06);
+  border-color: rgba(217, 214, 186, 0.35);
+  box-shadow: 0 12px 32px rgba(217, 214, 186, 0.06);
 }
 
 .faq-question {
@@ -155,5 +155,5 @@
 .faq-cta .btn:hover {
   background: var(--color-primary);
   color: #000;
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 20px rgba(217, 214, 186, 0.25);
 }

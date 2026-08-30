@@ -7,6 +7,9 @@ import { collection, addDoc, serverTimestamp, writeBatch, doc, increment } from 
 import emailjs from '@emailjs/browser';
 import './Checkout.css';
 
+// TODO: swap for an @ambrosia address once the client has one set up
+const ADMIN_NOTIFICATION_EMAIL = 'studio.layer1@gmail.com';
+
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart } = useCart();
     const { formatPrice, currency } = useCurrency();
@@ -122,7 +125,7 @@ const Checkout = () => {
                             <div style="font-size: 14px; color: #888; padding-top: 4px">Qty: ${item.quantity} × $${item.price}</div>
                         </td>
                         <td style="padding: 24px 4px 0 0; white-space: nowrap; text-align: right;">
-                            <strong style="color: #D4AF37;">$${(item.price * item.quantity).toFixed(2)}</strong>
+                            <strong style="color: #5b0e22;">$${(item.price * item.quantity).toFixed(2)}</strong>
                         </td>
                     </tr>
                 `;
@@ -139,9 +142,19 @@ const Checkout = () => {
                 };
 
                 await emailjs.send(serviceID, templateID, templateParams, publicKey);
-                console.log("Email sent successfully");
+                console.log("Customer confirmation email sent successfully");
+
+                // Also alert the store admin that a new order came in
+                const adminParams = {
+                    ...templateParams,
+                    to_name: 'Ambrosia Admin',
+                    to_email: ADMIN_NOTIFICATION_EMAIL,
+                    message: `New order placed by ${formData.firstName} ${formData.lastName} (${formData.email}).`
+                };
+                await emailjs.send(serviceID, templateID, adminParams, publicKey);
+                console.log("Admin new-order notification sent successfully");
             } catch (emailError) {
-                console.error("Failed to send email:", emailError);
+                console.error("Failed to send order email:", emailError);
                 // Don't block the success flow if email fails
             }
 

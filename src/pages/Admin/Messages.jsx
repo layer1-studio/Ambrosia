@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, updateDoc, doc, deleteDoc, query, orderBy, Timestamp } from 'firebase/firestore';
-import { Mail, Send, Trash2, Archive, Check, User, MoreVertical, PenSquare } from 'lucide-react';
+import { Mail, Check, Archive, Trash2 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import './Admin.css';
 
 // --- EmailJS Configuration ---
-// Update these with your live credentials from https://www.emailjs.com/
 const EMAILJS_CONFIG = {
     SERVICE_ID: 'service_vnv2zdj',
     TEMPLATE_ID: 'template_bny43aj',
@@ -14,13 +13,11 @@ const EMAILJS_CONFIG = {
 };
 
 const Messages = () => {
-    console.log("[Messages] Component Loaded - Build 1.1");
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [replyText, setReplyText] = useState('');
     const [sending, setSending] = useState(false);
-    const [replyModalOpen, setReplyModalOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState('all'); // all, new, archived
 
     useEffect(() => {
@@ -41,6 +38,7 @@ const Messages = () => {
 
     const handleSelectMessage = async (msg) => {
         setSelectedMessage(msg);
+        setReplyText('');
         if (msg.status === 'new') {
             try {
                 await updateDoc(doc(db, "messages", msg.id), { status: 'read' });
@@ -50,24 +48,23 @@ const Messages = () => {
         }
     };
 
-
-    const handleDelete = async (id, e) => {
-        e?.stopPropagation();
-        if (window.confirm("Permanently purge this correspondence?")) {
+    const handleDelete = async () => {
+        if (!selectedMessage) return;
+        if (window.confirm("Delete this message permanently?")) {
             try {
-                await deleteDoc(doc(db, "messages", id));
-                if (selectedMessage?.id === id) setSelectedMessage(null);
+                await deleteDoc(doc(db, "messages", selectedMessage.id));
+                setSelectedMessage(null);
             } catch (error) {
                 alert("Error deleting message: " + error.message);
             }
         }
     };
 
-    const handleArchive = async (id, e) => {
-        e?.stopPropagation();
+    const handleArchive = async () => {
+        if (!selectedMessage) return;
         try {
-            await updateDoc(doc(db, "messages", id), { status: 'archived' });
-            if (selectedMessage?.id === id) setSelectedMessage(null);
+            await updateDoc(doc(db, "messages", selectedMessage.id), { status: 'archived' });
+            setSelectedMessage(null);
         } catch (error) {
             alert("Error archiving message: " + error.message);
         }
@@ -83,11 +80,6 @@ const Messages = () => {
     const unreadCount = messages.filter(m => m.status === 'new').length;
     const archivedCount = messages.filter(m => m.status === 'archived').length;
 
-    const openReplyModal = () => setReplyModalOpen(true);
-    const closeReplyModal = () => {
-        setReplyModalOpen(false);
-        setReplyText('');
-    };
     const handleReplySubmit = async () => {
         if (!replyText.trim() || !selectedMessage) return;
         setSending(true);
@@ -100,16 +92,13 @@ const Messages = () => {
             subject: `Re: ${selectedMessage.subject || 'Your inquiry'}`
         };
 
-        console.log('[EmailJS Debug] Preparing to send payload:', emailParams);
-
         try {
-            const result = await emailjs.send(
+            await emailjs.send(
                 EMAILJS_CONFIG.SERVICE_ID,
                 EMAILJS_CONFIG.TEMPLATE_ID,
                 emailParams,
                 EMAILJS_CONFIG.PUBLIC_KEY
             );
-            console.log('[EmailJS Debug] Success result:', result);
 
             await updateDoc(doc(db, "messages", selectedMessage.id), {
                 status: 'replied',
@@ -117,169 +106,139 @@ const Messages = () => {
                 repliedAt: Timestamp.now()
             });
 
+            setSelectedMessage(prev => prev ? { ...prev, status: 'replied', reply: replyText } : prev);
             setReplyText('');
-            closeReplyModal();
         } catch (err) {
-            console.error('[EmailJS Debug] Error sending email:', err);
             alert('Failed to send reply: ' + err.message);
         } finally {
             setSending(false);
         }
     };
 
-    return (
-        <div className="h-[calc(100vh-160px)] flex flex-col animate-reveal min-h-0">
-            <div className="flex-1 flex gap-6 min-h-0 overflow-hidden pb-4 border-b border-white/5">
-                {/* Column 1: FILTERS */}
-                <aside className="w-[200px] shrink-0 h-full flex flex-col border-r border-white/10 pr-4">
-                    <h2 className="admin-section-title text-gold font-heading mb-4">FILTERS</h2>
-                    <div className="space-y-1">
-                        {[
-                            { id: 'all', label: 'All' },
-                            { id: 'new', label: 'Unread', badge: unreadCount },
-                            { id: 'archived', label: 'Archived', badge: archivedCount },
-                        ].map(({ id, label, badge }) => (
-                            <button
-                                key={id}
-                                type="button"
-                                onClick={() => setStatusFilter(id)}
-                                className={`w-full flex items-center justify-between py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${statusFilter === id ? 'text-gold border-b-2 border-gold' : 'text-gray-400 hover:text-white'}`}
-                            >
-                                <span>{label}</span>
-                                {badge !== undefined && (
-                                    <span className="w-5 h-5 rounded-full bg-gold/20 text-gold text-xs font-bold flex items-center justify-center">{badge}</span>
-                                )}
-                            </button>
-                        ))}
-                    </div>
-                </aside>
+    const tabs = [
+        { id: 'all', label: 'All', count: messages.length },
+        { id: 'new', label: 'Unread', count: unreadCount },
+        { id: 'archived', label: 'Archived', count: archivedCount },
+    ];
 
-                {/* Column 2: INBOX */}
-                <div className="w-[320px] lg:w-[380px] shrink-0 h-full flex flex-col border-r border-white/10 overflow-hidden">
-                    <div className="flex items-center justify-between mb-4 shrink-0">
-                        <h2 className="admin-section-title text-gold font-heading mb-0">INBOX</h2>
-                        <button type="button" className="btn-premium btn-premium-gold !py-2 !px-4 text-xs font-bold rounded-xl">
-                            <PenSquare size={14} />
-                            New Message
+    return (
+        <div className="grid" style={{ gridTemplateColumns: '340px 1fr', minHeight: 'calc(100vh - 64px)' }}>
+            {/* Inbox column */}
+            <div className="border-r-2 border-[#1c1a17] min-w-0 flex flex-col">
+                <div className="h-11 border-b-2 border-[#1c1a17] flex items-center px-5">
+                    {tabs.map(t => (
+                        <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => setStatusFilter(t.id)}
+                            className={`admin-pill ${statusFilter === t.id ? 'active' : ''}`}
+                            style={{ height: 44 }}
+                        >
+                            {t.label}
+                            <span className="pill-count">{t.count}</span>
                         </button>
-                    </div>
-                    <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-2">
-                        {loading ? (
-                            Array(5).fill(0).map((_, i) => <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />)
-                        ) : filteredMessages.length === 0 ? (
-                            <div className="py-8 text-center text-gray-500 text-sm">No messages</div>
-                        ) : (
-                            filteredMessages.map(msg => (
+                    ))}
+                </div>
+                <div className="flex-1 overflow-y-auto">
+                    {loading ? (
+                        <div className="p-5 text-[#615c54] text-sm">Loading…</div>
+                    ) : filteredMessages.length === 0 ? (
+                        <div className="p-8 text-center text-[#615c54] text-sm">No messages</div>
+                    ) : (
+                        filteredMessages.map(msg => {
+                            const unread = msg.status === 'new';
+                            const active = selectedMessage?.id === msg.id;
+                            return (
                                 <div
                                     key={msg.id}
                                     onClick={() => handleSelectMessage(msg)}
-                                    className={`flex gap-3 p-3 rounded-xl cursor-pointer transition-all ${selectedMessage?.id === msg.id ? 'bg-gold/10 border border-gold/20' : 'hover:bg-white/5 border border-transparent'}`}
+                                    className="px-5 py-3.5 border-b border-[#141311] cursor-pointer"
+                                    style={{
+                                        borderLeft: `2px solid ${unread ? '#d9d6ba' : 'transparent'}`,
+                                        background: active ? 'rgba(217, 214, 186,.08)' : unread ? 'rgba(217, 214, 186,.06)' : 'transparent'
+                                    }}
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
-                                        <User size={18} />
+                                    <div className="flex items-baseline justify-between gap-2">
+                                        <span className={`text-[13px] truncate ${unread ? 'font-semibold text-[#f2efe9]' : 'font-medium text-[#8a857e]'}`}>{msg.name}</span>
+                                        <span className="font-mono text-[10px] text-[#615c54] shrink-0">{msg.createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
                                     </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium text-gold truncate">{msg.name}</p>
-                                        <p className="text-xs text-gray-500 truncate">{msg.message?.slice(0, 40)}...</p>
-                                        <div className="flex items-center justify-between mt-1">
-                                            <span className="text-[10px] text-gray-500">{msg.createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
-                                            {msg.status === 'new' && <span className="w-4 h-4 rounded-full bg-gold text-black text-[10px] font-bold flex items-center justify-center">1</span>}
-                                        </div>
-                                    </div>
+                                    <p className="m-0 mt-1 text-xs text-[#615c54] leading-relaxed truncate">{msg.message?.slice(0, 60)}</p>
                                 </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-
-                {/* Column 3: MESSAGE */}
-                <div className={`flex-1 flex flex-col min-w-0 glass-panel rounded-2xl border border-white/5 overflow-hidden ${!selectedMessage ? 'hidden lg:flex items-center justify-center' : ''}`}>
-                    {selectedMessage ? (
-                        <>
-                            <div className="p-6 border-b border-white/5 flex justify-between items-start shrink-0">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center text-gold font-heading text-xl shrink-0">
-                                        {selectedMessage.name.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <p className="text-gold font-semibold">{selectedMessage.name}</p>
-                                        <p className="text-sm text-gray-500">{selectedMessage.email}</p>
-                                        <span className="text-xs text-gold mt-0.5 inline-block">Contact Details</span>
-                                    </div>
-                                </div>
-                                <button type="button" onClick={(e) => handleDelete(selectedMessage.id, e)} className="p-2 text-gray-500 hover:text-white rounded-lg" aria-label="More options">
-                                    <MoreVertical size={20} />
-                                </button>
-                            </div>
-                            <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
-                                <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">{selectedMessage.message}</p>
-                            </div>
-                            <div className="p-6 border-t border-white/5 bg-white/[0.01] shrink-0">
-                                <div className="space-y-6">
-                                    {selectedMessage.reply && (
-                                        <div className="space-y-3">
-                                            <div className="flex items-center gap-2 text-green-400 text-[10px] font-bold uppercase tracking-widest">
-                                                <Check size={14} strokeWidth={3} />
-                                                LATEST DISPATCHED REPLY
-                                            </div>
-                                            <div className="p-4 rounded-xl bg-green-500/5 border border-green-500/10 text-gray-400 text-sm italic leading-relaxed">
-                                                "{selectedMessage.reply}"
-                                            </div>
-                                        </div>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={openReplyModal}
-                                        className="btn-premium btn-premium-gold font-bold rounded-xl px-8 py-3"
-                                    >
-                                        {selectedMessage.reply ? 'REPLY AGAIN' : 'REPLY TO MESSAGE'}
-                                    </button>
-                                </div>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="text-center p-8">
-                            <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4 text-gold">
-                                <Mail size={28} />
-                            </div>
-                            <p className="text-gray-500 text-sm">Select a message</p>
-                        </div>
+                            );
+                        })
                     )}
                 </div>
             </div>
 
-            {/* Reply Modal - wireframe: recipient, subject, textarea, Discard, Send Reply */}
-            {replyModalOpen && selectedMessage && (
-                <div className="admin-modal-overlay" onClick={closeReplyModal}>
-                    <div className="admin-modal-content p-6 md:p-8 rounded-2xl border border-gold/20 shadow-2xl max-w-lg w-full animate-reveal" onClick={e => e.stopPropagation()}>
-                        <div className="mb-6">
-                            <p className="text-xl font-heading font-bold text-gold">{selectedMessage.name}</p>
-                            <p className="text-sm text-gold/90 mt-0.5">Re: {selectedMessage.subject}</p>
+            {/* Thread column */}
+            <div className="min-w-0 flex flex-col">
+                {selectedMessage ? (
+                    <>
+                        <div className="px-8 py-6 border-b-2 border-[#1c1a17] flex items-start justify-between gap-4">
+                            <div className="min-w-0">
+                                <p className="m-0 text-base font-semibold text-[#f2efe9]">{selectedMessage.name}</p>
+                                <p className="m-0 mt-1 text-xs text-[#8a857e]">{selectedMessage.email}{selectedMessage.phone ? ` · ${selectedMessage.phone}` : ''}</p>
+                            </div>
+                            <div className="flex gap-1.5 shrink-0">
+                                <button type="button" onClick={handleArchive} className="h-[30px] px-3 flex items-center gap-1.5 bg-transparent border border-[#1c1a17] text-[#8a857e] text-[10px] font-bold uppercase tracking-[0.14em] hover:text-white hover:border-[#3a352d] transition-colors">
+                                    <Archive size={12} /> Archive
+                                </button>
+                                <button type="button" onClick={handleDelete} className="h-[30px] px-3 flex items-center gap-1.5 bg-transparent border border-[#1c1a17] text-[#8a857e] text-[10px] font-bold uppercase tracking-[0.14em] hover:text-red-400 hover:border-red-400/40 transition-colors">
+                                    <Trash2 size={12} /> Delete
+                                </button>
+                            </div>
                         </div>
-                        <textarea
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            placeholder="Type your message..."
-                            className="admin-input w-full min-h-[200px] resize-none rounded-xl bg-white/[0.04] border-gold/20 text-white placeholder:text-gray-500"
-                            autoFocus
-                        />
-                        <div className="flex items-center justify-between gap-4 mt-6">
-                            <button type="button" onClick={closeReplyModal} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-                                <Trash2 size={18} />
-                                Discard
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleReplySubmit}
-                                disabled={!replyText.trim() || sending}
-                                className="btn-send-reply flex items-center gap-2 disabled:opacity-50"
-                            >
-                                {sending ? 'Sending...' : <>Send Reply</>}
-                            </button>
+
+                        <div className="flex-1 px-8 py-7 max-w-[680px] overflow-y-auto">
+                            <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-[#615c54]">
+                                Received {selectedMessage.createdAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                                {selectedMessage.subject ? ` · Subject: ${selectedMessage.subject}` : ''}
+                            </span>
+                            <p className="mt-4 text-sm leading-relaxed text-[#c9c4bb] whitespace-pre-wrap">{selectedMessage.message}</p>
+
+                            {selectedMessage.reply && (
+                                <div className="mt-8">
+                                    <div className="flex items-center gap-2 text-[#34d399] text-[10px] font-bold uppercase tracking-[0.14em] mb-2.5">
+                                        <Check size={13} strokeWidth={3} />
+                                        Latest dispatched reply
+                                    </div>
+                                    <p className="m-0 text-sm text-[#8a857e] italic leading-relaxed">"{selectedMessage.reply}"</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="border-t-2 border-[#1c1a17] px-8 py-6">
+                            <span className="text-[9px] font-bold tracking-[0.18em] uppercase text-[#615c54]">{selectedMessage.reply ? 'Reply again' : 'Reply'}</span>
+                            <textarea
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                placeholder="Write your reply…"
+                                className="mt-3 block w-full max-w-[680px] min-h-[96px] resize-y bg-[#0a0a0a] border border-[#1c1a17] text-[#f2efe9] text-[13px] leading-relaxed p-3 outline-none focus:border-gold/50"
+                            />
+                            <div className="mt-3 flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={handleReplySubmit}
+                                    disabled={!replyText.trim() || sending}
+                                    className="btn-send-reply disabled:opacity-40"
+                                >
+                                    {sending ? 'Sending…' : 'Send reply'}
+                                </button>
+                                <button type="button" onClick={() => setReplyText('')} className="h-[34px] px-4 bg-transparent border border-[#1c1a17] text-[#8a857e] text-[10px] font-bold uppercase tracking-[0.14em] hover:text-white hover:border-[#3a352d] transition-colors">
+                                    Discard
+                                </button>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="flex-1 flex items-center justify-center text-center p-8">
+                        <div>
+                            <Mail size={28} className="mx-auto mb-3 text-[#4a463f]" />
+                            <p className="text-[#615c54] text-sm">Select a message</p>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

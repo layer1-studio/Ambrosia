@@ -30,7 +30,7 @@
   flex: 1;
   max-width: 200px;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(212, 175, 55, 0.4), transparent);
+  background: linear-gradient(to right, transparent, rgba(217, 214, 186, 0.4), transparent);
 }
 
 .legal-divider .flourish {
@@ -38,17 +38,17 @@
   height: 8px;
   background: var(--color-primary);
   transform: rotate(45deg);
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 12px rgba(217, 214, 186, 0.5);
 }
 
 /* Simple Summary highlight box */
 .legal-summary-box {
   background: rgba(28, 28, 28, 0.9);
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  border: 1px solid rgba(217, 214, 186, 0.35);
   border-radius: 1rem;
   padding: 1.75rem 2rem;
   margin: 2rem 0 3rem;
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 30px rgba(217, 214, 186, 0.08);
 }
 
 .legal-summary-box strong {

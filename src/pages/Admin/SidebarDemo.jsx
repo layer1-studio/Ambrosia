@@ -7,7 +7,7 @@ const SidebarDemo = () => {
     const currentUser = { email: 'demo@layer1.studio' };
 
     return (
-        <div className="flex min-h-screen bg-black text-gray-200 font-sans selection:bg-[#D4AF37] selection:text-black">
+        <div className="flex min-h-screen bg-black text-gray-200 font-sans selection:bg-[#d9d6ba] selection:text-black">
 
             {/* The Sidebar - Fixed, Full Height, Vertical Frame */}
             <aside className="w-72 bg-[#080808] flex flex-col fixed inset-y-0 left-0 z-[60] border-r border-white/5 shadow-[5px_0_30px_rgba(0,0,0,0.5)] h-screen">
@@ -15,7 +15,7 @@ const SidebarDemo = () => {
                 {/* 1. Logo Section (Fixed Top) */}
                 <div className="h-32 flex items-center px-8 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8a6e1f] flex items-center justify-center text-black shadow-lg shadow-[#D4AF37]/20">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#d9d6ba] to-[#8a6e1f] flex items-center justify-center text-black shadow-lg shadow-[#d9d6ba]/20">
                             <Command size={24} strokeWidth={2.5} />
                         </div>
                         <div>
@@ -28,7 +28,7 @@ const SidebarDemo = () => {
                 {/* 2. Navigation Section (Scrollable Area) */}
                 <nav className="flex-1 px-6 py-6 space-y-3 overflow-y-auto custom-scrollbar flex flex-col">
                     {/* Active State Demo */}
-                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1 cursor-default">
+                    <div className="flex items-center gap-4 px-5 py-4 rounded-xl text-xs font-bold uppercase tracking-widest bg-gradient-to-r from-[#d9d6ba] to-[#F3E5AB] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] translate-x-1 cursor-default">
                         <LayoutDashboard size={18} />
                         <span>Dashboard</span>
                     </div>
@@ -53,7 +53,7 @@ const SidebarDemo = () => {
                 {/* 3. Footer Section (Fixed Bottom) */}
                 <div className="p-8 border-t border-white/5 shrink-0">
                     <div className="flex items-center gap-4 mb-8 p-4 bg-white/[0.03] rounded-2xl border border-white/5">
-                        <div className="w-10 h-10 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] font-bold text-sm border border-[#D4AF37]/20">
+                        <div className="w-10 h-10 rounded-full bg-[#d9d6ba]/10 flex items-center justify-center text-[#d9d6ba] font-bold text-sm border border-[#d9d6ba]/20">
                             A
                         </div>
                         <div className="overflow-hidden">

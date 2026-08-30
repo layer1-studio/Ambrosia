@@ -1,26 +1,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import { Search, Mail, User, Users, Phone, Filter, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
+const TABS = ['All', 'Clients', 'Subscribers', 'Both'];
+
 const Customers = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [subscribers, setSubscribers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterType, setFilterType] = useState('All'); // All, Customer, Subscriber, Both
+    const [filterType, setFilterType] = useState('All');
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 10;
 
     useEffect(() => {
-        // Real-time listener for orders
         const qOrders = query(collection(db, "orders"), orderBy("created_at", "desc"));
         const unsubscribeOrders = onSnapshot(qOrders, (snapshot) => {
             setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
 
-        // Real-time listener for subscribers
         const qSubscribers = query(collection(db, "subscribers"), orderBy("date", "desc"));
         const unsubscribeSubscribers = onSnapshot(qSubscribers, (snapshot) => {
             setSubscribers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -36,7 +38,6 @@ const Customers = () => {
     const unifiedCustomers = useMemo(() => {
         const customerMap = new Map();
 
-        // Process orders
         orders.forEach(order => {
             const email = (order.email || order.user || '').toLowerCase().trim();
             if (!email) return;
@@ -66,7 +67,6 @@ const Customers = () => {
             }
         });
 
-        // Process subscribers
         subscribers.forEach(sub => {
             const email = (sub.email || '').toLowerCase().trim();
             if (!email) return;
@@ -101,8 +101,8 @@ const Customers = () => {
                 c.name.toLowerCase().includes(searchTerm.toLowerCase());
 
             let matchesFilter = true;
-            if (filterType === 'Customer') matchesFilter = c.isCustomer;
-            if (filterType === 'Subscriber') matchesFilter = c.isSubscriber;
+            if (filterType === 'Clients') matchesFilter = c.isCustomer;
+            if (filterType === 'Subscribers') matchesFilter = c.isSubscriber;
             if (filterType === 'Both') matchesFilter = c.isCustomer && c.isSubscriber;
 
             return matchesSearch && matchesFilter;
@@ -110,139 +110,88 @@ const Customers = () => {
     }, [unifiedCustomers, searchTerm, filterType]);
 
     const paginatedCustomers = filteredCustomers.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
-    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    const totalPages = Math.max(1, Math.ceil(filteredCustomers.length / pageSize));
 
     return (
-        <div className="space-y-6 animate-reveal">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 className="admin-section-title admin-title text-2xl md:text-3xl font-heading text-gold mb-1">Customer Registry</h1>
-                    <p className="text-gray-500 text-sm">Unified database of clients and subscribers.</p>
+        <div>
+            <div className="border-b-2 border-[#1c1a17] px-7 h-12 flex items-center justify-between gap-4">
+                <div className="flex items-center min-w-0 overflow-x-auto no-scrollbar">
+                    {TABS.map(t => (
+                        <button key={t} type="button" onClick={() => setFilterType(t)} className={`admin-pill ${filterType === t ? 'active' : ''}`}>
+                            {t}
+                        </button>
+                    ))}
                 </div>
-                <div className="flex items-center gap-3">
-                    <div className="glass-panel px-4 py-2 rounded-xl border border-white/5 flex items-center gap-2">
-                        <Users size={16} className="text-gold" />
-                        <span className="text-sm font-bold text-white">{unifiedCustomers.length}</span>
-                        <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Total</span>
-                    </div>
-                </div>
-            </header>
-
-            <div className="flex flex-col sm:flex-row gap-4 items-center mb-6">
-                <div className="flex flex-1 gap-4 w-full">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search by name or email..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="admin-input w-full pl-11 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl focus:border-gold/50"
-                        />
-                    </div>
-                    <div className="relative w-56 shrink-0">
-                        <div className="absolute left-10 top-1/2 -translate-y-1/2 text-gold pointer-events-none">
-                            <Filter size={16} />
-                        </div>
-                        <select
-                            value={filterType}
-                            onChange={(e) => setFilterType(e.target.value)}
-                            className="admin-input w-full pl-20 pr-10 py-3 bg-[#0a0a0a] border border-white/5 rounded-xl appearance-none cursor-pointer focus:border-gold/50 text-sm"
-                        >
-                            {['All', 'Customer', 'Subscriber', 'Both'].map(t => (
-                                <option key={t} value={t} className="bg-[#0a0a0a] text-white">{t}</option>
-                            ))}
-                        </select>
-                    </div>
+                <div className="hidden md:flex items-center gap-2 h-[34px] px-3 border border-[#1c1a17] bg-[#0a0a0a] w-56 shrink-0">
+                    <Search size={13} className="text-[#615c54] shrink-0" />
+                    <input
+                        type="text"
+                        placeholder="Search name or email"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="flex-1 min-w-0 bg-transparent border-none text-[#f2efe9] text-xs outline-none placeholder:text-[#615c54]"
+                    />
                 </div>
             </div>
 
-            <div className="admin-table-wrapper glass-panel rounded-2xl border border-white/5">
-                <table className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Identity</th>
-                            <th>Contact Channels</th>
-                            <th>Status & Source</th>
-                            <th className="text-right">Activity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            Array(5).fill(0).map((_, i) => (
-                                <tr key={i}><td colSpan={4} className="py-8 animate-pulse bg-white/5"></td></tr>
-                            ))
-                        ) : paginatedCustomers.length === 0 ? (
-                            <tr><td colSpan={4} className="py-24 text-center text-gray-500">No matching records found.</td></tr>
-                        ) : (
-                            paginatedCustomers.map((c, i) => (
-                                <tr key={c.email} className="group">
-                                    <td>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold font-bold">
-                                                {c.name.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div>
-                                                <p className="text-white font-medium">{c.name}</p>
-                                                <div className="flex items-center gap-1.5 mt-1">
-                                                    {c.isCustomer && <span className="text-[9px] bg-gold/20 text-gold px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Client</span>}
-                                                    {c.isSubscriber && <span className="text-[9px] bg-white/10 text-gray-400 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Sub</span>}
-                                                </div>
-                                            </div>
+            <table className="admin-table w-full">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                        <th className="text-right">Orders</th>
+                        <th className="text-right">Lifetime value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loading ? (
+                        <tr><td colSpan={6} className="py-8 text-center text-[#615c54]">Loading…</td></tr>
+                    ) : paginatedCustomers.length === 0 ? (
+                        <tr><td colSpan={6} className="py-24 text-center text-[#615c54]">No matching records found.</td></tr>
+                    ) : (
+                        paginatedCustomers.map(c => (
+                            <tr key={c.email}>
+                                <td>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-7 h-7 bg-gold/[0.14] text-gold text-[11px] font-bold flex items-center justify-center shrink-0">
+                                            {c.name.charAt(0).toUpperCase()}
                                         </div>
-                                    </td>
-                                    <td>
-                                        <div className="space-y-1">
-                                            <div className="flex items-center gap-2 text-xs text-gray-400">
-                                                <Mail size={12} className="text-gold/50" />
-                                                {c.email}
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-gray-400">
-                                                <Phone size={12} className="text-gold/50" />
-                                                {c.phone}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className="flex flex-col gap-1">
-                                            <span className={`text-[10px] font-bold ${c.isCustomer ? 'text-green-400' : 'text-gray-500'}`}>
-                                                {c.isCustomer ? 'Purchased' : 'Lead Only'}
-                                            </span>
-                                            <span className="text-[10px] text-gray-500">
-                                                {c.orderCount > 0 ? `${c.orderCount} Orders` : 'Newsletter List'}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="text-right">
-                                        <p className="text-sm font-bold text-gold">${c.totalSpent.toFixed(2)}</p>
-                                        <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-tighter italic">Lifetime Value</p>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                                        <span className="font-medium text-[#f2efe9]">{c.name}</span>
+                                    </div>
+                                </td>
+                                <td className="text-[#c9c4bb]">{c.email}</td>
+                                <td className="font-mono text-[11px] text-[#8a857e]">{c.phone}</td>
+                                <td>
+                                    <span className="status-pill new-status">{c.isCustomer && c.isSubscriber ? 'Both' : c.isCustomer ? 'Client' : 'Subscriber'}</span>
+                                </td>
+                                <td className="text-right font-mono">{c.orderCount}</td>
+                                <td className="text-right font-mono font-semibold text-gold">{formatPrice(c.totalSpent)}</td>
+                            </tr>
+                        ))
+                    )}
+                </tbody>
+            </table>
 
-            {/* Pagination */}
-            <div className="flex items-center justify-between pb-8">
-                <span className="text-xs text-gray-500">
-                    Showing {currentPage * pageSize + 1}-{Math.min((currentPage + 1) * pageSize, filteredCustomers.length)} of {filteredCustomers.length} records
+            <div className="px-7 py-4 flex items-center justify-between">
+                <span className="text-[11px] text-[#615c54]">
+                    Showing {filteredCustomers.length === 0 ? 0 : currentPage * pageSize + 1}–{Math.min((currentPage + 1) * pageSize, filteredCustomers.length)} of {filteredCustomers.length}
                 </span>
-                <div className="flex items-center gap-2">
+                <div className="flex border border-[#1c1a17]">
                     <button
                         onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
                         disabled={currentPage === 0}
-                        className="p-2 rounded-xl bg-white/5 text-gray-400 disabled:opacity-20 hover:text-gold transition-colors"
+                        className="w-[30px] h-7 flex items-center justify-center border-r border-[#1c1a17] text-[#8a857e] disabled:opacity-30 hover:text-gold transition-colors"
                     >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={14} />
                     </button>
                     <button
                         onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
                         disabled={currentPage >= totalPages - 1}
-                        className="p-2 rounded-xl bg-white/5 text-gray-400 disabled:opacity-20 hover:text-gold transition-colors"
+                        className="w-[30px] h-7 flex items-center justify-center text-[#8a857e] disabled:opacity-30 hover:text-gold transition-colors"
                     >
-                        <ChevronRight size={20} />
+                        <ChevronRight size={14} />
                     </button>
                 </div>
             </div>

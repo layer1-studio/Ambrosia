@@ -11,7 +11,7 @@
     width: 100%;
     height: 60vh;
     overflow: hidden;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid rgba(217, 214, 186, 0.2);
 }
 
 .about-video-container video {
@@ -57,7 +57,7 @@
     top: 0;
     bottom: 0;
     width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.4), transparent);
+    background: linear-gradient(to bottom, transparent, rgba(217, 214, 186, 0.4), transparent);
     transform: translateX(-50%);
 }
 
@@ -87,7 +87,7 @@
     height: 12px;
     background: var(--color-primary);
     border-radius: 50%;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    box-shadow: 0 0 15px rgba(217, 214, 186, 0.6);
     z-index: 1;
 }
 

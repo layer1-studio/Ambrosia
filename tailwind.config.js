@@ -7,7 +7,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                gold: '#D4AF37',
+                gold: '#d9d6ba',
+                maroon: '#5b0e22',
+                'maroon-deep': '#3d0916',
+                'maroon-light': '#7c1c33',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

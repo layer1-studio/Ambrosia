@@ -40,31 +40,23 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
-            {/* Subtle ambient background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-            </div>
-
-            <div className="w-full max-w-md relative z-10">
-                <div className="bg-[#111] border border-white/10 rounded-2xl p-8 md:p-10 shadow-xl">
+        <div className="admin-theme min-h-screen bg-[#050505] flex items-center justify-center p-4">
+            <div className="w-full max-w-sm relative z-10">
+                <div className="bg-[#0a0a0a] border-2 border-[#1c1a17] p-8 md:p-10">
                     <div className="text-center mb-8">
-                        <h1 className="text-2xl font-heading text-white mb-1">Admin Sign In</h1>
-                        <p className="text-sm text-gray-500">Ambrosia Back Office</p>
+                        <h1 className="text-lg font-semibold text-[#f2efe9] mb-1">Admin sign in</h1>
+                        <p className="text-xs text-[#615c54] uppercase tracking-[0.14em]">Ambrosia Back Office</p>
                     </div>
 
                     {error && (
-                        <div
-                            className={`mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm ${error ? 'animate-shake' : ''}`}
-                        >
+                        <div className="mb-6 p-3.5 border border-red-500/30 bg-red-500/10 text-red-400 text-xs">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleLogin} className="space-y-5">
+                    <form onSubmit={handleLogin} className="space-y-4">
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+                            <label className="block text-[10px] font-bold text-[#8a857e] mb-1.5 uppercase tracking-[0.12em]">
                                 Email
                             </label>
                             <input
@@ -77,7 +69,7 @@ const AdminLogin = () => {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+                            <label className="block text-[10px] font-bold text-[#8a857e] mb-1.5 uppercase tracking-[0.12em]">
                                 Password
                             </label>
                             <input
@@ -92,14 +84,14 @@ const AdminLogin = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full btn-gold !py-3 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="btn-premium btn-premium-gold w-full justify-center !h-11 text-xs disabled:opacity-60"
                         >
-                            {loading ? 'Signing in...' : 'Sign In'}
+                            {loading ? 'Signing in…' : 'Sign in'}
                         </button>
                     </form>
 
                     <p className="mt-6 text-center">
-                        <Link to="/" className="text-sm text-gray-500 hover:text-gold transition-colors">
+                        <Link to="/" className="text-xs text-[#615c54] hover:text-gold transition-colors">
                             ← Back to store
                         </Link>
                     </p>

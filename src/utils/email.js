@@ -4,6 +4,9 @@ const SERVICE_ID = 'service_vnv2zdj';
 const PUBLIC_KEY = 'BsB9Xsr8nr5Yo-WuD';
 const DEFAULT_TEMPLATE_ID = 'template_fcosgki';
 
+// TODO: swap for an @ambrosia address once the client has one set up
+const ADMIN_NOTIFICATION_EMAIL = 'studio.layer1@gmail.com';
+
 /**
  * Sends an order status update email.
  * @param {Object} order - The order object.
@@ -61,6 +64,21 @@ export const sendStatusEmail = async (order, status, trackingNumber = '') => {
 
         const response = await emailjs.send(SERVICE_ID, DEFAULT_TEMPLATE_ID, templateParams, PUBLIC_KEY);
         console.log(`[Email Success] Status email sent for order ${order.id}: ${status}`);
+
+        // Also notify the store admin of the status change
+        try {
+            const adminParams = {
+                ...templateParams,
+                to_name: 'Ambrosia Admin',
+                to_email: ADMIN_NOTIFICATION_EMAIL,
+                message: `Order #${order.id.slice(0, 8).toUpperCase()} (${recipientName}) status changed to ${status}. ${message}`
+            };
+            await emailjs.send(SERVICE_ID, DEFAULT_TEMPLATE_ID, adminParams, PUBLIC_KEY);
+            console.log(`[Email Success] Admin status notification sent for order ${order.id}: ${status}`);
+        } catch (adminError) {
+            console.error(`[Email Error] Failed to send admin status notification for order ${order.id}:`, adminError);
+        }
+
         return response;
     } catch (error) {
         console.error(`[Email Error] Failed to send status email for order ${order.id}:`, error);

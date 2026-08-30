@@ -2,14 +2,33 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, Legend
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line
 } from 'recharts';
 import { Link, useNavigate } from 'react-router-dom';
-import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight, AlertCircle, Package } from 'lucide-react';
+import { DollarSign, ShoppingBag, Users, Tag, TrendingUp, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import './Admin.css';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const MetricCard = ({ label, value, icon: Icon, trend, last }) => (
+    <div className={`p-6 md:p-7 ${last ? '' : 'border-r-2 border-[#1c1a17]'}`}>
+        <div className="flex items-center justify-between mb-5">
+            <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#8a857e]">{label}</span>
+            <Icon size={16} className="text-[#4a463f]" />
+        </div>
+        <p className="m-0 text-[28px] md:text-[34px] font-semibold tracking-tight text-[#f2efe9] leading-none font-mono">{value}</p>
+        <div className="mt-3.5 flex items-center gap-2">
+            <span className="font-mono text-[11px] font-semibold text-gold">+{trend}%</span>
+            <span className="text-[10px] text-[#615c54] uppercase tracking-wide">vs last month</span>
+        </div>
+        <div className="mt-4 flex items-end gap-[3px] h-[26px]">
+            {[3, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15].map((h, i, arr) => (
+                <div key={i} className="flex-1" style={{ height: `${(h / 15) * 26}px`, background: i === arr.length - 1 ? '#d9d6ba' : 'rgba(217, 214, 186,.26)' }} />
+            ))}
+        </div>
+    </div>
+);
 
 const Dashboard = () => {
     const { formatPrice } = useCurrency();
@@ -52,13 +71,6 @@ const Dashboard = () => {
         const uniqueCustomers = new Set(orders.map(o => o.user || o.email)).size;
         const averageOrderValue = orders.length > 0 ? totalRevenue / orders.length : 0;
 
-        const salesByDate = {};
-        orders.forEach(o => {
-            if (!salesByDate[o.date]) salesByDate[o.date] = 0;
-            salesByDate[o.date] += Number(o.total);
-        });
-        const salesData = Object.entries(salesByDate).map(([date, sales]) => ({ date, sales }));
-
         const revenueByMonth = MONTHS.map((m, i) => {
             const monthOrders = orders.filter(o => {
                 const d = o.dateObj;
@@ -89,7 +101,7 @@ const Dashboard = () => {
 
         const lowStockProducts = products.filter(p => (Number(p.stock) || 0) <= (Number(p.reorderPoint) || 10));
 
-        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, salesData, revenueByMonth: finalData, lowStockProducts };
+        return { totalRevenue, totalOrders, uniqueCustomers, averageOrderValue, revenueByMonth: finalData, lowStockProducts };
     }, [orders, products]);
 
     const recentOrders = useMemo(() => [...orders].reverse(), [orders]);
@@ -98,30 +110,8 @@ const Dashboard = () => {
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center min-h-[400px]">
-            <div className="w-12 h-12 border-4 border-gold/10 border-t-gold rounded-full animate-spin mb-4" />
-            <p className="text-gray-500 font-medium">Preparing your insights...</p>
-        </div>
-    );
-
-    const MetricCard = ({ label, value, icon: Icon, trend }) => (
-        <div className="admin-stat-card glass-panel animate-reveal flex flex-col">
-            <div className="flex justify-between items-start mb-3">
-                <div className="p-3 rounded-xl bg-gold/10 text-gold">
-                    <Icon size={24} />
-                </div>
-                {trend && (
-                    <span className="text-xs font-semibold text-green-500">+{trend}% vs last month</span>
-                )}
-            </div>
-            <p className="text-label mb-1">{label}</p>
-            <p className="text-2xl md:text-3xl font-heading text-gold tracking-tight">{value}</p>
-            <div className="mt-auto pt-4 h-8 flex items-end">
-                <div className="w-full h-6 bg-gold/10 rounded overflow-hidden flex gap-0.5 items-end">
-                    {[2, 4, 3, 5, 4, 6].map((h, i) => (
-                        <div key={i} className="flex-1 bg-gold/50 rounded-t min-h-[4px]" style={{ height: `${h * 4}px` }} />
-                    ))}
-                </div>
-            </div>
+            <div className="w-8 h-8 border-2 border-gold/20 border-t-gold animate-spin mb-4" />
+            <p className="text-[#615c54] text-sm">Preparing your insights...</p>
         </div>
     );
 
@@ -137,154 +127,117 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="space-y-8 animate-reveal">
-            {/* Low Stock Alerts - High Prominence */}
+        <div>
+            {/* Low stock alert — thin severity strip, not a big red block */}
             {analytics.lowStockProducts.length > 0 && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 mb-8 animate-pulse overflow-hidden relative">
-                    <div className="absolute top-0 right-0 p-8 opacity-5">
-                        <AlertCircle size={120} className="text-red-500" />
-                    </div>
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="p-2 bg-red-500/20 rounded-lg text-red-500">
-                            <AlertCircle size={24} />
+                <div className="border-b-2 border-[#1c1a17] bg-[#0a0807] flex items-stretch">
+                    <div className="w-1 bg-red-500 shrink-0" />
+                    <div className="flex-1 min-w-0 px-7 py-3.5 flex items-center gap-7 overflow-x-auto">
+                        <div className="flex items-center gap-2.5 shrink-0">
+                            <AlertTriangle size={16} className="text-red-500" />
+                            <span className="text-[10px] font-bold tracking-[0.16em] uppercase text-red-500">Low stock</span>
                         </div>
-                        <div>
-                            <h2 className="text-xl font-heading text-red-500">Inventory Alert</h2>
-                            <p className="text-[10px] text-red-400 font-bold tracking-[0.2em] uppercase">Critical stock levels detected</p>
+                        <div className="flex-1 min-w-0 flex items-center overflow-hidden">
+                            {analytics.lowStockProducts.map(p => (
+                                <div key={p.id} className="pr-7 mr-7 border-r border-[#1c1a17] flex items-baseline gap-2 whitespace-nowrap">
+                                    <span className="text-xs text-[#f2efe9] font-medium">{p.name}</span>
+                                    <span className="font-mono text-[11px] text-red-500">{p.stock}/{p.reorderPoint || 10}</span>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {analytics.lowStockProducts.map(product => (
-                            <div key={product.id} className="flex items-center gap-3 bg-red-500/5 border border-red-500/10 p-3 rounded-xl">
-                                <div className="w-10 h-10 bg-black/40 rounded flex items-center justify-center shrink-0">
-                                    <Package size={18} className="text-red-500/50" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-sm font-medium text-white truncate">{product.name}</p>
-                                    <p className="text-[10px] text-red-400 font-bold uppercase">Stock: {product.stock} / {product.reorderPoint || 10} goal</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-red-500/10 text-right">
-                        <Link to="/secured-web-ambrosia/admin/products" className="text-xs font-bold text-red-400 hover:text-white transition-colors uppercase tracking-widest">Restock Items &rarr;</Link>
+                        <Link to="/secured-web-ambrosia/admin/products" className="shrink-0 h-[30px] px-3.5 flex items-center border border-[#3a352d] text-[#f2efe9] text-[10px] font-bold uppercase tracking-[0.14em] hover:border-gold hover:text-gold transition-colors">Restock</Link>
                     </div>
                 </div>
             )}
 
-            {/* KPI Cards - grid layout */}
-            <div className="grid grid-cols-2 gap-6">
-                <MetricCard
-                    label="Total Revenue"
-                    value={formatPrice(analytics.totalRevenue)}
-                    icon={DollarSign}
-                    trend="15"
-                />
-                <MetricCard
-                    label="Total Orders"
-                    value={analytics.totalOrders.toLocaleString()}
-                    icon={ShoppingBag}
-                    trend="8"
-                />
-                <MetricCard
-                    label="Total Customers"
-                    value={analytics.uniqueCustomers.toLocaleString()}
-                    icon={Users}
-                    trend="20"
-                />
-                <MetricCard
-                    label="Avg Order Value"
-                    value={formatPrice(analytics.averageOrderValue)}
-                    icon={Tag}
-                    trend="5"
-                />
+            {/* KPI cells */}
+            <div className="grid grid-cols-2 md:grid-cols-4 border-b-2 border-[#1c1a17]">
+                <MetricCard label="Total revenue" value={formatPrice(analytics.totalRevenue)} icon={DollarSign} trend="15" />
+                <MetricCard label="Orders" value={analytics.totalOrders.toLocaleString()} icon={ShoppingBag} trend="8" />
+                <MetricCard label="Customers" value={analytics.uniqueCustomers.toLocaleString()} icon={Users} trend="20" />
+                <MetricCard label="Avg order value" value={formatPrice(analytics.averageOrderValue)} icon={Tag} trend="5" last />
             </div>
 
-            {/* Revenue Over Time - Full Width */}
-            <div className="glass-panel p-8 rounded-2xl border border-white/5">
-                <h3 className="admin-section-title text-xl font-heading text-gold mb-6">Revenue Over Time</h3>
-                <div className="chart-container" style={{ height: 320, width: '100%', minWidth: 0 }}>
+            {/* Revenue chart */}
+            <section className="p-6 md:p-7 border-b-2 border-[#1c1a17]">
+                <h2 className="admin-section-title text-[#f2efe9] mb-5">Revenue</h2>
+                <div style={{ height: 280, width: '100%', minWidth: 0 }}>
                     {analytics.revenueByMonth.some(d => d.currentYear > 0) ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={analytics.revenueByMonth} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.4} />
-                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorPrevious" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.15} />
-                                        <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#d9d6ba" stopOpacity={0.35} />
+                                        <stop offset="95%" stopColor="#d9d6ba" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 11 }} tickFormatter={v => formatPrice(v)} />
+                                <CartesianGrid strokeDasharray="0" stroke="#141311" vertical={false} />
+                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#615c54', fontSize: 10 }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#615c54', fontSize: 10 }} tickFormatter={v => formatPrice(v)} />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '12px 16px' }}
+                                    contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid #1c1a17', borderRadius: 0, padding: '10px 14px' }}
+                                    labelStyle={{ color: '#f2efe9', fontSize: 11, fontWeight: 600, marginBottom: 4 }}
+                                    itemStyle={{ fontSize: 11 }}
                                     formatter={(value, name) => [formatPrice(value), name === 'trend' ? 'Trendline' : 'Actual Revenue']}
                                     labelFormatter={(l) => l}
                                 />
-                                <Legend wrapperStyle={{ paddingTop: 12 }} iconType="line" formatter={(value) => <span className="text-gray-400 text-sm">{value === 'trend' ? 'Trendline' : 'Actual Revenue'}</span>} />
-                                <Area type="monotone" dataKey="currentYear" name="currentYear" stroke="#D4AF37" strokeWidth={2} fill="url(#colorCurrent)" />
-                                <Line type="monotone" dataKey="trend" name="trend" stroke="#D4AF37" strokeDasharray="5 5" strokeOpacity={0.6} dot={false} />
+                                <Area type="monotone" dataKey="currentYear" name="currentYear" stroke="#d9d6ba" strokeWidth={2} fill="url(#colorCurrent)" />
+                                <Line type="monotone" dataKey="trend" name="trend" stroke="#f2efe9" strokeOpacity={0.4} strokeDasharray="4 4" dot={false} />
                             </AreaChart>
                         </ResponsiveContainer>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center text-gray-500">
-                            <TrendingUp size={48} className="opacity-20 mb-4" />
+                        <div className="h-full flex flex-col items-center justify-center text-[#615c54]">
+                            <TrendingUp size={40} className="opacity-20 mb-3" />
                             <p className="text-sm">Revenue data will appear here</p>
                         </div>
                     )}
                 </div>
-            </div>
+            </section>
 
-            {/* Recent Orders - Full Width */}
-            <div className="glass-panel p-8 rounded-2xl border border-white/5 flex flex-col">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="admin-section-title text-xl font-heading text-gold mb-0">Recent Orders</h3>
-                    <Link to="/secured-web-ambrosia/admin/orders" className="text-xs font-bold text-gold hover:text-white transition-colors">VIEW ALL</Link>
+            {/* Recent orders */}
+            <section className="p-6 md:p-7">
+                <div className="flex justify-between items-baseline mb-4">
+                    <h2 className="admin-section-title text-[#f2efe9] mb-0">Recent orders</h2>
+                    <Link to="/secured-web-ambrosia/admin/orders" className="text-[10px] font-bold text-gold uppercase tracking-[0.14em] hover:text-white transition-colors">All orders →</Link>
                 </div>
-                <div className="admin-table-wrapper rounded-xl overflow-hidden flex-1 min-h-0">
-                    <table className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedRecent.length === 0 ? (
-                                <tr><td colSpan={5} className="py-8 text-center text-gray-500 text-sm">No orders yet</td></tr>
-                            ) : (
-                                paginatedRecent.map(order => (
-                                    <tr
-                                        key={order.id}
-                                        className="cursor-pointer hover:bg-white/5 transition-colors group"
-                                        onClick={() => navigate('/secured-web-ambrosia/admin/orders')}
-                                    >
-                                        <td className="font-mono text-sm text-gold">#{order.id.slice(0, 8).toUpperCase()}</td>
-                                        <td className="text-white font-medium">{order.firstName} {order.lastName}</td>
-                                        <td><span className={getStatusPill(order.status)}>{order.status}</span></td>
-                                        <td className="text-gold font-medium">{formatPrice(order.total)}</td>
-                                        <td className="text-gray-400 text-sm">{order.dateFull}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="flex items-center justify-between pt-4 border-t border-white/5 mt-4">
-                    <span className="text-xs text-gray-500">Showing {recentPage * recentPageSize + 1}-{Math.min((recentPage + 1) * recentPageSize, recentOrders.length)} of {recentOrders.length} entries</span>
-                    <div className="flex items-center gap-1">
-                        <button type="button" onClick={() => setRecentPage(p => Math.max(0, p - 1))} disabled={recentPage === 0} className="p-2 rounded-lg text-gray-400 hover:text-gold disabled:opacity-30 transition-colors"><ChevronLeft size={18} /></button>
-                        <button type="button" onClick={() => setRecentPage(p => Math.min(totalRecentPages - 1, p + 1))} disabled={recentPage >= totalRecentPages - 1} className="p-2 rounded-lg text-gray-400 hover:text-gold disabled:opacity-30 transition-colors"><ChevronRight size={18} /></button>
+                <table className="admin-table w-full">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th className="text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {paginatedRecent.length === 0 ? (
+                            <tr><td colSpan={5} className="py-8 text-center text-[#615c54] text-sm">No orders yet</td></tr>
+                        ) : (
+                            paginatedRecent.map(order => (
+                                <tr
+                                    key={order.id}
+                                    className="cursor-pointer"
+                                    onClick={() => navigate('/secured-web-ambrosia/admin/orders')}
+                                >
+                                    <td className="font-mono text-[11.5px] text-gold">#{order.id.slice(0, 8).toUpperCase()}</td>
+                                    <td>{order.firstName} {order.lastName}</td>
+                                    <td className="text-[#8a857e]">{order.dateFull}</td>
+                                    <td><span className={getStatusPill(order.status)}>{order.status}</span></td>
+                                    <td className="text-right font-mono font-semibold">{formatPrice(order.total)}</td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+                <div className="flex items-center justify-between pt-4 mt-1">
+                    <span className="text-[11px] text-[#615c54]">Showing {recentPage * recentPageSize + 1}-{Math.min((recentPage + 1) * recentPageSize, recentOrders.length)} of {recentOrders.length} entries</span>
+                    <div className="flex border border-[#1c1a17]">
+                        <button type="button" onClick={() => setRecentPage(p => Math.max(0, p - 1))} disabled={recentPage === 0} className="w-[30px] h-7 flex items-center justify-center border-r border-[#1c1a17] text-[#8a857e] disabled:opacity-30 hover:text-gold transition-colors"><ChevronLeft size={14} /></button>
+                        <button type="button" onClick={() => setRecentPage(p => Math.min(totalRecentPages - 1, p + 1))} disabled={recentPage >= totalRecentPages - 1} className="w-[30px] h-7 flex items-center justify-center text-[#8a857e] disabled:opacity-30 hover:text-gold transition-colors"><ChevronRight size={14} /></button>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     );
 };

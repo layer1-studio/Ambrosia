@@ -12,7 +12,7 @@
     background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(10px);
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid rgba(217, 214, 186, 0.1);
 }
 
 .nav-container {
@@ -109,7 +109,7 @@
 
 .currency-select:hover {
     border-color: var(--color-primary);
-    background-color: rgba(212, 175, 55, 0.1);
+    background-color: rgba(217, 214, 186, 0.1);
 }
 
 .currency-select option {
