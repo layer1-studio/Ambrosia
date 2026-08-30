@@ -56,7 +56,7 @@ export const sendStatusEmail = async (order, status, trackingNumber = '') => {
             to_name: recipientName,
             to_email: recipientEmail,
             order_id: order.id,
-            total_cost: totalValue.toFixed(2),
+            total_cost: totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             message: message,
             subject: subject,
             tracking_number: trackingNumber || 'N/A'

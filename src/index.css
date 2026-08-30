@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Tailwind v4 needs theme colors declared here via @theme to generate
+   bg-x/border-x/ring-x utilities; tailwind.config.js colors alone do not. */
+@theme {
+  --color-gold: #d9d6ba;
+  --color-maroon: #5b0e22;
+  --color-maroon-deep: #3d0916;
+  --color-maroon-light: #7c1c33;
+}
+
 :root {
   --color-bg: #0a0a0a;
   --color-surface: #1c1c1c;

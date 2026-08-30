@@ -42,7 +42,7 @@ const Orders = () => {
     const formatOrderPrice = (amount, order) => {
         if (order?.originalCurrency && order?.exchangeRate) {
             const sym = currencySymbols[order.originalCurrency] || '$';
-            const val = (amount * order.exchangeRate).toFixed(2);
+            const val = (amount * order.exchangeRate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             return `${sym}${val}`;
         }
         return formatPrice(amount);

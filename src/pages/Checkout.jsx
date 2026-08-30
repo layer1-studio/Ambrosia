@@ -122,10 +122,10 @@ const Checkout = () => {
                         </td>
                         <td style="padding: 24px 8px 0 8px;">
                             <div style="font-family: 'Playfair Display', serif; font-size: 16px; color: #1a1a1a;">${item.name}</div>
-                            <div style="font-size: 14px; color: #888; padding-top: 4px">Qty: ${item.quantity} × $${item.price}</div>
+                            <div style="font-size: 14px; color: #888; padding-top: 4px">Qty: ${item.quantity} × $${Number(item.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         </td>
                         <td style="padding: 24px 4px 0 0; white-space: nowrap; text-align: right;">
-                            <strong style="color: #5b0e22;">$${(item.price * item.quantity).toFixed(2)}</strong>
+                            <strong style="color: #5b0e22;">$${(item.price * item.quantity).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
                         </td>
                     </tr>
                 `;
@@ -136,8 +136,8 @@ const Checkout = () => {
                     to_email: formData.email,
                     order_id: orderRef.id,
                     order_items_html: orderItemsHtml, // Injected HTML table rows
-                    shipping_cost: shippingCost.toFixed(2),
-                    total_cost: finalTotal.toFixed(2),
+                    shipping_cost: shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                    total_cost: finalTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     message: `We are preparing your divine essence for dispatch.`
                 };
 

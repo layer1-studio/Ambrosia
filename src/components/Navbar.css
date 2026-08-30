@@ -17,11 +17,11 @@
 
 .nav-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
+    gap: 2rem;
 }
 
 .nav-logo {
@@ -33,6 +33,7 @@
     display: flex;
     align-items: center;
     gap: 0.7rem;
+    flex-shrink: 0;
 }
 
 .nav-logo-icon {
@@ -65,8 +66,10 @@
 
 .nav-links {
     display: flex;
-    gap: 2.5rem;
-    margin-left: 3.5rem;
+    flex: 1;
+    justify-content: space-evenly;
+    align-items: center;
+    min-width: 0;
 }
 
 .nav-link {
@@ -76,6 +79,7 @@
     letter-spacing: 1px;
     opacity: 0.9;
     font-weight: 400;
+    white-space: nowrap;
     transition: all 0.3s ease;
 }
 
@@ -104,6 +108,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    flex-shrink: 0;
     z-index: 1001;
     /* Above mobile menu */
     position: relative;

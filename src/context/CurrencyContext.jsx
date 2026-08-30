@@ -34,7 +34,7 @@ export const CurrencyProvider = ({ children, storageKey = 'ambrosia_currency' })
 
     const convert = (amount) => {
         const rate = EXCHANGE_RATES[currency] || 1;
-        return (amount * rate).toFixed(2);
+        return (amount * rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
     const formatPrice = (amount) => {
