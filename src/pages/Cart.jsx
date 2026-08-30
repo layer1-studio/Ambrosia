@@ -27,14 +27,14 @@ const Cart = () => {
 
                 <div className="cart-grid">
                     <div className="cart-items">
-                        <div className="cart-header grid grid-cols-4 gap-4 text-xs uppercase tracking-widest text-gray-500 pb-4 border-bottom border-white/5 mb-8">
+                        <div className="cart-header grid grid-cols-4 gap-4 text-xs uppercase tracking-widest text-gray-500 pb-4 border-b border-white/5 mb-8">
                             <div className="col-span-2">Product</div>
                             <div className="text-center">Quantity</div>
                             <div className="text-right">Total</div>
                         </div>
 
                         {cartItems.map(item => (
-                            <div key={item.id} className="cart-item-row grid grid-cols-4 gap-4 items-center py-6 border-bottom border-white/5">
+                            <div key={item.id} className="cart-item-row grid grid-cols-4 gap-4 items-center py-6 border-b border-white/5">
                                 <div className="col-span-2 flex gap-6 items-center">
                                     <div className="item-thumbnail w-24 h-24 bg-[#111] overflow-hidden rounded">
                                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />

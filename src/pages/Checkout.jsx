@@ -187,7 +187,7 @@ const Checkout = () => {
                     <div className="checkout-form">
                         {/* Shipping Info */}
                         <section className="checkout-section mb-12">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Delivery Details</h2>
+                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Delivery Details</h2>
                             <div className="grid grid-cols-2 gap-6 mb-6">
                                 <input
                                     type="text" name="firstName" placeholder="First Name"
@@ -231,7 +231,7 @@ const Checkout = () => {
 
                         {/* Shipping Method */}
                         <section className="checkout-section mb-40">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Shipping Method</h2>
+                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Shipping Method</h2>
                             <div className="shipping-options space-y-4">
                                 <label className={`shipping-option flex items-center justify-between p-4 bg-[#111] border rounded cursor-pointer ${formData.shippingMethod === 'standard' ? 'border-gold' : 'border-white/5'}`}>
                                     <div className="flex items-center gap-4">
@@ -260,7 +260,7 @@ const Checkout = () => {
 
                         {/* Payment Method */}
                         <section className="checkout-section mb-12">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Payment Method</h2>
+                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Payment Method</h2>
                             <div className="payment-tabs flex gap-4 mb-8">
                                 <button
                                     type="button"
@@ -280,7 +280,7 @@ const Checkout = () => {
 
                             {paymentMethod === 'card' ? (
                                 <div className="card-details space-y-6">
-                                    <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 text-sm rounded">
+                                    <div className="p-4 bg-gold/5 border border-gold/20 text-gray-300 text-sm rounded">
                                         Note: This is a secure demonstration. No charges will be applied.
                                     </div>
                                     <input type="text" placeholder="Card Number" className="form-input" />
@@ -320,7 +320,7 @@ const Checkout = () => {
 
                     <div className="checkout-sidebar">
                         <div className="order-summary bg-[#111] p-10 rounded-lg border border-white/5 sticky top-32">
-                            <h2 className="text-2xl font-heading text-white mb-8 border-bottom border-white/5 pb-4">Order Summary</h2>
+                            <h2 className="text-2xl font-heading text-white mb-8 border-b border-white/5 pb-4">Order Summary</h2>
                             <div className="order-items space-y-6 mb-10 max-h-96 overflow-y-auto pr-2">
                                 {cartItems.map(item => (
                                     <div key={item.id} className="flex justify-between items-center bg-black/20 p-3 rounded border border-white/5">
@@ -337,7 +337,7 @@ const Checkout = () => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="summary-details pt-8 border-top border-white/10 space-y-4">
+                            <div className="summary-details pt-8 border-t border-white/10 space-y-4">
                                 <div className="flex justify-between text-gray-400">
                                     <span>Subtotal</span>
                                     <span>{formatPrice(cartTotal)}</span>
@@ -346,7 +346,7 @@ const Checkout = () => {
                                     <span>Shipping</span>
                                     <span>{formatPrice(shippingCost)}</span>
                                 </div>
-                                <div className="flex justify-between text-xl text-white font-heading font-bold pt-4 border-top border-white/5">
+                                <div className="flex justify-between text-xl text-white font-heading font-bold pt-4 border-t border-white/5">
                                     <span>Total</span>
                                     <span className="text-gold">{formatPrice(finalTotal)}</span>
                                 </div>

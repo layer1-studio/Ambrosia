@@ -55,6 +55,13 @@
     font-size: 0.95rem;
 }
 
+.shipping-option input[type="radio"] {
+    accent-color: var(--color-secondary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
 .payment-tab {
     cursor: pointer;
     transition: all 0.3s ease;
