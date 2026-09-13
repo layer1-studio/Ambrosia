@@ -4,7 +4,7 @@ import './AboutCinnamon.css';
 import './LegalPage.css';
 import './AboutUs.css';
 
-const productionVideo = '/Ambrosia/images/Ceylon_Cinnamon_Production_Video_Generation.mp4';
+const productionVideo = '/Ambrosia/images/cinnamon-shoot.mp4';
 const gardenImg = '/Ambrosia/images/garden.png';
 const topoGold = '/Ambrosia/images/topo_gold.svg';
 
