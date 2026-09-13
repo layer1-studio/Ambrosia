@@ -18,7 +18,7 @@ const BrandIntro = () => {
                         </p>
                         <p className="intro-p">
                             Our mission is singular: To bring the finest grade cinnamon, once reserved for
-                            European royalty, directly to the modern connoisseur.
+                            royalty, directly to the modern connoisseur.
                         </p>
                     </Reveal>
                     <Reveal as="div" className="quick-links" delay={150}>

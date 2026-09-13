@@ -3,6 +3,7 @@ import './Footer.css';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import topoGold from '../assets/images/topo_gold.svg';
 
 const Footer = () => {
     const [email, setEmail] = useState('');
@@ -27,8 +28,9 @@ const Footer = () => {
     };
 
     return (
-        <footer className="footer">
+        <footer className="footer" style={{ '--topo-url': `url(${topoGold})` }}>
             <div className="container">
+                <div className="footer-divider"><span></span><i></i><span></span></div>
                 <div className="footer-content">
                     <div className="footer-column">
                         <h4 className="font-heading">Ambrosia</h4>
@@ -66,7 +68,7 @@ const Footer = () => {
                                 <input
                                     type="email"
                                     placeholder="Your email address"
-                                    className="bg-[#1a1a1a] border border-white/10 p-2 text-sm w-full mb-2 focus:border-gold outline-none transition-colors text-white"
+                                    className="newsletter-input p-2 text-sm w-full mb-2 outline-none transition-colors"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
 import './Store.css';
-
-// Fallback images if DB doesn't have them
-import divineImg from '../assets/images/divine.png';
-import kuveniImg from '../assets/images/kuveni.png';
-import ravanaImg from '../assets/images/ravana.png';
 
 const Store = () => {
     const { addToCart } = useCart();
@@ -18,19 +14,24 @@ const Store = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("featured");
     const [filter, setFilter] = useState("All");
-    const categories = ["All", "Sticks", "Powder", "Blends", "Gift Sets"];
+    const categories = ["All", "Quills", "Powder", "Blends", "Gift Sets"];
 
     useEffect(() => {
         // Real-time listener for products
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
             const productData = snapshot.docs.map(doc => {
                 const data = doc.data();
-                // Priority: 1. imageUrl (Firebase Storage) 2. Legacy imageType map 3. Fallback
+                // Priority: 1. imageUrl (Firebase Storage) 2. Legacy imageType map
+                // 3. the product's own photo, named after its doc id
+                const baseUrl = import.meta.env.BASE_URL;
                 let displayImage = data.imageUrl;
+                if (!displayImage && data.imageType) {
+                    displayImage = data.imageType === 'divine' ? `${baseUrl}images/divine.png` :
+                        data.imageType === 'kuveni' ? `${baseUrl}images/kuveni.png` :
+                            data.imageType === 'ravana' ? `${baseUrl}images/ravana.png` : null;
+                }
                 if (!displayImage) {
-                    displayImage = data.imageType === 'divine' ? divineImg :
-                        data.imageType === 'kuveni' ? kuveniImg :
-                            data.imageType === 'ravana' ? ravanaImg : divineImg;
+                    displayImage = `${baseUrl}images/${doc.id}.jpg`;
                 }
 
                 return {
@@ -46,7 +47,9 @@ const Store = () => {
     }, []);
 
     const filteredProducts = products
-        .filter(p => filter === "All" || p.category === filter)
+        // "Sticks" is a legacy category value some existing product records still use;
+        // treat it as equivalent to "Quills" so the filter keeps matching them.
+        .filter(p => filter === "All" || p.category === filter || (filter === "Quills" && p.category === "Sticks"))
         .filter(p => (p.name || "").toLowerCase().includes(searchQuery.toLowerCase()))
         .sort((a, b) => {
             if (sortOrder === 'price-asc') return Number(a.price) - Number(b.price);
@@ -111,7 +114,11 @@ const Store = () => {
                             filteredProducts.map(product => {
                                 const isOutOfStock = product.stock <= 0;
                                 return (
-                                    <div key={product.id} className={`store-item-card ${isOutOfStock ? 'opacity-75 grayscale' : ''}`}>
+                                    <Link
+                                        to={`/shop/${product.id}`}
+                                        key={product.id}
+                                        className={`store-item-card ${isOutOfStock ? 'opacity-75 grayscale' : ''}`}
+                                    >
                                         <div className="item-image relative">
                                             <img src={product.image} alt={product.name} />
                                             {isOutOfStock && (
@@ -127,21 +134,25 @@ const Store = () => {
                                             <span className="origin-badge">{product.origin || "100% Sri Lankan"}</span>
                                         </div>
                                         <div className="item-info">
-                                            <span className="item-cat">{product.category}</span>
+                                            <span className="item-cat">{product.category === 'Sticks' ? 'Quills' : product.category}</span>
                                             <h3 className="item-name">{product.name}</h3>
                                             <div className="flex justify-between items-center w-full mb-4">
                                                 <p className="item-price">{formatPrice(product.price)}</p>
                                                 <span className="text-xs text-gray-500">{product.unit || 'per unit'}</span>
                                             </div>
                                             <button
-                                                onClick={() => !isOutOfStock && addToCart(product)}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    if (!isOutOfStock) addToCart(product);
+                                                }}
                                                 disabled={isOutOfStock}
                                                 className={`add-cart-btn uppercase w-full ${isOutOfStock ? 'cursor-not-allowed bg-gray-800 text-gray-500 hover:bg-gray-800' : ''}`}
                                             >
                                                 {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                                             </button>
                                         </div>
-                                    </div>
+                                    </Link>
                                 );
                             })
                         )}

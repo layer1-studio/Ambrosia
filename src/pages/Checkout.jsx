@@ -7,8 +7,7 @@ import { collection, doc, runTransaction, serverTimestamp } from 'firebase/fires
 import emailjs from '@emailjs/browser';
 import './Checkout.css';
 
-// TODO: swap for an @ambrosia address once the client has one set up
-const ADMIN_NOTIFICATION_EMAIL = 'studio.layer1@gmail.com';
+const ADMIN_NOTIFICATION_EMAIL = 'ambrosiaceylon@gmail.com';
 
 const Checkout = () => {
     const { cartItems, cartTotal, clearCart, removeFromCart } = useCart();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { Mail, Phone, MapPin, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram } from 'lucide-react';
 import './Contact.css';
 
 const Contact = () => {
@@ -56,7 +56,7 @@ const Contact = () => {
                                 </div>
                                 <div className="method-details">
                                     <h4 className="method-label">Email Essence</h4>
-                                    <p className="method-value">essence@ambrosiaspice.com</p>
+                                    <p className="method-value">ambrosiaceylon@gmail.com</p>
                                 </div>
                             </div>
 
@@ -66,7 +66,7 @@ const Contact = () => {
                                 </div>
                                 <div className="method-details">
                                     <h4 className="method-label">Voice Liaison</h4>
-                                    <p className="method-value">+94 11 234 5678</p>
+                                    <p className="method-value">+94 77 733 9119</p>
                                 </div>
                             </div>
 
@@ -84,23 +84,11 @@ const Contact = () => {
                         <div className="social-presence">
                             <h4 className="social-presence-label">Follow Our Journey</h4>
                             <div className="social-link-grid">
-                                <a href="#" className="social-link-item">
+                                <a href="https://instagram.com/ambrosiaceylon" target="_blank" rel="noopener noreferrer" className="social-link-item">
                                     <div className="social-icon">
                                         <Instagram size={18} />
                                     </div>
                                     <span>Instagram</span>
-                                </a>
-                                <a href="#" className="social-link-item">
-                                    <div className="social-icon">
-                                        <Facebook size={18} />
-                                    </div>
-                                    <span>Facebook</span>
-                                </a>
-                                <a href="#" className="social-link-item">
-                                    <div className="social-icon">
-                                        <Linkedin size={18} />
-                                    </div>
-                                    <span>LinkedIn</span>
                                 </a>
                             </div>
                         </div>

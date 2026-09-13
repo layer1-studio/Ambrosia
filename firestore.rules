@@ -55,5 +55,11 @@ service cloud.firestore {
       allow create: if isValidMessage();
       allow read, write: if isAdmin();
     }
+
+    // Subscribers (Newsletter): Public create, Admin read
+    match /subscribers/{subscriberId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
   }
 }

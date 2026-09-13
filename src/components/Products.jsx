@@ -20,13 +20,17 @@ const Products = () => {
                 const querySnapshot = await getDocs(q);
                 const productsData = querySnapshot.docs.map(doc => {
                     const data = doc.data();
-                    // Fallback logic for images
+                    // Fallback logic for images: prefer an explicit imageUrl, then the
+                    // legacy imageType map, then the product's own photo (named after its doc id).
+                    const baseUrl = import.meta.env.BASE_URL;
                     let displayImage = data.imageUrl;
-                    if (!displayImage) {
-                        const baseUrl = import.meta.env.BASE_URL;
+                    if (!displayImage && data.imageType) {
                         displayImage = data.imageType === 'divine' ? `${baseUrl}images/divine.png` :
                             data.imageType === 'kuveni' ? `${baseUrl}images/kuveni.png` :
-                                data.imageType === 'ravana' ? `${baseUrl}images/ravana.png` : `${baseUrl}images/divine.png`;
+                                data.imageType === 'ravana' ? `${baseUrl}images/ravana.png` : null;
+                    }
+                    if (!displayImage) {
+                        displayImage = `${baseUrl}images/${doc.id}.jpg`;
                     }
                     return {
                         id: doc.id,

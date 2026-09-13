@@ -1,6 +1,6 @@
 .brand-intro-section {
     padding: 10rem 0;
-    background-color: #0d0d0d;
+    background-color: var(--color-cream);
 }
 
 .intro-grid {
@@ -11,7 +11,8 @@
 }
 
 .gold-label {
-    color: var(--color-primary);
+    /* Gold is reserved for thread/linework/accents, not small text on parchment. */
+    color: var(--color-secondary);
     text-transform: uppercase;
     letter-spacing: 3px;
     font-size: 0.85rem;
@@ -20,8 +21,12 @@
     margin-bottom: 1rem;
 }
 
+.intro-text h2 {
+    color: var(--color-ink) !important;
+}
+
 .intro-p {
-    color: #999;
+    color: var(--color-ink-muted);
     font-size: 1.15rem;
     line-height: 1.8;
     margin-bottom: 1.5rem;
@@ -41,32 +46,33 @@
 .quick-link-item {
     display: flex;
     gap: 1.5rem;
-    background: #151515;
+    background: var(--color-cream-soft);
     padding: 1.5rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(86, 10, 30, 0.12);
     transition: all 0.3s ease;
 }
 
 .quick-link-item:hover {
     border-color: var(--color-primary);
+    background: #fff;
     transform: translateX(10px);
 }
 
 .link-icon {
-    color: var(--color-primary);
+    color: var(--color-secondary);
     font-size: 1.2rem;
     font-weight: bold;
 }
 
 .link-content h4 {
-    color: #fff;
+    color: var(--color-ink);
     margin-bottom: 0.3rem;
     font-size: 1.1rem;
 }
 
 .link-content p {
-    color: #666;
+    color: var(--color-ink-muted);
     font-size: 0.9rem;
 }
 

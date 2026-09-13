@@ -1,46 +1,40 @@
 .products-section {
     padding: 6rem 0;
-    background-color: var(--color-bg);
+    background-color: var(--color-cream);
     position: relative;
 }
 
-.section-header {
+.products-section .section-header {
     text-align: center;
     margin-bottom: 3rem;
 }
 
-.section-title {
+.products-section .section-title {
     font-size: 2.5rem;
-    color: var(--color-primary);
+    color: var(--color-ink);
     margin-bottom: 0.5rem;
 }
 
 .product-card {
-    background: var(--color-surface);
+    background: #fff;
     border-radius: var(--radius-lg);
     overflow: hidden;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    min-width: 240px;
-    /* Reduced width */
-    max-width: 260px;
-    flex: 0 0 auto;
-    scroll-snap-align: center;
+    border: 1px solid rgba(86, 10, 30, 0.12);
+    width: 100%;
 }
 
 .product-image-wrapper {
-    height: 220px;
-    /* Reduced height */
+    height: 280px;
     width: 100%;
     overflow: hidden;
     position: relative;
-    background: #151515;
+    background: var(--color-cream-soft);
 }
 
 .product-info {
-    padding: 1.25rem;
-    padding-bottom: 1.5rem;
+    padding: 1.75rem;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -52,12 +46,12 @@
     font-size: 1.2rem;
     /* Reduced font size */
     margin-bottom: 0.5rem;
-    color: #fff;
+    color: var(--color-ink);
 }
 
 .product-desc {
     font-size: 0.8rem;
-    color: var(--color-text-muted);
+    color: var(--color-ink-muted);
     margin-bottom: 1rem;
     line-height: 1.4;
     min-height: 2.8em;
@@ -66,7 +60,7 @@
 
 .product-price {
     font-size: 1.1rem;
-    color: var(--color-primary);
+    color: var(--color-secondary);
     font-weight: 700;
     margin-bottom: 1rem;
     display: block;
@@ -76,8 +70,8 @@
     width: 100%;
     padding: 0.75rem;
     background: transparent;
-    border: 1px solid var(--color-text-muted);
-    color: #fff;
+    border: 1px solid var(--color-secondary);
+    color: var(--color-secondary);
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
@@ -86,28 +80,26 @@
 }
 
 .product-card:hover .product-btn {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #000;
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: #fff;
 }
 
-/* Re-include other necessary rules if missed, assuming previous context */
 .products-grid {
-    display: flex;
-    overflow-x: auto;
-    gap: 1.5rem;
-    padding: 1rem 5vw;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    margin: 0 -1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
 }
 
-.products-grid::-webkit-scrollbar {
-    display: none;
+@media (min-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+        justify-content: center;
+    }
 }
 
-.section-subtitle {
-    color: var(--color-text-muted);
+.products-section .section-subtitle {
+    color: var(--color-ink-muted);
     max-width: 600px;
     margin: 0 auto;
 }

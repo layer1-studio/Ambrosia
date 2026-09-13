@@ -4,8 +4,7 @@ const SERVICE_ID = 'service_vnv2zdj';
 const PUBLIC_KEY = 'BsB9Xsr8nr5Yo-WuD';
 const DEFAULT_TEMPLATE_ID = 'template_fcosgki';
 
-// TODO: swap for an @ambrosia address once the client has one set up
-const ADMIN_NOTIFICATION_EMAIL = 'studio.layer1@gmail.com';
+const ADMIN_NOTIFICATION_EMAIL = 'ambrosiaceylon@gmail.com';
 
 /**
  * Sends an order status update email.

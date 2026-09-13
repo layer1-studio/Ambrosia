@@ -13,7 +13,7 @@ const IMAGE_MAP = {
     'garden': '/Ambrosia/images/garden.png'
 };
 
-const CATEGORIES = ['Powder', 'Sticks', 'Blends', 'Gift Sets', 'Limited Edition', 'Skin Care', 'Hair Care', 'Wellness', 'Sets'];
+const CATEGORIES = ['Powder', 'Quills', 'Blends', 'Gift Sets', 'Limited Edition', 'Skin Care', 'Hair Care', 'Wellness', 'Sets'];
 
 const Products = () => {
     const { formatPrice } = useCurrency();

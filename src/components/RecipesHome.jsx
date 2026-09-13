@@ -1,6 +1,7 @@
 import React from 'react';
 import divineImg from '../assets/images/divine.png';
 import gardenImg from '../assets/images/garden.png';
+import topoGold from '../assets/images/topo_gold.svg';
 import './RecipesHome.css';
 import { Link } from 'react-router-dom';
 import Reveal from './Reveal';
@@ -30,9 +31,9 @@ const recipes = [
         category: "Beverages",
         image: gardenImg,
         time: "15 mins",
-        desc: "A spiced tea tradition using whole Kuveni sticks.",
+        desc: "A spiced tea tradition using whole Kuveni quills.",
         ingredients: [
-            "2 Kuveni Cinnamon Sticks",
+            "2 Kuveni Cinnamon Quills",
             "2 bags Black Tea",
             "3 Cardamom pods",
             "Milk and Sugar"
@@ -70,7 +71,7 @@ const recipes = [
         time: "4 min read",
         desc: "How a pinch of Ambrosia every morning can change your metabolism.",
         ingredients: [
-            "1 Kuveni Cinnamon Stick",
+            "1 Kuveni Cinnamon Quill",
             "1 liter Filtered Water",
             "Mint leaves"
         ],
@@ -84,7 +85,7 @@ const recipes = [
 
 const RecipesHome = () => {
     return (
-        <section className="recipes-home-section">
+        <section className="recipes-home-section" style={{ '--topo-url': `url(${topoGold})` }}>
             <div className="container">
                 <Reveal as="div" className="section-header">
                     <h2 className="section-title">Recipes & Rituals</h2>

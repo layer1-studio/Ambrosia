@@ -1,14 +1,14 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import AboutUs from './pages/AboutUs';
 import AboutCinnamon from './pages/AboutCinnamon';
 import Store from './pages/Store';
+import ProductDetail from './pages/ProductDetail';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import Contact from './pages/Contact';
@@ -70,9 +70,10 @@ function App() {
                                 {/* Public Routes - With Navbar/Footer Layout */}
                                 <Route path="/" element={<PublicLayout />}>
                                     <Route index element={<Home />} />
-                                    <Route path="about-us" element={<AboutUs />} />
+                                    <Route path="about-us" element={<Navigate to="/about-cinnamon" replace />} />
                                     <Route path="about-cinnamon" element={<AboutCinnamon />} />
                                     <Route path="shop" element={<Store />} />
+                                    <Route path="shop/:id" element={<ProductDetail />} />
                                     <Route path="recipes" element={<Recipes />} />
                                     <Route path="recipes/:id" element={<RecipeDetail />} />
                                     <Route path="contact" element={<Contact />} />

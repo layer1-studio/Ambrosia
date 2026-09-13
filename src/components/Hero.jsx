@@ -43,7 +43,7 @@ const Hero = () => {
                 </p>
                 <div className="hero-actions">
                     <Link to="/shop" className="btn">View Collection</Link>
-                    <Link to="/about-us" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Our Heritage</Link>
+                    <Link to="/about-cinnamon" className="btn btn-outline" style={{ marginLeft: '1rem' }}>Our Heritage</Link>
                 </div>
             </div>
         </section>

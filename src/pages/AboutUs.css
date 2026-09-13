@@ -2,14 +2,112 @@
     height: 60vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 1)), url('../assets/images/hero_bg.png');
+    background: linear-gradient(rgba(43, 8, 15, 0.55), rgba(43, 8, 15, 0.92)), url('../assets/images/hero_bg.png');
     background-size: cover;
     background-position: center;
-    border-bottom: 1px solid rgba(217, 214, 186, 0.2);
+    border-bottom: 1px solid rgba(168, 123, 47, 0.25);
 }
 
+/* --- The Tale of Origin --- */
+.origin-section {
+    padding: 8rem 0;
+    background-color: var(--color-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.origin-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--topo-url);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.14;
+    pointer-events: none;
+}
+
+.origin-container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    text-align: center;
+}
+
+.origin-container .gold-label,
+.mission-text .gold-label {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Gold reads as thread/accent on the dark burgundy origin section */
+.origin-container .gold-label {
+    color: var(--color-primary);
+}
+
+/* ...but never as small text on parchment, per brand guidelines */
+.mission-text .gold-label {
+    color: var(--color-secondary);
+}
+
+.origin-title {
+    font-size: 2.75rem;
+    color: var(--color-cream);
+    margin-bottom: 1.5rem;
+}
+
+.origin-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 auto 3rem;
+    width: 240px;
+}
+
+.origin-divider span {
+    flex: 1;
+    height: 1px;
+    background: rgba(168, 123, 47, 0.5);
+}
+
+.origin-divider i {
+    width: 6px;
+    height: 6px;
+    background: var(--color-primary);
+    transform: rotate(45deg);
+    display: block;
+}
+
+.origin-p {
+    color: rgba(230, 220, 201, 0.85);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.origin-p em {
+    font-style: italic;
+    color: var(--color-cream);
+}
+
+.origin-signoff {
+    font-style: italic;
+    color: var(--color-primary);
+    font-size: 1.05rem;
+    margin-top: 2rem;
+}
+
+/* --- Mission / The Ambrosia Way --- */
 .mission-section {
     padding: 10rem 0;
+    background-color: var(--color-cream);
 }
 
 .mission-section .intro-grid {
@@ -19,17 +117,52 @@
     align-items: center;
 }
 
+.mission-text h2 {
+    color: var(--color-ink);
+}
+
+.mission-text p {
+    color: var(--color-ink-muted);
+}
+
+.mission-text a {
+    color: var(--color-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(86, 10, 30, 0.3);
+}
+
+.mission-text a:hover {
+    border-color: var(--color-secondary);
+}
+
 .mission-image img {
     width: 100%;
-    border: 1px solid rgba(217, 214, 186, 0.3);
+    border: 1px solid rgba(86, 10, 30, 0.15);
+}
+
+/* --- Ethical Cultivation --- */
+.sourcing-section {
+    background-color: var(--color-cream-soft);
+}
+
+.sourcing-lede {
+    color: var(--color-ink-muted);
+}
+
+.sourcing-heading {
+    color: var(--color-ink);
+}
+
+.sourcing-text {
+    color: var(--color-ink-muted);
 }
 
 .value-card {
     text-align: center;
     padding: 3rem;
-    background: #151515;
+    background: #fff;
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(86, 10, 30, 0.1);
     transition: all 0.3s ease;
 }
 
@@ -39,17 +172,17 @@
 }
 
 .stat-box {
-    background: #0d0d0d;
+    background: #fff;
     padding: 2.5rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(217, 214, 186, 0.1);
+    border: 1px solid rgba(86, 10, 30, 0.12);
     text-align: center;
     transition: all 0.3s ease;
 }
 
 .stat-box:hover {
     border-color: var(--color-primary);
-    background: #111;
+    box-shadow: 0 10px 24px rgba(86, 10, 30, 0.1);
 }
 
 
@@ -64,6 +197,9 @@
         grid-template-columns: 1fr;
     }
 
+    .origin-p {
+        text-align: left;
+    }
 
     .stat-box {
         padding: 1.5rem;

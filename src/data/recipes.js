@@ -30,9 +30,9 @@ export const recipes = [
         image: gardenImg,
         time: "15 mins",
         relatedProductType: "kuveni",
-        desc: "A spiced tea tradition using whole Kuveni sticks.",
+        desc: "A spiced tea tradition using whole Kuveni quills.",
         ingredients: [
-            "2 Kuveni Cinnamon Sticks",
+            "2 Kuveni Cinnamon Quills",
             "2 bags of Strong Black Tea",
             "3 Cardamom pods, crushed",
             "1 slice of fresh Ginger",
@@ -40,7 +40,7 @@ export const recipes = [
             "Milk and Sugar to taste"
         ],
         instructions: [
-            "Boil water with cinnamon sticks, cardamom, and ginger for 5 minutes.",
+            "Boil water with cinnamon quills, cardamom, and ginger for 5 minutes.",
             "Add tea bags and steep for another 3-4 minutes.",
             "Remove tea bags and spices, add milk and sugar, and bring to a simmer.",
             "Strain into cups and enjoy the aroma of Ceylon."
@@ -77,12 +77,12 @@ export const recipes = [
         relatedProductType: "kuveni",
         desc: "How a pinch of Ambrosia every morning can change your metabolism.",
         ingredients: [
-            "1 Kuveni Cinnamon Stick",
+            "1 Kuveni Cinnamon Quill",
             "1 liter Filtered Water",
             "Optional: Lemon slice or Mint leaves"
         ],
         instructions: [
-            "Place the cinnamon stick in a glass pitcher of water.",
+            "Place the cinnamon quill in a glass pitcher of water.",
             "Let it infuse overnight in the refrigerator.",
             "Drink throughout the day to help regulate blood sugar and boost metabolism."
         ]

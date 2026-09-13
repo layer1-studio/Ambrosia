@@ -1,8 +1,53 @@
 .footer {
-    background-color: #050505;
+    background-color: var(--color-secondary-dark);
     color: #fff;
     padding: 5rem 0 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 -16px 32px -16px rgba(43, 8, 15, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+/* A breath of space, then the gold rule, before the footer columns start */
+.footer-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 240px;
+    margin: 0 auto 4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-divider span {
+    flex: 1;
+    height: 1px;
+    background: rgba(168, 123, 47, 0.5);
+}
+
+.footer-divider i {
+    width: 6px;
+    height: 6px;
+    background: var(--color-primary);
+    transform: rotate(45deg);
+    display: block;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--topo-url);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.footer .container {
+    position: relative;
+    z-index: 1;
 }
 
 .footer-content {
@@ -25,7 +70,7 @@
 }
 
 .footer-column ul li a {
-    color: #888;
+    color: rgba(230, 220, 201, 0.7);
     font-size: 0.95rem;
 }
 
@@ -33,14 +78,26 @@
     color: var(--color-primary);
 }
 
-.newsletter-form input {
-    color: #ffffff !important;
+.newsletter-input {
+    background: rgba(230, 220, 201, 0.08);
+    border: 1px solid rgba(230, 220, 201, 0.25);
+    color: var(--color-cream) !important;
+    border-radius: var(--radius-md);
+}
+
+.newsletter-input::placeholder {
+    color: rgba(230, 220, 201, 0.45);
+}
+
+.newsletter-input:focus {
+    border-color: var(--color-primary);
+    background: rgba(230, 220, 201, 0.14);
 }
 
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    color: #555;
+    border-top: 1px solid rgba(230, 220, 201, 0.12);
+    color: rgba(230, 220, 201, 0.4);
     font-size: 0.85rem;
 }

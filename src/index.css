@@ -3,24 +3,31 @@
 /* Tailwind v4 needs theme colors declared here via @theme to generate
    bg-x/border-x/ring-x utilities; tailwind.config.js colors alone do not. */
 @theme {
-  --color-gold: #d9d6ba;
-  --color-maroon: #5b0e22;
+  --color-gold: #a87b2f;
+  --color-maroon: #560a1e;
   --color-maroon-deep: #3d0916;
   --color-maroon-light: #7c1c33;
+  --color-cream: #e6dcc9;
 }
 
 :root {
   --color-bg: #0a0a0a;
   --color-surface: #1c1c1c;
-  --color-primary: #d9d6ba;
-  /* Ambrosia Ceylon parchment/cream */
-  --color-primary-dark: #c2bfa0;
-  --color-secondary: #5b0e22;
-  /* Ambrosia Ceylon maroon */
+  --color-primary: #a87b2f;
+  /* Ambrosia Ceylon antique gold */
+  --color-primary-dark: #8a641f;
+  --color-secondary: #560a1e;
+  /* Ambrosia Ceylon burgundy */
   --color-secondary-dark: #3d0916;
   --color-secondary-light: #7c1c33;
   --color-text: #F5F5F5;
   --color-text-muted: #A1A1A1;
+
+  /* Brand palette (Ambrosia Ceylon Brand Guidelines, Ed. 01 · 2026) */
+  --color-cream: #e6dcc9;
+  --color-cream-soft: #f2ead9;
+  --color-ink: #2b0a13;
+  --color-ink-muted: #7a5347;
 
   --font-body: 'Outfit', sans-serif;
   --font-heading: 'Playfair Display', serif;
