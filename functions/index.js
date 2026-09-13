@@ -25,11 +25,13 @@
  */
 
 const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const logger = require('firebase-functions/logger');
 const admin = require('firebase-admin');
 const twilio = require('twilio');
+const Stripe = require('stripe');
 
 admin.initializeApp();
 setGlobalOptions({ region: 'us-central1' });
@@ -38,6 +40,7 @@ const TWILIO_ACCOUNT_SID = defineSecret('TWILIO_ACCOUNT_SID');
 const TWILIO_AUTH_TOKEN = defineSecret('TWILIO_AUTH_TOKEN');
 const TWILIO_WHATSAPP_FROM = defineSecret('TWILIO_WHATSAPP_FROM');
 const ADMIN_WHATSAPP_TO = defineSecret('ADMIN_WHATSAPP_TO');
+const STRIPE_SECRET_KEY = defineSecret('STRIPE_SECRET_KEY');
 
 const SECRETS = [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, ADMIN_WHATSAPP_TO];
 
@@ -125,3 +128,53 @@ exports.notifyOnOrderStatusChanged = onDocumentUpdated(
         await sendWhatsApp(after.phone, body);
     }
 );
+
+/**
+ * Creates a Stripe PaymentIntent for the current cart, charged in USD (the
+ * currency every product price is stored in — the site's currency switcher
+ * is display-only). Called from Checkout.jsx right before the customer
+ * confirms their card details.
+ *
+ * The total is always recomputed here from each product's real Firestore
+ * price, never trusted from the client — a tampered client request can only
+ * ever get charged the real price, never a lower one.
+ *
+ * Required secret: STRIPE_SECRET_KEY (test mode: starts with sk_test_).
+ */
+exports.createPaymentIntent = onCall({ secrets: [STRIPE_SECRET_KEY] }, async (request) => {
+    const { items, shippingCost } = request.data || {};
+
+    if (!Array.isArray(items) || items.length === 0) {
+        throw new HttpsError('invalid-argument', 'Your cart is empty.');
+    }
+
+    const db = admin.firestore();
+    let total = 0;
+
+    for (const item of items) {
+        const snap = await db.collection('products').doc(String(item.id)).get();
+        if (!snap.exists) {
+            throw new HttpsError('failed-precondition', `An item in your cart is no longer available.`);
+        }
+        const price = Number(snap.data().price) || 0;
+        const quantity = Math.max(1, Math.min(50, Math.floor(Number(item.quantity)) || 1));
+        total += price * quantity;
+    }
+
+    total += Math.max(0, Number(shippingCost) || 0);
+    const amountCents = Math.round(total * 100);
+
+    if (amountCents < 50) {
+        // Stripe's own minimum charge amount (roughly $0.50 for USD).
+        throw new HttpsError('invalid-argument', 'Order total is too small to process.');
+    }
+
+    const stripe = Stripe(STRIPE_SECRET_KEY.value());
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountCents,
+        currency: 'usd',
+        automatic_payment_methods: { enabled: true },
+    });
+
+    return { clientSecret: paymentIntent.client_secret, amount: total };
+});

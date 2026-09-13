@@ -1,3 +1,9 @@
+# Cloud Functions
+
+Two independent features live here: WhatsApp order notifications (below),
+and Stripe card payments (further down). Both need the Blaze plan and the
+Firebase CLI steps in section 1 done once; after that they're separate.
+
 # WhatsApp order notifications
 
 Sends a WhatsApp message via Twilio when an order is placed (to the customer
@@ -76,3 +82,55 @@ since Twilio requires the international `+countrycode` format. The function
 skips sending (and logs a warning) rather than guessing a country code or
 failing the whole notification. Worth adding phone-format validation to the
 checkout form if this comes up in practice.
+
+---
+
+# Stripe card payments
+
+Checkout charges the customer's card via Stripe before the order is created.
+The `createPaymentIntent` function always recomputes the total from each
+product's real Firestore price — a tampered client request can only ever be
+charged the real price, never a lower one.
+
+## 1. Create a Stripe account
+
+Sign up at [stripe.com](https://stripe.com). Test mode works immediately —
+no business documents needed until you're ready to go live.
+
+## 2. Get your API keys
+
+Stripe dashboard → **Developers → API keys**. You need both:
+
+- **Publishable key** (starts `pk_test_...`) — safe to expose client-side by
+  design. Put it in a `.env` file at the project root (copy `.env.example`):
+  ```
+  VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+  ```
+- **Secret key** (starts `sk_test_...`) — never goes in the frontend or this
+  repo. Set it as a Cloud Functions secret instead:
+  ```bash
+  firebase functions:secrets:set STRIPE_SECRET_KEY
+  ```
+
+## 3. Deploy
+
+```bash
+cd functions
+npm install
+cd ..
+firebase deploy --only functions
+```
+
+## 4. Test it
+
+Use [Stripe's test card numbers](https://stripe.com/docs/testing) —
+`4242 4242 4242 4242`, any future expiry, any CVC — to place a real test
+order through the checkout flow. Declined-card test numbers are on the same
+page if you want to verify the failure path too.
+
+## Going live later
+
+Once you're ready for real charges: switch the dashboard toggle out of test
+mode, grab the live keys (`pk_live_...` / `sk_live_...`), update `.env` and
+re-run `firebase functions:secrets:set STRIPE_SECRET_KEY` with the live
+secret key, then redeploy. No code changes needed.

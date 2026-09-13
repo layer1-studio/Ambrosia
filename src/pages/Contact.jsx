@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Mail, Phone, MapPin, Instagram } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import './Contact.css';
+
+const ADMIN_NOTIFICATION_EMAIL = 'ambrosiaceylon@gmail.com';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -26,6 +29,25 @@ const Contact = () => {
                 createdAt: serverTimestamp(),
                 status: 'new' // new, read, replied
             });
+
+            // Let the admin know a new message is waiting, rather than relying
+            // on them noticing it in the portal. Doesn't block success if it fails.
+            try {
+                await emailjs.send(
+                    'service_vnv2zdj',
+                    'template_fcosgki',
+                    {
+                        to_name: 'Ambrosia Admin',
+                        to_email: ADMIN_NOTIFICATION_EMAIL,
+                        subject: 'New Contact Message',
+                        message: `You have an unread message on Ambrosia Admin from ${formData.name} (${formData.email}), re: "${formData.subject}":\n\n${formData.message}`
+                    },
+                    'BsB9Xsr8nr5Yo-WuD'
+                );
+            } catch (notifyError) {
+                console.error('Failed to notify admin of new message:', notifyError);
+            }
+
             alert('Message sent successfully! We will get back to you soon.');
             setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
         } catch (error) {

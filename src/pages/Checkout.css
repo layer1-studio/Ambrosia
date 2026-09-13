@@ -93,6 +93,14 @@
     font-size: 0.85rem;
 }
 
+.checkout-payment-error {
+    padding: 0.9rem 1.1rem;
+    background: rgba(224, 93, 93, 0.08);
+    border: 1px solid rgba(224, 93, 93, 0.35);
+    color: #e05d5d;
+    font-size: 0.85rem;
+}
+
 /* ---------- Order summary ---------- */
 .checkout-sidebar {
     position: sticky;
