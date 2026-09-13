@@ -5,7 +5,6 @@ import './LegalPage.css';
 import './AboutUs.css';
 
 const productionVideo = '/Ambrosia/images/cinnamon-shoot.mp4';
-const gardenImg = '/Ambrosia/images/garden.png';
 const topoGold = '/Ambrosia/images/topo_gold.svg';
 
 const AboutCinnamon = () => {
@@ -44,23 +43,6 @@ const AboutCinnamon = () => {
                 <div className="about-video-overlay" />
             </div>
 
-            <div className="container mx-auto px-6">
-                <section className="about-content-section">
-                    <header className="mb-16">
-                        <p className="about-text-content">
-                            Beyond the spice rack lies a legacy of kings and explorers. Ceylon Cinnamon (Cinnamomum Verum) is the only "true" cinnamon—known for its delicate complexity, floral sweetness, and profound health benefits.
-                        </p>
-                    </header>
-
-                    {/* Heritage Image */}
-                    <div className="text-center mb-16">
-                        <div className="about-image-centered">
-                            <img src={gardenImg} alt="Ceylon cinnamon heritage estate" />
-                        </div>
-                    </div>
-                </section>
-            </div>
-
             <section className="origin-section" style={{ '--topo-url': `url(${topoGold})` }}>
                 <div className="container origin-container">
                     <span className="gold-label">The Story of Ceylon Cinnamon</span>
@@ -84,6 +66,10 @@ const AboutCinnamon = () => {
                         That craft has never left the island. In the deep south, where monsoon rains meet ancient soils,
                         peelers still work as their forebears did — coaxing paper-thin layers from the cinnamon tree and
                         rolling them, by hand, into the fine quills the world knows as true Ceylon cinnamon.
+                    </p>
+                    <p className="origin-p">
+                        Beyond the spice rack lies a legacy of kings and explorers. Ceylon Cinnamon (Cinnamomum Verum) is
+                        the only "true" cinnamon—known for its delicate complexity, floral sweetness, and profound health benefits.
                     </p>
                 </div>
             </section>
