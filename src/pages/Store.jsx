@@ -21,18 +21,11 @@ const Store = () => {
         const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
             const productData = snapshot.docs.map(doc => {
                 const data = doc.data();
-                // Priority: 1. imageUrl (Firebase Storage) 2. Legacy imageType map
-                // 3. the product's own photo, named after its doc id
+                // Prefer an explicit imageUrl; otherwise use the product's own real photo
+                // (named after its doc id). The legacy imageType map pointed at old
+                // placeholder renders and is no longer used, even if a record still has it.
                 const baseUrl = import.meta.env.BASE_URL;
-                let displayImage = data.imageUrl;
-                if (!displayImage && data.imageType) {
-                    displayImage = data.imageType === 'divine' ? `${baseUrl}images/divine.png` :
-                        data.imageType === 'kuveni' ? `${baseUrl}images/kuveni.png` :
-                            data.imageType === 'ravana' ? `${baseUrl}images/ravana.png` : null;
-                }
-                if (!displayImage) {
-                    displayImage = `${baseUrl}images/${doc.id}.jpg`;
-                }
+                const displayImage = data.imageUrl || `${baseUrl}images/${doc.id}.jpg`;
 
                 return {
                     id: doc.id,

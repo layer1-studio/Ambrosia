@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './AboutCinnamon.css';
 import './LegalPage.css';
@@ -15,15 +15,36 @@ const milestones = [
 ];
 
 const AboutCinnamon = () => {
+    const videoRef = useRef(null);
+
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        // The `autoplay` attribute alone is unreliable (Safari in particular
+        // will silently fall back to showing a paused play button). Kick
+        // playback off explicitly once the element exists.
+        const video = videoRef.current;
+        if (video) {
+            const tryPlay = () => video.play().catch(() => { });
+            tryPlay();
+            video.addEventListener('canplay', tryPlay);
+            return () => video.removeEventListener('canplay', tryPlay);
+        }
     }, []);
 
     return (
         <div className="about-cinnamon-page">
             {/* Hero Video Section */}
             <div className="about-video-container">
-                <video autoPlay muted loop playsInline>
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    onPause={(e) => e.currentTarget.play().catch(() => { })}
+                >
                     <source src={productionVideo} type="video/mp4" />
                 </video>
                 <div className="about-video-overlay" />

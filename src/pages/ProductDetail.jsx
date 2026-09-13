@@ -34,16 +34,10 @@ const ProductDetail = () => {
 
     const resolveImage = (data, docId) => {
         const baseUrl = import.meta.env.BASE_URL;
-        if (data.imageUrl) return data.imageUrl;
-        if (data.imageType) {
-            const map = {
-                divine: `${baseUrl}images/divine.png`,
-                kuveni: `${baseUrl}images/kuveni.png`,
-                ravana: `${baseUrl}images/ravana.png`
-            };
-            if (map[data.imageType]) return map[data.imageType];
-        }
-        return `${baseUrl}images/${docId}.jpg`;
+        // Prefer an explicit imageUrl; otherwise use the product's own real photo
+        // (named after its doc id). The legacy imageType map pointed at old
+        // placeholder renders and is no longer used, even if a record still has it.
+        return data.imageUrl || `${baseUrl}images/${docId}.jpg`;
     };
 
     const fetchProduct = async () => {

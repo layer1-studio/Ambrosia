@@ -20,18 +20,12 @@ const Products = () => {
                 const querySnapshot = await getDocs(q);
                 const productsData = querySnapshot.docs.map(doc => {
                     const data = doc.data();
-                    // Fallback logic for images: prefer an explicit imageUrl, then the
-                    // legacy imageType map, then the product's own photo (named after its doc id).
+                    // Prefer an explicit imageUrl; otherwise use the product's own real
+                    // photo (named after its doc id). The legacy imageType map pointed at
+                    // old placeholder renders and is no longer used, even when a product
+                    // record still has that field set.
                     const baseUrl = import.meta.env.BASE_URL;
-                    let displayImage = data.imageUrl;
-                    if (!displayImage && data.imageType) {
-                        displayImage = data.imageType === 'divine' ? `${baseUrl}images/divine.png` :
-                            data.imageType === 'kuveni' ? `${baseUrl}images/kuveni.png` :
-                                data.imageType === 'ravana' ? `${baseUrl}images/ravana.png` : null;
-                    }
-                    if (!displayImage) {
-                        displayImage = `${baseUrl}images/${doc.id}.jpg`;
-                    }
+                    const displayImage = data.imageUrl || `${baseUrl}images/${doc.id}.jpg`;
                     return {
                         id: doc.id,
                         ...data,
