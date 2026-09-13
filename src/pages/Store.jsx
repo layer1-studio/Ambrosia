@@ -14,7 +14,7 @@ const Store = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState("featured");
     const [filter, setFilter] = useState("All");
-    const categories = ["All", "Quills", "Powder", "Blends", "Gift Sets"];
+    const categories = ["All", "Quills", "Powder", "Wellness"];
 
     useEffect(() => {
         // Real-time listener for products
