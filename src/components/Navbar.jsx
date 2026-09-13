@@ -38,7 +38,7 @@ const Navbar = () => {
                 <div className="nav-links">
                     <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} end>Home</NavLink>
                     <NavLink to="/shop" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Shop the Boutique</NavLink>
-                    <NavLink to="/about-cinnamon" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
+                    <NavLink to="/about-cinnamon" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Tale of Origin</NavLink>
                     <NavLink to="/recipes" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Recipes & Rites</NavLink>
                     <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Contact Us</NavLink>
                 </div>
@@ -82,7 +82,7 @@ const Navbar = () => {
                     <div className="mobile-nav-links">
                         <NavLink to="/" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`} end>Home</NavLink>
                         <NavLink to="/shop" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Shop the Boutique</NavLink>
-                        <NavLink to="/about-cinnamon" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>The Alchemist's Guide</NavLink>
+                        <NavLink to="/about-cinnamon" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Tale of Origin</NavLink>
                         <NavLink to="/recipes" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Recipes & Rites</NavLink>
                         <NavLink to="/contact" onClick={toggleMenu} className={({ isActive }) => `mobile-link ${isActive ? 'active' : ''}`}>Contact Us</NavLink>
                         <Link to="/shop" onClick={toggleMenu} className="btn-primary mt-8 inline-block text-center">Inquire Now</Link>

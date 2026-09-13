@@ -8,12 +8,6 @@ const productionVideo = '/Ambrosia/images/cinnamon-shoot.mp4';
 const gardenImg = '/Ambrosia/images/garden.png';
 const topoGold = '/Ambrosia/images/topo_gold.svg';
 
-const milestones = [
-    { year: '1824', title: 'The First Harvest', desc: 'Our estate began cultivating true Ceylon cinnamon in the heart of the island.' },
-    { year: '1905', title: 'Royal Warrant', desc: 'Recognition of the gold standard, purveying to the most discerning European courts.' },
-    { year: '2022', title: 'Global Renaissance', desc: 'Reimagining the spice route to bring the purest Ceylon essence to the modern world.' },
-];
-
 const AboutCinnamon = () => {
     const videoRef = useRef(null);
 
@@ -53,27 +47,10 @@ const AboutCinnamon = () => {
             <div className="container mx-auto px-6">
                 <section className="about-content-section">
                     <header className="mb-16">
-                        <h1 className="about-title">The Alchemist's Guide.</h1>
                         <p className="about-text-content">
                             Beyond the spice rack lies a legacy of kings and explorers. Ceylon Cinnamon (Cinnamomum Verum) is the only "true" cinnamon—known for its delicate complexity, floral sweetness, and profound health benefits.
                         </p>
                     </header>
-
-                    {/* Timeline */}
-                    <div className="about-timeline">
-                        {milestones.map((m, i) => (
-                            <div key={i} className="timeline-item">
-                                <div className="timeline-dot" />
-                                <span className="timeline-year">{m.year}</span>
-                                <h3 className="text-white font-heading text-lg mb-2 uppercase tracking-wider">{m.title}</h3>
-                                <p className="timeline-text">{m.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="legal-divider" style={{ margin: '6rem 0' }}>
-                        <div className="flourish" />
-                    </div>
 
                     {/* Heritage Image */}
                     <div className="text-center mb-16">
