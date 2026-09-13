@@ -106,7 +106,7 @@
 
 /* --- Mission / The Ambrosia Way --- */
 .mission-section {
-    padding: 10rem 0;
+    padding: 6rem 0;
     background-color: var(--color-cream);
 }
 
@@ -143,6 +143,7 @@
 /* --- Ethical Cultivation --- */
 .sourcing-section {
     background-color: var(--color-cream-soft);
+    padding: 5rem 0;
 }
 
 .sourcing-lede {

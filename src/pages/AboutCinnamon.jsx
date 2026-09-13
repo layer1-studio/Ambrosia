@@ -157,7 +157,7 @@ const AboutCinnamon = () => {
                 </div>
             </section>
 
-            <div className="flex flex-col items-center gap-8 py-16" style={{ background: 'var(--color-cream-soft)' }}>
+            <div className="flex flex-col items-center gap-8" style={{ background: 'var(--color-cream-soft)', padding: '4rem 0' }}>
                 <Link to="/shop" className="btn px-10 py-4 text-sm">Explore the Collection</Link>
             </div>
         </div>
